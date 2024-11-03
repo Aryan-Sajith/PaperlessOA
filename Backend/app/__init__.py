@@ -25,7 +25,9 @@ def create_app():
     db.init_app(app)
 
     # Register Blueprints (routes)
-    from .routes import main
-    app.register_blueprint(main)
+    from .employee_routes import employee_bp
+    from .task_routes import task_bp
+    app.register_blueprint(employee_bp)
+    app.register_blueprint(task_bp)
 
     return app
