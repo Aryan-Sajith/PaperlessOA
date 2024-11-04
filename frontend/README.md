@@ -19,11 +19,14 @@ Office Automation software for CS520
    ```bash
    git clone <repository-url>
    cd <project-directory>
+   ```
 
 2. **Install Dependencies**:
    ```bash
    npm install
+   ```
 
 3. **Start the development server**:
    ```bash
    npm run dev
+   ```
