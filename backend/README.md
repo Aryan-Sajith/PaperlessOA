@@ -1,7 +1,7 @@
 # How to start
 
 ## install dependency
-run `pip3 install requirement.txt`
+run `pip3 install -r requirements.txt`
 
 ## install postgresql
 python package `psycopg2` require postgresql to be installed locally
