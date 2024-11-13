@@ -7,7 +7,7 @@ type TaskPreviewProps = {
     onClick: () => void;
 }
 
-export default function TaskCard({
+export default function TaskPreview({
     title,
     due_date,
     onClick
