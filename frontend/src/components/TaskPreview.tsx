@@ -3,7 +3,6 @@ import React from "react";
 type TaskPreviewProps = {
     title: string;
     due_date: string;
-    // Add more as needed
     onClick: () => void;
 }
 

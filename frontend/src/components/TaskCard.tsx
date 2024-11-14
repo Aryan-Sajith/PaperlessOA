@@ -1,6 +1,7 @@
 import React from "react";
 
 type TaskProps = {
+    id: string;  
     title: string;
     status: string;
     due_date: string;
@@ -10,6 +11,7 @@ type TaskProps = {
 }
 
 export default function TaskCard({
+    id,
     title,
     status,
     due_date,
