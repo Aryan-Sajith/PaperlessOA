@@ -1,11 +1,12 @@
 # How to start
 
 ## install dependency
-run `pip3 install requirement.txt`
+run `pip3 install -r requirements.txt`
 
-## install postgresql
+## install postgresql and psycopg2
 python package `psycopg2` require postgresql to be installed locally
-run `brew install postgresql`
+run `brew install postgresql` to install postgresql
+run `pip3 install psycopg2` to install psycopg2
 
 ## connect to db
 create a `.env` file in the Backend directory with the following setting
