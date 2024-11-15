@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import {API_BASE} from "@/util/path";
 
 const EmployeeDropdown = () => {
     const [employees, setEmployees] = useState([]);
@@ -10,7 +11,7 @@ const EmployeeDropdown = () => {
 
     useEffect(() => {
         // Fetch employee data from the Flask backend API
-        fetch('http://127.0.0.1:5000/employees')
+        fetch(API_BASE + 'employees')
             .then(async response => {
                 response = await response.json()
                 setEmployees(response);
