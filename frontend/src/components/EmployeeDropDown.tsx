@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import {API_BASE} from "@/util/path";
+import Select from "react-select";
 
 const EmployeeDropdown = () => {
     const [employees, setEmployees] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
 
 
     useEffect(() => {
@@ -14,43 +14,36 @@ const EmployeeDropdown = () => {
         fetch(API_BASE + 'employees')
             .then(async response => {
                 response = await response.json()
-                setEmployees(response);
-                setFilteredEmployees(response);
+                return response
             })
+            .then(data => {
+                // Transform data to match react-select's expected format
+                const employeeOptions = data.map(emp => ({
+                    value: emp.employee_id,
+                    label: emp.name
+                }));
+                setEmployees(employeeOptions);
+            })
+            .catch(error => {
+                console.error('Error fetching employees:', error);
+            });
     }, []);
 
     // Update the filtered employee list when the search term changes
-    useEffect(() => {
-        if (searchTerm === '') {
-            setFilteredEmployees(employees);
-        } else {
-            const filtered = employees.filter(emp =>
-                emp.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredEmployees(filtered);
-        }
-    }, [searchTerm, employees]);
+    const handleSelectChange = (selectedOption) => {
+        setSelectedEmployee(selectedOption);
+        console.log('Selected employee:', selectedOption);
+    };
 
     return (
-        <div style={{ position: 'relative', width: '100%' }}>
-            <input
-                type="text"
+        <div>
+            <Select
+                options={employees}
+                value={selectedEmployee}
+                onChange={handleSelectChange}
                 placeholder="Search for an employee"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ marginBottom: '10px', padding: '8px', width: '100%' }}
+                isSearchable
             />
-            <select
-                style={{ width: '100%', padding: '8px', cursor: 'pointer' }}
-                onChange={(e) => setSearchTerm(e.target.selectedOptions[0].text)}
-            >
-                <option value="">Select an employee</option>
-                {filteredEmployees.map((employee) => (
-                    <option key={employee.employee_id} value={employee.employee_id}>
-                        {employee.name}
-                    </option>
-                ))}
-            </select>
         </div>
     );
 };
