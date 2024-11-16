@@ -11,7 +11,8 @@
   "dependencies": {
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "next": "15.0.2"
+    "next": "15.0.2",
+    "react-select": "5.0.0"
   },
   "devDependencies": {
     "typescript": "^5",

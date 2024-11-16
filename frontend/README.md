@@ -23,6 +23,7 @@ Office Automation software for CS520
 
 2. **Install Dependencies**:
    ```bash
+   npm config set legacy-peer-deps true # needed for react-select
    npm install
    ```
 
