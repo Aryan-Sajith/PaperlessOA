@@ -7,12 +7,12 @@ import { API_BASE } from "@/util/path";
 
 export type Task = {
   id: string;
-  title: string;
+  // title: string; TODO: Add Later
   status: string;
   due_date: string;
   description: string;
   type: string;
-  assignee: string;
+  assignee_id: number;
 };
 
 export default function TasksPage() {
@@ -54,12 +54,12 @@ export default function TasksPage() {
       {selectedTask && (
         <TaskCard
           id={selectedTask.id}
-          title={selectedTask.title}
+          // title={selectedTask.title} TODO: Add later
           due_date={selectedTask.due_date}
           description={selectedTask.description}
           type={selectedTask.type}
           status={selectedTask.status}
-          assignee={selectedTask.assignee}
+          assignee_id={selectedTask.assignee_id}
         />
       )}
     </div>

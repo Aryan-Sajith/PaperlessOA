@@ -7,7 +7,7 @@ type TaskProps = {
     due_date: string;
     description: string;
     type: string;
-    assignee: string;
+    assignee_id: number;
 }
 
 export default function TaskCard({
@@ -17,7 +17,7 @@ export default function TaskCard({
     due_date,
     description,
     type,
-    assignee
+    assignee_id
 }: Readonly<TaskProps>) {
     return (
         <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
@@ -27,7 +27,7 @@ export default function TaskCard({
                 <li><strong>Due Date:</strong> {due_date} </li>
                 <li><strong>Description:</strong> {description}</li>
                 <li><strong>Type:</strong> {type}</li>
-                <li><strong>Assignee:</strong> {assignee}</li>
+                <li><strong>Assignee_ID:</strong> {assignee_id}</li>
             </ul>
         </div>
     );
