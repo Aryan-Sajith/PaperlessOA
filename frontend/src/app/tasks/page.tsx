@@ -6,7 +6,7 @@ import TaskCard from "@/components/TaskCard";
 import { API_BASE } from "@/util/path";
 
 export type Task = {
-  id: string;
+  id?: string;
   // title: string; TODO: Add Later
   status: string;
   due_date: string;
@@ -53,7 +53,7 @@ export default function TasksPage() {
       )}
       {selectedTask && (
         <TaskCard
-          id={selectedTask.id}
+          id={selectedTask.id || "Task has no ID!"}
           // title={selectedTask.title} TODO: Add later
           due_date={selectedTask.due_date}
           description={selectedTask.description}
