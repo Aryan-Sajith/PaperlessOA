@@ -75,7 +75,6 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
       </button>
 
       {/* Add Task View */}
-      constInputFieldStyle = ""
       {isViewOpen && (
         <div
           style={{
