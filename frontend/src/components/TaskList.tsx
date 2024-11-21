@@ -13,7 +13,8 @@ export default function TaskList({
 }: TaskListProps) {
     return (
     <div>
-        {tasks.map((task) => (<TaskPreview key={task.id} title={task.title} due_date={task.due_date} onClick={() => onTaskPreviewClick(task)}/>))}
+         {/* TODO: Using Task id as title(for now) */}
+        {tasks.map((task) => (<TaskPreview key={task.id} title={task.id} due_date={task.due_date} onClick={() => onTaskPreviewClick(task)}/>))}
     </div>
     );
 }

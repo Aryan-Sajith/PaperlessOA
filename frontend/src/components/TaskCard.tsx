@@ -2,7 +2,7 @@ import React from "react";
 
 type TaskProps = {
     id: string;  
-    title: string;
+    // title: string; TODO: Add later
     status: string;
     due_date: string;
     description: string;
@@ -12,7 +12,7 @@ type TaskProps = {
 
 export default function TaskCard({
     id,
-    title,
+    // title, TODO: Add later
     status,
     due_date,
     description,
@@ -21,7 +21,7 @@ export default function TaskCard({
 }: Readonly<TaskProps>) {
     return (
         <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-800">{`Title(ID For now): ${id}`}</h3>
             <ul className="mt-2 space-y-1 text-sm text-gray-600">
                 <li><strong>Status:</strong> {status}</li>
                 <li><strong>Due Date:</strong> {due_date} </li>
