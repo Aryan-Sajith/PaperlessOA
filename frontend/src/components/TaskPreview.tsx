@@ -1,5 +1,6 @@
 import React from "react";
 
+// TODO: Using Task ID as title(for now)
 type TaskPreviewProps = {
     title: string;
     due_date: string;
