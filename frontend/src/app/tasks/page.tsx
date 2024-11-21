@@ -1,8 +1,8 @@
-// This is the tasks page
 "use client";
 import React, { useState, useEffect } from "react";
 import TaskList from "@/components/TaskList";
 import TaskCard from "@/components/TaskCard";
+import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
 
 export type Task = {
@@ -22,10 +22,8 @@ export default function TasksPage() {
 
   useEffect(() => {
     // Fetch tasks from the backend
-    fetch(`${API_BASE}/tasks`) 
-      .then((response) => {
-        return response.json();
-      })
+    fetch(`${API_BASE}/tasks`)
+      .then((response) => response.json())
       .then((returnedTasks) => {
         setTasks(returnedTasks); // Update the tasks state
       })
@@ -62,6 +60,8 @@ export default function TasksPage() {
           assignee_id={selectedTask.assignee_id}
         />
       )}
+      {/* Add Task View */}
+      <AddTaskView setTasks={setTasks} />
     </div>
   );
 }

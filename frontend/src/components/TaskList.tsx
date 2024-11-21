@@ -14,7 +14,7 @@ export default function TaskList({
     return (
     <div>
          {/* TODO: Using Task id as title(for now) */}
-        {tasks.map((task) => (<TaskPreview key={task.id} title={task.id} due_date={task.due_date} onClick={() => onTaskPreviewClick(task)}/>))}
+        {tasks.map((task) => (<TaskPreview key={task.id} title={task.id || "No Task ID found!"} due_date={task.due_date} onClick={() => onTaskPreviewClick(task)}/>))}
     </div>
     );
 }
