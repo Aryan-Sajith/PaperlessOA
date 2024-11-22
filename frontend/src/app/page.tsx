@@ -4,7 +4,10 @@
 import Link from 'next/link'
 import EmployeeDropdown from '../components/EmployeeDropDown';
 
+
 export default function HomePage() {
+
+
   return (
     <div>
       <h1>Home Page</h1>
@@ -13,5 +16,7 @@ export default function HomePage() {
         <p>Workflow page <Link href="/workflows" className="text-blue-400 underline">workflow page</Link></p>
     </div>
   )
+ 
+
 };
 
