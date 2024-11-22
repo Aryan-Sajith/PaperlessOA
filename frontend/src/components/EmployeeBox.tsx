@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-interface Employee {
+export interface Employee {
     id: number;
     name: string;
     role: string;
