@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request, Response
+
 from flask_sqlalchemy import SQLAlchemy
 import os
 from dotenv import load_dotenv
@@ -29,7 +30,9 @@ def create_app():
     # Register Blueprints (routes)
     from .employee_routes import employee_bp
     from .task_routes import task_bp
+    from .workflow_routes import workflow_bp
     app.register_blueprint(employee_bp)
     app.register_blueprint(task_bp)
+    app.register_blueprint(workflow_bp)
 
     return app
