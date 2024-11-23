@@ -108,7 +108,7 @@ const WorkflowDetail = () => {
 // Main app component
 const App = () => {
   return (
-      <div>
+      <div className='w-full'>
       <Router>
         <Routes>
           <Route path="/workflows" element={<WorkflowList />} />

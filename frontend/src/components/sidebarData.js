@@ -11,4 +11,12 @@ export const SidebarData = [
     title: "Tasks",
     path: "/tasks",
   },
+  {
+    title: "Workflows",
+    path: "/workflows",
+  },
+  {
+    title: "Profile",
+    path: "/profile",
+  },
 ];
