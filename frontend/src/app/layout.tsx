@@ -4,7 +4,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-import Navbar from "@/components/Navbar";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "PaperlessOA",
@@ -18,10 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[#DEDEDE]">
         <Navbar/>
-
-        {children}
+        <div className="flex h-screen">
+          <Sidebar/>
+          <main className="p-5">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   );
