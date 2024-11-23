@@ -4,6 +4,13 @@ import React, { useState, useEffect } from 'react';
 import {API_BASE} from "@/util/path";
 import Select from "react-select";
 
+const customStyles = {
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 1050, // Ensure dropdown is on top
+  }),
+};
+
 const EmployeeDropdown = () => {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -38,6 +45,7 @@ const EmployeeDropdown = () => {
                 onChange={(selectedOption) => setSelectedEmployee(selectedOption)}
                 placeholder="Search for an employee"
                 isSearchable
+                styles={customStyles}
             />
     );
 };
