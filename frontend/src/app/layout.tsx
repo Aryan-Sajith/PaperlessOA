@@ -22,9 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#DEDEDE]">
         <Navbar/>
-        <div className="flex h-screen">
+        <div className="flex h-screen w-full">
           <Sidebar/>
-          <main className="p-5">
+          <main className="p-5 w-full">
             {children}
           </main>
         </div>
