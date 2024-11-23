@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from .models import Workflow, db
 from datetime import datetime
 
@@ -25,29 +25,30 @@ def get_workflow_by_employee_id(employee_id):
 
 
 # Route to create a new workflow
-@workflow_bp.route('/workflows', methods=['POST'])
+@workflow_bp.route('/create_workflow', methods=['POST'])
 def create_workflow():
     data = request.get_json()
+    current_app.logger.info(data)
 
     # Validate required fields
-    if not data or not all(field in data for field in ["assignee_id", "status", "content", "type", "workflow_id"]):
-        return jsonify({"error": "Missing required workflow fields"}), 400
+    # if not data or not all(field in data for field in ["assignee_id", "status", "content", "type", "workflow_id"]):
+    #     return jsonify({"error": "Missing required workflow fields"}), 400
 
     try:
         new_workflow = Workflow(
-            assignee_id=data['assignee_id'],
-            status=data['status'],
-            content=data['content'],
+            assignee_id=data['assignee_id'] if "assignee_id" in data else 1,
+            status=data['status'] if "status" in data else "None",
+            content=str(data),
             type=data['type'],
-            workflow_id=data['workflow_id'],
+            workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
             time_stamp=datetime.utcnow()
         )
-
         db.session.add(new_workflow)
         db.session.commit()
         return jsonify(new_workflow.to_dict()), 201
 
     except Exception as e:
+        current_app.logger.error(e)
         db.session.rollback()
         return jsonify({"error": "Failed to create workflow", "details": str(e)}), 500
 
