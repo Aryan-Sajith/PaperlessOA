@@ -5,9 +5,6 @@ import Link from "next/link";
 const CreateWorkflow = () => {
     return(
         <main className="content">
-            <header className="header">
-                <h1>Name</h1>
-            </header>
             <div className="card-container">
                 <Link href="/workflows/onboarding" >
                     <div className="card">Onboarding: Add new Employees</div>

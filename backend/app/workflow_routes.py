@@ -12,7 +12,6 @@ def get_workflows():
     workflows_list = [workflow.to_dict() for workflow in workflows]
     return jsonify(workflows_list)
 
-
 # Route to get workflows by employee ID (assignee_id)
 @workflow_bp.route('/workflows/employee/<int:employee_id>', methods=['GET'])
 def get_workflow_by_employee_id(employee_id):
@@ -52,6 +51,12 @@ def create_workflow():
         db.session.rollback()
         return jsonify({"error": "Failed to create workflow", "details": str(e)}), 500
 
+@workflow_bp.route('/workflow/<int:workflow_id>', methods=['GET'])
+def get_workflow_by_id(workflow_id):
+    current_app.logger.info(f"workflow_id: {workflow_id}")
+    workflow = Workflow.query.filter_by(id=workflow_id).first()
+    if workflow:
+        return jsonify(workflow.to_dict())
 
 # Route to update a workflow by ID
 @workflow_bp.route('/workflows/<int:workflow_id>', methods=['PUT'])
@@ -97,8 +102,6 @@ def delete_workflow(workflow_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to delete workflow", "details": str(e)}), 500
-
-workflow_bp = Blueprint('workflow_bp', __name__)
 
 @workflow_bp.route('/approve_workflow', methods=['POST'])
 def approve_workflow():
