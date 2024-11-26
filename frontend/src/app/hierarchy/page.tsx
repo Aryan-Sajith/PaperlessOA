@@ -1,23 +1,35 @@
-// This is the /hierarchy page
+"use client";
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import EmployeeBox from "../../components/EmployeeBox";
+import EmployeeDropdown from '@/components/EmployeeDropDown';
+import { SingleValue } from 'react-select';
+import { Employee } from '@/util/ZodTypes';
 
-const employees = {
-    id: 1,
-    name: "John Doe",
-    role: "Team Lead",
-    photoUrl: "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg",
-    subordinates: [
-        { id: 2, name: "Jane Smith", role: "Developer", photoUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR6eHoxPGX4cPrRuRJZQ3JxsiApNSDSiRUJYiBv5N3cT4yxfwqf8LfDtuUX69867yCQLW0qvXPJdOfsYIq9A9mdO3Nhj6ulwtIVyZY-EhI" },
-        { id: 3, name: "Joe boden", role: "Designer", photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Joe_Biden_presidential_portrait.jpg/1200px-Joe_Biden_presidential_portrait.jpg" },
-    ],
-};
+
+/**
+ * Hierarchy page: 
+ * - The OA system should provide some kind of tree level of management relationship
+ * - Human Resources should be able to easily see the hierarchy structure of the company. 
+ * - Each employee details page should contain the groups each employee is in
+ */
 
 export default function hierarchy() {
-  return (
-    <div className="p-6">
-        <EmployeeBox employee={employees} />
-    </div>
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+
+    const handleSelect = (employee: SingleValue<Employee>) => {
+        if (employee) {
+            setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+        } else {
+            setSelectedEmployee(null); // Handle case where no employee is selected
+        }
+    }
+    
+
+    return (
+        <div>
+            <EmployeeDropdown onEmployeeSelect={handleSelect}/>            
+            {selectedEmployee && <EmployeeBox employee={selectedEmployee} />}    
+        </div>
 );
 }
