@@ -19,4 +19,8 @@ export const SidebarData = [
     title: "Profile",
     path: "/profile",
   },
+  {
+    title: "Table",
+    path: "/employee-table",
+  },
 ];
