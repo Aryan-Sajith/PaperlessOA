@@ -2,11 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import {API_BASE} from "@/util/path";
-import Select from "react-select";
+import Select, {SingleValue} from "react-select";
+import { Employee } from '@/util/ZodTypes';
 
-const EmployeeDropdown = () => {
+interface EmployeeDropdownProps {
+    onEmployeeSelect: (employee: SingleValue<Employee>) => void;
+}
+  
+// DropDown takes an employee property so that the selected employee json can be accessed where the component is used
+const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect }) => {
     const [employees, setEmployees] = useState([]);
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isClient, setIsClient] = useState(false);
 
 
@@ -20,7 +25,7 @@ const EmployeeDropdown = () => {
             .then(data => {
                 // Transform data to match react-select's expected format
                 const employeeOptions = data.map(emp => ({
-                    value: emp.employee_id,
+                    value: emp,
                     label: emp.name
                 }));
                 setEmployees(employeeOptions);
@@ -34,8 +39,7 @@ const EmployeeDropdown = () => {
     return (
             <Select
                 options={employees}
-                value={selectedEmployee}
-                onChange={(selectedOption) => setSelectedEmployee(selectedOption)}
+                onChange={(selectedOption) => onEmployeeSelect(selectedOption)}
                 placeholder="Search for an employee"
                 isSearchable
             />
