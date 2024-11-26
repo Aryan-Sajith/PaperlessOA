@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const employee = z.object({
-    _id: z.number(),
+    employee_id: z.number(),
     position: z.string(),
     is_manager: z.boolean(),
     start_date: z.date(),
