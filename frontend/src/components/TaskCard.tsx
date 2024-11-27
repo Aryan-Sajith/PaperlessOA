@@ -1,26 +1,37 @@
 import React from "react";
+import { useState } from "react";
 
-type TaskProps = {
+// TODO: Using Task ID as title(for now)
+type TaskCardProps = {
     id: string;  
+    assignee_id: number;
     // title: string; TODO: Add later
     status: string;
-    due_date: string;
     description: string;
     type: string;
-    assignee_id: number;
+    due_date: string;
 }
 
 export default function TaskCard({
     id,
-    // title, TODO: Add later
+    assignee_id,
     status,
-    due_date,
     description,
     type,
-    assignee_id
-}: Readonly<TaskProps>) {
+    due_date,
+}: Readonly<TaskCardProps>) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
     return (
-        <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
+        <div
+            onClick={() => {setIsExpanded(!isExpanded)}}
+            className="flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md"
+        >
+            <p className="text-md font-medium">{description}</p>
+            <span className="text-sm text-gray-500">{due_date}</span>
+
+            {isExpanded && 
+            <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800">{`Title(ID For now): ${id}`}</h3>
             <ul className="mt-2 space-y-1 text-sm text-gray-600">
                 <li><strong>Status:</strong> {status}</li>
@@ -30,5 +41,8 @@ export default function TaskCard({
                 <li><strong>Assignee_ID:</strong> {assignee_id}</li>
             </ul>
         </div>
+            }
+        </div>
     );
 }
+

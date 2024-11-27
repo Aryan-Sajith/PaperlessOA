@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import EmployeeDropdown from '@/components/EmployeeDropDown';
+import { SingleValue } from 'react-select';
+import { Employee } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 
@@ -8,12 +13,13 @@ type AddTaskViewProps = {
 
 export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
+  const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
   const [taskData, setTaskData] = useState<Omit<Task, "id">>({
     status: "",
     due_date: "",
     description: "",
     type: "",
-    assignee_id: 0, // Default assignee
+    assignee_id: 1, // Default assignee(for now), we can update this later when login is setup 
   }); // Task form state
 
   const toggleView = () => setIsViewOpen((prev) => !prev); // Open/close view
@@ -53,6 +59,24 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
       });
   };
 
+  const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
+    if (assignee) {
+      setSelectedAssignee(assignee.value);
+
+      // Update assignee_id since valid employee has been selected
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: assignee.value.employee_id,
+      }));
+    } else {
+      setSelectedAssignee(null);
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: 0, // Reset to a neutral state
+      }));
+    }
+  };
+  
   return (
     <div>
       {/* Floating Add/Close Button */}
@@ -143,19 +167,9 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
               borderRadius: "5px",
             }}
           />
-          <input
-            type="number"
-            name="assignee_id"
-            placeholder="Assignee ID"
-            value={taskData.assignee_id}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
+          <div>
+          <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+          </div>
           <button
             onClick={handleAddTask}
             style={{
