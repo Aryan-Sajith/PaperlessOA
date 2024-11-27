@@ -12,7 +12,6 @@ const customStyles = {
   }),
 };
 
-const EmployeeDropdown = () => {
 interface EmployeeDropdownProps {
     onEmployeeSelect: (employee: SingleValue<Employee>) => void;
 }
