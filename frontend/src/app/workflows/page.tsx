@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Button, List, ListItem, IconButton } from '@mui/material';
 import Link from "next/link";
 import {Simulate} from "react-dom/test-utils";
+import {API_BASE} from "@/util/path";
 
 // Workflow list page
 const WorkflowList = () => {
@@ -10,19 +11,11 @@ const WorkflowList = () => {
 
   // UseEffect to fetch workflows
   useEffect(() => {
-    // Simulating an API call
-    const fetchWorkflows = async () => {
-      const workflowData = [
-        { id: 1, type: 'Promotion', status: 'Initialized', startDate: '2024/10/31' },
-        { id: 2, type: 'Onboarding', status: 'Completed', startDate: '2024/9/20' },
-        { id: 3, type: 'Absence', status: 'Approved', startDate: '2024/8/10' },
-        { id: 4, type: 'Resignation', status: 'Initialized', startDate: '2024/10/31' },
-      ];
-      setWorkflows(workflowData);
-    };
+      fetch(`${API_BASE}workflows`)
+          .then(response => response.json())
+          .then(data => setWorkflows(data))
+    }, []);
 
-    fetchWorkflows();
-  }, []);
 
   return (
     <Box p={4} bgcolor="grey.300" height="100vh">
@@ -50,7 +43,7 @@ const WorkflowList = () => {
           >
             <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.type}</Typography>
             <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.status}</Typography>
-            <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.startDate}</Typography>
+            <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.timestamp.substring(0, 10)}</Typography>
             <Box sx={{ flex: 1, textAlign: 'left' }}>
               <Link href={`/workflows/${workflow.type.toLowerCase()}/${workflow.id}`} passHref>
                 <Button variant={"outlined"} color={"primary"}>

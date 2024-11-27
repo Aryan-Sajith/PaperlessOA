@@ -63,7 +63,7 @@ class Workflow(db.Model):
     content = db.Column(db.Text)
     type = db.Column(db.String(50))
     workflow_id = db.Column(db.Integer, ForeignKey('workflow.id'))
-    time_stamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime)
 
     # Relationships
     assignee = relationship('Employee', back_populates='workflows')
@@ -77,7 +77,7 @@ class Workflow(db.Model):
             "content": self.content,
             "type": self.type,
             "workflow_id": self.workflow_id,
-            "time_stamp": self.time_stamp.isoformat() if self.time_stamp else None
+            "timestamp": self.timestamp.isoformat() if self.timestamp else None
         }
 
 
