@@ -61,11 +61,22 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
 
   const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
     if (assignee) {
-      setSelectedAssignee(assignee.value); // This is underlined but its not an error, it is just react-select being weird...
+      setSelectedAssignee(assignee.value);
+
+      // Update assignee_id since valid employee has been selected
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: assignee.value.employee_id,
+      }));
     } else {
-      setSelectedAssignee(null); // Handle case where no employee is selected
+      setSelectedAssignee(null);
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: 0, // Reset to a neutral state
+      }));
     }
-  }
+  };
+  
   return (
     <div>
       {/* Floating Add/Close Button */}
@@ -157,7 +168,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             }}
           />
           <div>
-            <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+          <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
           </div>
           <button
             onClick={handleAddTask}
