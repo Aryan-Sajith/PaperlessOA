@@ -13,6 +13,14 @@ export const SidebarData = [
   },
   {
     title: "Workflows",
-    path: "/workflows"
-  }
+    path: "/workflows",
+  },
+  {
+    title: "Profile",
+    path: "/profile",
+  },
+  {
+    title: "Table",
+    path: "/employee-table",
+  },
 ];
