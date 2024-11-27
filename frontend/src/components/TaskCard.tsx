@@ -1,11 +1,8 @@
 import React from "react";
 import { useState } from "react";
 
-// TODO: Using Task ID as title(for now)
 type TaskCardProps = {
-    id: string;  
-    assignee_id: number;
-    // title: string; TODO: Add later
+    assigned_to: string;
     status: string;
     description: string;
     type: string;
@@ -13,8 +10,7 @@ type TaskCardProps = {
 }
 
 export default function TaskCard({
-    id,
-    assignee_id,
+    assigned_to,
     status,
     description,
     type,
@@ -32,13 +28,12 @@ export default function TaskCard({
 
             {isExpanded && 
             <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">{`Title(ID For now): ${id}`}</h3>
             <ul className="mt-2 space-y-1 text-sm text-gray-600">
                 <li><strong>Status:</strong> {status}</li>
                 <li><strong>Due Date:</strong> {due_date} </li>
                 <li><strong>Description:</strong> {description}</li>
                 <li><strong>Type:</strong> {type}</li>
-                <li><strong>Assignee_ID:</strong> {assignee_id}</li>
+                <li><strong>Assigned To:</strong> {assigned_to}</li>
             </ul>
         </div>
             }
