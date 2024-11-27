@@ -32,7 +32,6 @@ export default function TaskCard({
 
             {isExpanded && 
             <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">{`Title(ID For now): ${id}`}</h3>
             <ul className="mt-2 space-y-1 text-sm text-gray-600">
                 <li><strong>Status:</strong> {status}</li>
                 <li><strong>Due Date:</strong> {due_date} </li>
