@@ -1,20 +1,27 @@
 import React from "react";
 import { Task } from "@/app/tasks/page";
-import TaskPreview from "./TaskPreview";
+import TaskCard from "./TaskCard";
 
 type TaskListProps = {
     tasks: Task[];
-    onTaskPreviewClick: (task: Task) => void;
 }
 
 export default function TaskList({
    tasks,
-   onTaskPreviewClick 
 }: TaskListProps) {
     return (
     <div>
          {/* TODO: Using Task id as title(for now) */}
-        {tasks.map((task) => (<TaskPreview key={task.id} title={task.id || "No Task ID found!"} due_date={task.due_date} onClick={() => onTaskPreviewClick(task)}/>))}
+        {tasks.map((task) => (
+            <TaskCard
+            key={task.id} 
+            id={task.id || "No ID assigned for this task"} 
+            assignee_id={task.assignee_id} 
+            status={task.status}
+            description={task.description}
+            type={task.type}
+            due_date={task.due_date}
+            />))}
     </div>
     );
 }
