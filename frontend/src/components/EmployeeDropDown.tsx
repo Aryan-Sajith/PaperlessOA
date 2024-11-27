@@ -5,6 +5,14 @@ import {API_BASE} from "@/util/path";
 import Select, {SingleValue} from "react-select";
 import { Employee } from '@/util/ZodTypes';
 
+const customStyles = {
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 1050, // Ensure dropdown is on top
+  }),
+};
+
+const EmployeeDropdown = () => {
 interface EmployeeDropdownProps {
     onEmployeeSelect: (employee: SingleValue<Employee>) => void;
 }
@@ -42,6 +50,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect })
                 onChange={(selectedOption) => onEmployeeSelect(selectedOption)}
                 placeholder="Search for an employee"
                 isSearchable
+                styles={customStyles}
             />
     );
 };
