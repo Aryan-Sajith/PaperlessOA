@@ -11,5 +11,5 @@ def handle_preflight():
         return res
 
 if __name__ == '__main__':
-    app.run(debug=True, port=50_000)
+    app.run(debug=True, port=50000)
     

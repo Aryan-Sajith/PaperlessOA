@@ -1,15 +1,12 @@
 "use client";
-import React, { useState } from 'react';
+import React, {useState, use, useEffect} from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
-import {useParams} from "react-router-dom";
-import {useRouter} from "next/router";
+import {type} from "node:os";
 
-const OnboardingForm = () => {
-  const router = useRouter()
-  const id = router.query.id;
-  console.log(id)
+const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
+  const id = use(params)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -20,6 +17,27 @@ const OnboardingForm = () => {
     comments: '',
     type: ''
   });
+
+  useEffect(() => {
+    fetch(`${API_BASE}workflow/${id.id}`)
+        .then(response =>{
+          return response.json()
+        })
+        .then(data => {
+          const JSON5 = require('json5');
+          const content = JSON5.parse(data.content)
+          setFormData({
+            name: content.name || "",
+            email: content.email || "",
+            salary: content.salary || "",
+            level: content.level || "",
+            start_date: content.start_date || "",
+            birth_date: content.birth_date || "",
+            comments: content.comments || "",
+            type: "onboarding"
+          })
+        })
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -69,7 +87,7 @@ const OnboardingForm = () => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Onboarding
+        Onboarding {id.id}
       </Typography>
 
       <Box display="flex" justifyContent="space-between">
