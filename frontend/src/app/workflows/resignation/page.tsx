@@ -8,7 +8,8 @@ const ResignationForm = () => {
   const [formData, setFormData] = useState({
     level: '',
     salary: '',
-    comments: '',
+    reason: '',
+    resign_type: '',
     type: ''
   });
 
@@ -22,7 +23,7 @@ const ResignationForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'absence'
+      formData['type'] = 'resignation'
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,19 +71,6 @@ const ResignationForm = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Start Date"
-            name="start_date"
-            value={formData.start_date}
-            onChange={handleInputChange}
-            variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
             label="Birth Date"
             name="birth_date"
             value={formData.end_date}
@@ -96,7 +84,7 @@ const ResignationForm = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Reason For Absence"
+            label="Reason For Resign"
             name="comments"
             value={formData.reason}
             onChange={handleInputChange}
@@ -108,15 +96,6 @@ const ResignationForm = () => {
 
         {/* Right Workflow Steps */}
         <Box flex={1}>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'lightblue' }}>
-            <Typography>Initialization - Mike</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Review - Jacob</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Completion - Leo</Typography>
-          </Paper>
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown/>
         </Box>

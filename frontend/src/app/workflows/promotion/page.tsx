@@ -8,7 +8,7 @@ const PromotionForm = () => {
   const [formData, setFormData] = useState({
     level: '',
     salary: '',
-    comments: '',
+    reason: '',
     type: ''
   });
 
@@ -22,7 +22,7 @@ const PromotionForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'absence'
+      formData['type'] = 'promotion'
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,37 +66,34 @@ const PromotionForm = () => {
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
+          <Typography>Who is taking the Absence</Typography>
           <EmployeeDropdown/>
           <TextField
             fullWidth
             margin="normal"
-            label="Start Date"
-            name="start_date"
-            value={formData.start_date}
+            label="Salary"
+            name="New Salary"
+            value={formData.salary}
             onChange={handleInputChange}
             variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            multiline
+            rows={4}
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Birth Date"
-            name="birth_date"
-            value={formData.end_date}
+            label="Level"
+            name="New Level"
+            value={formData.level}
             onChange={handleInputChange}
             variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            multiline
+            rows={4}
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Reason For Absence"
+            label="Reason For Promotion"
             name="comments"
             value={formData.reason}
             onChange={handleInputChange}
@@ -108,15 +105,6 @@ const PromotionForm = () => {
 
         {/* Right Workflow Steps */}
         <Box flex={1}>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'lightblue' }}>
-            <Typography>Initialization - Mike</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Review - Jacob</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Completion - Leo</Typography>
-          </Paper>
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown/>
         </Box>

@@ -7,9 +7,6 @@ import {useParams} from "react-router-dom";
 import {useRouter} from "next/router";
 
 const OnboardingForm = () => {
-  const router = useRouter()
-  const id = router.query.id;
-  console.log(id)
   const [formData, setFormData] = useState({
     name: '',
     email: '',

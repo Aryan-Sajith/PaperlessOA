@@ -40,7 +40,7 @@ def create_workflow():
             content=str(data),
             type=data['type'],
             workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
-            time_stamp=datetime.utcnow()
+            timestamp=datetime.utcnow()
         )
         db.session.add(new_workflow)
         db.session.commit()
@@ -76,7 +76,7 @@ def update_workflow(workflow_id):
         if 'type' in data:
             workflow.type = data['type']
 
-        workflow.time_stamp = datetime.utcnow()  # Update timestamp on edit
+        workflow.timestamp = datetime.utcnow()  # Update timestamp on edit
 
         db.session.commit()
         return jsonify(workflow.to_dict()), 200
