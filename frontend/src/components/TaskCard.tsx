@@ -1,11 +1,8 @@
 import React from "react";
 import { useState } from "react";
 
-// TODO: Using Task ID as title(for now)
 type TaskCardProps = {
-    id: string;  
-    assignee_id: number;
-    // title: string; TODO: Add later
+    assigned_to: string;
     status: string;
     description: string;
     type: string;
@@ -13,8 +10,7 @@ type TaskCardProps = {
 }
 
 export default function TaskCard({
-    id,
-    assignee_id,
+    assigned_to,
     status,
     description,
     type,
@@ -37,7 +33,7 @@ export default function TaskCard({
                 <li><strong>Due Date:</strong> {due_date} </li>
                 <li><strong>Description:</strong> {description}</li>
                 <li><strong>Type:</strong> {type}</li>
-                <li><strong>Assignee_ID:</strong> {assignee_id}</li>
+                <li><strong>Assigned To:</strong> {assigned_to}</li>
             </ul>
         </div>
             }
