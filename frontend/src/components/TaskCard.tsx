@@ -41,7 +41,7 @@ export default function TaskCard({
                 <li><strong>Assignee_ID:</strong> {assignee_id}</li>
             </ul>
         </div>
-            }:p
+            }
         </div>
     );
 }
