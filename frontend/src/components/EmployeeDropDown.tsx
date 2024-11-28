@@ -14,10 +14,11 @@ const customStyles = {
 
 interface EmployeeDropdownProps {
     onEmployeeSelect: (employee: SingleValue<Employee>) => void;
+    assignee_id?: number;
 }
   
 // DropDown takes an employee property so that the selected employee json can be accessed where the component is used
-const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect }) => {
+const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect, assignee_id }) => {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isClient, setIsClient] = useState(false);
@@ -36,6 +37,8 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect })
                     value: emp,
                     label: emp.name
                 }));
+                // Ensures that the selected employee is displayed as the default option when editing tasks
+                if (assignee_id) setSelectedEmployee(employeeOptions.find(emp => emp.value.employee_id === assignee_id));
                 setEmployees(employeeOptions);
             })
             .catch(error => {
