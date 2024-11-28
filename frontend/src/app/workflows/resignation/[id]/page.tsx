@@ -13,7 +13,8 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
     reason: '',
     type: '',
     workflow_id: '',
-    name: ''
+    name: '',
+    employee_id: ''
   });
 
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
@@ -30,7 +31,8 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
             reason: content.reason || "",
             type: "resignation",
             workflow_id: id,
-            name: content.name
+            name: content.name || "",
+            employee_id: content.employee_id || ""
           })
         })
   }, []);
@@ -53,8 +55,6 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'resignation';
-      formData['workflow_id'] = id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

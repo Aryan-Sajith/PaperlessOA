@@ -8,14 +8,13 @@ import {SingleValue} from "react-select";
 
 const ResignationForm = () => {
   const [formData, setFormData] = useState({
-    level: '',
-    salary: '',
     reason: '',
     resign_type: '',
     type: '',
     assignee_id: '',
-    cur_id: '',
-    name: ''
+    cur_id: '', // employee_id for current user (needed for creating new workflow)
+    name: '',
+    employee_id: '' // employee_id for which the resign is going to remove
   });
 
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
@@ -49,7 +48,8 @@ const ResignationForm = () => {
       formData['type'] = 'resignation'
       formData['assignee_id'] = nextAssignee.employee_id
       formData['cur_id'] = '2'
-      formData['name'] = nextAssignee.name
+      formData['name'] = selectedEmployee.name
+      formData['employee_id'] = selectedEmployee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
