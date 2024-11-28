@@ -18,7 +18,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
         due_date: task_to_update.due_date,
         description: task_to_update.description,
         type: task_to_update.type,
-        assignee_id: task_to_update.assignee_id, // Default assignee(for now), we can update this later when login is setup 
+        assignee_id: task_to_update.assignee_id, 
     }); // Task form state
 
     const handleInputChange = (
@@ -145,7 +145,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                     }}
                 />
                 <div>
-                    <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+                    <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} assignee_id={task_to_update.assignee_id}/>
                 </div>
                 <button
                     onClick={handleEditTask}
