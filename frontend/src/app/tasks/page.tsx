@@ -39,7 +39,7 @@ export default function TasksPage() {
     <div>
       <h1>Tasks</h1>
       {tasks.length > 0 ? (
-        <TaskList tasks={tasks} />
+        <TaskList tasks={tasks} setTasks={setTasks}/>
       ) : (
         <p>Loading tasks...</p> // Display a loading message while fetching
       )}

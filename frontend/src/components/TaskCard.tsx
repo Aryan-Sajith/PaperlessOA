@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-import { set } from "zod";
+import EditTaskView from "./EditTaskView"
+import { Task } from "@/app/tasks/page";
 
 type TaskCardProps = {
     id: string | undefined;  
@@ -9,6 +10,7 @@ type TaskCardProps = {
     description: string;
     type: string;
     due_date: string;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
 export default function TaskCard({
@@ -18,6 +20,7 @@ export default function TaskCard({
     description,
     type,
     due_date,
+    setTasks
 }: Readonly<TaskCardProps>) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -54,13 +57,8 @@ export default function TaskCard({
 
             {/* Expanded Editing Task Card here: */}
             {isExpanded && isEditing &&
-                <div>
-                <p>Editing Test Here!</p>
-                <button className="border-black-200"
-                onClick={(event) => {
-                    event.stopPropagation();
-                    setIsEditing(!isEditing)
-                    }}>Click to go back to description!</button>
+                <div onClick={(event) => event.stopPropagation()}> {/* Critical to ensuring card doesn't un-expand while editing*/}
+                    <EditTaskView update_task_id={id} setTasks={setTasks} setIsEditing={setIsEditing}/>
                 </div>
             }
         </div>

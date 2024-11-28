@@ -5,10 +5,12 @@ import { API_BASE } from "@/util/path";
 
 type TaskListProps = {
     tasks: Task[];
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 };
 
 export default function TaskList({
     tasks,
+    setTasks
 }: TaskListProps) {
     const [assigneeNames, setAssigneeNames] = useState<Record<number, string>>({});
 
@@ -63,6 +65,7 @@ export default function TaskList({
                     description={task.description}
                     type={task.type}
                     due_date={task.due_date}
+                    setTasks={setTasks}
                 />
             ))}
         </div>

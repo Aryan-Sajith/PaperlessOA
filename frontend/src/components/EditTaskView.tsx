@@ -6,11 +6,12 @@ import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 
 type editTaskViewProps = {
+    update_task_id: string | undefined;
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
     setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewProps) {
+export default function EditTaskView({ update_task_id, setTasks, setIsEditing }: editTaskViewProps) {
     const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
     const [taskData, setTaskData] = useState<Omit<Task, "id">>({
         status: "",
@@ -23,6 +24,8 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
+        e.preventDefault();
+        e.stopPropagation(); // Ensures that we don't un-expand the task card while editing
         const { name, value } = e.target;
         setTaskData((prev) => ({
             ...prev,
@@ -30,9 +33,9 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
         }));
     };
 
-    const handleAddTask = () => {
-        fetch(`${API_BASE}/create_task`, {
-            method: "POST",
+    const handleEditTask = () => {
+        fetch(`${API_BASE}/update_task/${update_task_id}`, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -40,7 +43,7 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
         })
             .then((response) => response.json())
             .then((newTask: Task) => {
-                setTasks((prevTasks) => [...prevTasks, newTask]); // Add new task
+                setTasks(prevTasks => prevTasks.map(task => task.id === update_task_id ? newTask : task));
                 setTaskData({
                     status: "",
                     due_date: new Date().toISOString().split("T")[0], // Default to today's date
@@ -51,7 +54,7 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
                 setIsEditing(false); // Close the view
             })
             .catch((error) => {
-                console.error("Error creating task:", error);
+                console.error("Error updating task:", error);
             });
     };
 
@@ -78,7 +81,7 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
             {/* Edit Task View */}
             <div
                 style={{
-                    position: "fixed",
+                    // position: "fixed",
                     bottom: "100px",
                     right: "20px",
                     width: "300px",
@@ -147,7 +150,7 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
                     <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
                 </div>
                 <button
-                    onClick={handleAddTask}
+                    onClick={handleEditTask}
                     style={{
                         backgroundColor: "#2ecc71",
                         color: "white",
@@ -158,7 +161,7 @@ export default function EditTaskView({ setTasks, setIsEditing }: editTaskViewPro
                         cursor: "pointer",
                     }}
                 >
-                    ✓ Add Task
+                    ✓ Update Task
                 </button>
             </div>
         </div>
