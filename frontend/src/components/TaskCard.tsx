@@ -6,6 +6,7 @@ import { Task } from "@/app/tasks/page";
 type TaskCardProps = {
     id: string | undefined;  
     assigned_to: string;
+    assignee_id: number;
     status: string;
     description: string;
     type: string;
@@ -16,6 +17,7 @@ type TaskCardProps = {
 export default function TaskCard({
     id,
     assigned_to,
+    assignee_id,
     status,
     description,
     type,
@@ -58,7 +60,10 @@ export default function TaskCard({
             {/* Expanded Editing Task Card here: */}
             {isExpanded && isEditing &&
                 <div onClick={(event) => event.stopPropagation()}> {/* Critical to ensuring card doesn't un-expand while editing*/}
-                    <EditTaskView update_task_id={id} setTasks={setTasks} setIsEditing={setIsEditing}/>
+                    <EditTaskView task_to_update={
+                        { id, assignee_id, status, description, type, due_date }} 
+                        setTasks={setTasks} 
+                        setIsEditing={setIsEditing}/>
                 </div>
             }
         </div>

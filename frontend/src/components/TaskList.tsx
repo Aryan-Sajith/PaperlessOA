@@ -61,6 +61,7 @@ export default function TaskList({
                     key={task.id}
                     id={task.id} 
                     assigned_to={assigneeNames[task.assignee_id] || "Loading..."}
+                    assignee_id={task.assignee_id}
                     status={task.status}
                     description={task.description}
                     type={task.type}

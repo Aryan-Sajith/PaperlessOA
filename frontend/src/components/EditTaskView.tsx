@@ -6,19 +6,19 @@ import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 
 type editTaskViewProps = {
-    update_task_id: string | undefined;
+    task_to_update: Task;
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
     setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export default function EditTaskView({ update_task_id, setTasks, setIsEditing }: editTaskViewProps) {
+export default function EditTaskView({ task_to_update, setTasks, setIsEditing }: editTaskViewProps) {
     const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
     const [taskData, setTaskData] = useState<Omit<Task, "id">>({
-        status: "",
-        due_date: "",
-        description: "",
-        type: "",
-        assignee_id: 1, // Default assignee(for now), we can update this later when login is setup 
+        status: task_to_update.status,
+        due_date: task_to_update.due_date,
+        description: task_to_update.description,
+        type: task_to_update.type,
+        assignee_id: task_to_update.assignee_id, // Default assignee(for now), we can update this later when login is setup 
     }); // Task form state
 
     const handleInputChange = (
@@ -34,7 +34,7 @@ export default function EditTaskView({ update_task_id, setTasks, setIsEditing }:
     };
 
     const handleEditTask = () => {
-        fetch(`${API_BASE}/update_task/${update_task_id}`, {
+        fetch(`${API_BASE}/update_task/${task_to_update.id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export default function EditTaskView({ update_task_id, setTasks, setIsEditing }:
         })
             .then((response) => response.json())
             .then((newTask: Task) => {
-                setTasks(prevTasks => prevTasks.map(task => task.id === update_task_id ? newTask : task));
+                setTasks(prevTasks => prevTasks.map(task => task.id === task_to_update.id ? newTask : task));
                 setTaskData({
                     status: "",
                     due_date: new Date().toISOString().split("T")[0], // Default to today's date
