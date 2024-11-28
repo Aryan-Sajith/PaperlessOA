@@ -83,3 +83,19 @@ def update_task(task_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to update task", "details": str(e)}), 500
+    
+@task_bp.route('/delete_task/<int:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    task = Task.query.get(task_id)
+
+    try:
+        if task:
+            db.session.delete(task)
+            db.session.commit() # Commit database changes to ensure the task is deleted
+            return jsonify({"message": "Task successfully deleted"}), 200
+        else:
+            return jsonify({"message": "Task to delete not found!"}), 404
+    except Exception as e:
+        db.session.rollback() # Rollback the database session to prevent invalid changes
+        return jsonify({"error": "Failed to delete task", "details": str(e)}), 500
+
