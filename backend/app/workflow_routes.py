@@ -29,21 +29,37 @@ def create_workflow():
     data = request.get_json()
     current_app.logger.info(data)
 
-    # Validate required fields
-    # if not data or not all(field in data for field in ["assignee_id", "status", "content", "type", "workflow_id"]):
-    #     return jsonify({"error": "Missing required workflow fields"}), 400
-
     try:
+        #
+        parent_id = 2
+        if 'workflow_id' not in data:
+            # create workflows that have no parent workflow
+            parent_workflow = Workflow(
+                id=None,
+                assignee_id=data['cur_id'] if "cur_id" in data else 1,
+                status="initialized",
+                content=str(data),
+                type=data['type'],
+                workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
+                timestamp=datetime.utcnow()
+            )
+            db.session.add(parent_workflow)
+            db.session.commit()
+            parent_id = parent_workflow.id
+
+        # create a workflow
         new_workflow = Workflow(
+            id=None,
             assignee_id=data['assignee_id'] if "assignee_id" in data else 1,
-            status=data['status'] if "status" in data else "None",
+            status="in progress",
             content=str(data),
             type=data['type'],
-            workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
+            workflow_id=data['workflow_id'] if "workflow_id" in data else parent_id,
             timestamp=datetime.utcnow()
         )
         db.session.add(new_workflow)
         db.session.commit()
+
         return jsonify(new_workflow.to_dict()), 201
 
     except Exception as e:
@@ -87,7 +103,7 @@ def update_workflow(workflow_id):
 
 
 # Route to delete a workflow by ID
-@workflow_bp.route('/workflows/<int:workflow_id>', methods=['DELETE'])
+@workflow_bp.route('/delete_workflows/<int:workflow_id>', methods=['DELETE'])
 def delete_workflow(workflow_id):
     workflow = Workflow.query.get(workflow_id)
 

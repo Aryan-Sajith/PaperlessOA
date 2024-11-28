@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
+import {Employee} from "@/util/ZodTypes";
+import {SingleValue} from "react-select";
 
 const ResignationForm = () => {
   const [formData, setFormData] = useState({
@@ -10,8 +12,29 @@ const ResignationForm = () => {
     salary: '',
     reason: '',
     resign_type: '',
-    type: ''
+    type: '',
+    assignee_id: '',
+    cur_id: '',
+    name: ''
   });
+
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+  const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+
+  const handleSelectEmployee = (employee: SingleValue<Employee>) => {
+      if (employee) {
+        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+      } else {
+        setSelectedEmployee(null); // Handle case where no employee is selected
+      }
+  }
+  const handleNextAssignee = (employee: SingleValue<Employee>) => {
+      if (employee) {
+        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+      } else {
+        setNextAssignee(null); // Handle case where no employee is selected
+      }
+  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -24,6 +47,9 @@ const ResignationForm = () => {
   const handleSubmitToNext = async () => {
     try {
       formData['type'] = 'resignation'
+      formData['assignee_id'] = nextAssignee.employee_id
+      formData['cur_id'] = '2'
+      formData['name'] = nextAssignee.name
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,25 +93,13 @@ const ResignationForm = () => {
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
-          <EmployeeDropdown/>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Birth Date"
-            name="birth_date"
-            value={formData.end_date}
-            onChange={handleInputChange}
-            variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
+          <Typography>Who is resigned</Typography>
+          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
           <TextField
             fullWidth
             margin="normal"
             label="Reason For Resign"
-            name="comments"
+            name="reason"
             value={formData.reason}
             onChange={handleInputChange}
             variant="outlined"
@@ -97,7 +111,7 @@ const ResignationForm = () => {
         {/* Right Workflow Steps */}
         <Box flex={1}>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>
       </Box>
 

@@ -1,30 +1,39 @@
 "use client";
-import React, { useState } from 'react';
+import React, {use, useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import JSON5 from "json5";
 
-const AbsenceForm = () => {
+const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
+  const id = use(params).id
   const [formData, setFormData] = useState({
-    start_date: '',
-    end_date: '',
     reason: '',
     type: '',
-    assignee_id: '',
+    workflow_id: '',
     name: ''
   });
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
 
-  const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
-  }
+  useEffect(() => {
+    fetch(`${API_BASE}workflow/${id}`)
+        .then(response =>{
+          return response.json()
+        })
+        .then(data => {
+          const JSON5 = require('json5');
+          const content = JSON5.parse(data.content)
+          setFormData({
+            reason: content.reason || "",
+            type: "resignation",
+            workflow_id: id,
+            name: content.name
+          })
+        })
+  }, []);
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
@@ -33,7 +42,6 @@ const AbsenceForm = () => {
         setNextAssignee(null); // Handle case where no employee is selected
       }
   }
-
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -45,9 +53,8 @@ const AbsenceForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'absence';
-      formData['assignee_id'] = nextAssignee.employee_id
-      formData['name'] = selectedEmployee.name
+      formData['type'] = 'resignation';
+      formData['workflow_id'] = id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,43 +92,17 @@ const AbsenceForm = () => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Absence
+        Resignation {id}
       </Typography>
-      <Typography>Who is taking the Absence</Typography>
+
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
-          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
+          <Typography>{formData.name} is taking a resign</Typography>
           <TextField
             fullWidth
             margin="normal"
-            label="Start Date"
-            name="start_date"
-            value={formData.start_date}
-            onChange={handleInputChange}
-            variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="End Data"
-            name="end_date"
-            value={formData.end_date}
-            onChange={handleInputChange}
-            variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Reason For Absence"
+            label="Reason For Resign"
             name="reason"
             value={formData.reason}
             onChange={handleInputChange}
@@ -156,4 +137,4 @@ const AbsenceForm = () => {
   );
 };
 
-export default AbsenceForm;
+export default ResignationForm;
