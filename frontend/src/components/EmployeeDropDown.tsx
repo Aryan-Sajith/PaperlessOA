@@ -19,6 +19,7 @@ interface EmployeeDropdownProps {
 // DropDown takes an employee property so that the selected employee json can be accessed where the component is used
 const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect }) => {
     const [employees, setEmployees] = useState([]);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isClient, setIsClient] = useState(false);
 
 
@@ -46,7 +47,11 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect })
     return (
             <Select
                 options={employees}
-                onChange={(selectedOption) => onEmployeeSelect(selectedOption)}
+                value={selectedEmployee}
+                onChange={(selectedOption) => {
+                    onEmployeeSelect(selectedOption)
+                    setSelectedEmployee(selectedOption)
+                }}
                 placeholder="Search for an employee"
                 isSearchable
                 styles={customStyles}
