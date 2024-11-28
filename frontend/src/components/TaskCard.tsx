@@ -3,6 +3,7 @@ import { useState } from "react";
 import { set } from "zod";
 
 type TaskCardProps = {
+    id: string | undefined;  
     assigned_to: string;
     status: string;
     description: string;
@@ -11,6 +12,7 @@ type TaskCardProps = {
 }
 
 export default function TaskCard({
+    id,
     assigned_to,
     status,
     description,

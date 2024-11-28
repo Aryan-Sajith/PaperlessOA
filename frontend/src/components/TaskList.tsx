@@ -57,6 +57,7 @@ export default function TaskList({
             {tasks.map((task) => (
                 <TaskCard
                     key={task.id}
+                    id={task.id} 
                     assigned_to={assigneeNames[task.assignee_id] || "Loading..."}
                     status={task.status}
                     description={task.description}
