@@ -40,13 +40,14 @@ export default function TaskCard({
             {/* Expanded Description Task Card here: */}
             {isExpanded && !isEditing &&  
                 <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
+                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10 inline"
                     onClick={event => {
                         event.stopPropagation();
                         // alert("Edit task clicked for task: " + description);
                         setIsEditing(!isEditing);
                     }}
                     ></img>
+                    <img src="/icons/task-delete.svg" alt="task delete icon" className="w-8 h-7 ml-28 inline"></img>
                     <ul className="mt-2 space-y-1 text-sm text-gray-600">
                         <li><strong>Status:</strong> {status}</li>
                         <li><strong>Due Date:</strong> {due_date} </li>
