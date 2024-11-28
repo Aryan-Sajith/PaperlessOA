@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
+
+from .employee_routes import employee_bp
 from .models import Workflow, db, Employee
 from datetime import datetime
 
@@ -155,21 +157,25 @@ def mark_complete(workflow_id):
 def handle_onboarding(details):
     """Handles the onboarding workflow."""
     try:
+        current_app.logger.info(details['name'])
         new_employee = Employee(
+            employee_id=None,
             position=details['position'],
-            is_manager=details['is_manager'],
+            is_manager=details['is_manager'] if 'is_manager' in details else False,
             start_date=details['start_date'],
-            status=details['status'],
+            status="online",
             birth_date=details['birth_date'],
             name=details['name'],
             salary=details['salary'],
-            level=details['level']
+            level=details['level'],
+            email=details['email'],
         )
         db.session.add(new_employee)
         db.session.commit()
         return jsonify({"message": "Employee onboarded successfully"}), 201
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(e)
         return jsonify({"error": f"Failed to onboard employee: {str(e)}"}), 500
 
 

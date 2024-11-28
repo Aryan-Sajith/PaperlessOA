@@ -6,20 +6,22 @@ import {API_BASE} from "@/util/path";
 import {type} from "node:os";
 
 const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
-  const id = use(params)
+  const id = use(params).id
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     salary: '',
     level: '',
+    position: '',
     start_date: '',
     birth_date: '',
     comments: '',
-    type: ''
+    type: '',
+    workflow_id: ''
   });
 
   useEffect(() => {
-    fetch(`${API_BASE}workflow/${id.id}`)
+    fetch(`${API_BASE}workflow/${id}`)
         .then(response =>{
           return response.json()
         })
@@ -33,8 +35,10 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             level: content.level || "",
             start_date: content.start_date || "",
             birth_date: content.birth_date || "",
+            position: content.position || "",
             comments: content.comments || "",
-            type: "onboarding"
+            type: "onboarding",
+            workflow_id: id
           })
         })
   }, []);
@@ -68,7 +72,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('/api/approve_workflow', {
+      const response = await fetch(API_BASE + 'approve_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -87,7 +91,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Onboarding {id.id}
+        Onboarding {id}
       </Typography>
 
       <Box display="flex" justifyContent="space-between">
@@ -108,15 +112,6 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             label="Email"
             name="email"
             value={formData.email}
-            onChange={handleInputChange}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Salary"
-            name="salary"
-            value={formData.salary}
             onChange={handleInputChange}
             variant="outlined"
           />
@@ -161,15 +156,33 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
 
         {/* Right Workflow Steps */}
         <Box flex={1}>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'lightblue' }}>
-            <Typography>Initialization - Mike</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Review - Jacob</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Completion - Leo</Typography>
-          </Paper>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Salary"
+            name="salary"
+            value={formData.salary}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Level"
+            name="level"
+            value={formData.level}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Position"
+            name="position"
+            value={formData.position}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown/>
         </Box>

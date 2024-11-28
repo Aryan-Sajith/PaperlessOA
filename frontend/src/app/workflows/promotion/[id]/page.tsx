@@ -1,42 +1,58 @@
 "use client";
-import React, { useState } from 'react';
+import React, {use, useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
-import {useParams} from "react-router-dom";
-import {useRouter} from "next/router";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import JSON5 from "json5";
 
-const OnboardingForm = () => {
+const PromotionForm = ({params}:{params: Promise<{id: string}>}) => {
+  const id = use(params).id
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    salary: '',
     level: '',
+    salary: '',
     position: '',
-    start_date: '',
-    birth_date: '',
-    comments: '',
-    type: ''
+    reason: '',
+    type: 'promotion',
+    name: '',
+    assignee_id: '',
+    employee_id: '',
+    workflow_id: ''
   });
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
+
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
 
-  const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
-  }
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setNextAssignee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
   }
+
+  useEffect(() => {
+    fetch(`${API_BASE}workflow/${id}`)
+        .then(response =>{
+          return response.json()
+        })
+        .then(data => {
+          const JSON5 = require('json5');
+          const content = JSON5.parse(data.content)
+          setFormData({
+            name: content.name || "",
+            salary: content.salary || "",
+            level: content.level || "",
+            position: content.position || "",
+            reason: content.reason || "",
+            type: "promotion",
+            workflow_id: id,
+            assignee_id: content.assignee_id || "",
+            employee_id: content.employee_id || "",
+
+          })
+        })
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -48,7 +64,7 @@ const OnboardingForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'onboarding'
+      formData['assignee_id'] = nextAssignee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,7 +83,7 @@ const OnboardingForm = () => {
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('/api/approve_workflow', {
+      const response = await fetch(API_BASE + '/approve_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -86,62 +102,46 @@ const OnboardingForm = () => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Onboarding
+        Promotion
       </Typography>
 
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
+          <Typography>{formData.name} is being promoted</Typography>
           <TextField
             fullWidth
             margin="normal"
-            label="Name"
-            name="name"
-            value={formData.name}
+            label="New Salary"
+            name="salary"
+            value={formData.salary}
             onChange={handleInputChange}
             variant="outlined"
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Email"
-            name="email"
-            value={formData.email}
+            label="New Level"
+            name="level"
+            value={formData.level}
             onChange={handleInputChange}
             variant="outlined"
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Start Date"
-            name="start_date"
-            value={formData.start_date}
+            label="New Position"
+            name="position"
+            value={formData.position}
             onChange={handleInputChange}
             variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Birth Date"
-            name="birth_date"
-            value={formData.birth_date}
-            onChange={handleInputChange}
-            variant="outlined"
-            type={"date"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Your Comments"
-            name="comments"
-            value={formData.comments}
+            label="Reason For Promotion"
+            name="reason"
+            value={formData.reason}
             onChange={handleInputChange}
             variant="outlined"
             multiline
@@ -151,33 +151,6 @@ const OnboardingForm = () => {
 
         {/* Right Workflow Steps */}
         <Box flex={1}>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Salary"
-            name="salary"
-            value={formData.salary}
-            onChange={handleInputChange}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Level"
-            name="level"
-            value={formData.level}
-            onChange={handleInputChange}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Position"
-            name="position"
-            value={formData.position}
-            onChange={handleInputChange}
-            variant="outlined"
-          />
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>
@@ -201,4 +174,4 @@ const OnboardingForm = () => {
   );
 };
 
-export default OnboardingForm;
+export default PromotionForm;
