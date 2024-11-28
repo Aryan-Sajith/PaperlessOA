@@ -17,25 +17,35 @@ export default function TaskCard({
     due_date,
 }: Readonly<TaskCardProps>) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     return (
         <div
-            onClick={() => {setIsExpanded(!isExpanded)}}
+            onClick={() => {
+                setIsExpanded(!isExpanded)
+            }}
             className="flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md"
         >
             <p className="text-md font-medium">{description}</p>
             <span className="text-sm text-gray-500">{due_date}</span>
 
-            {isExpanded && 
-            <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-            <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                <li><strong>Status:</strong> {status}</li>
-                <li><strong>Due Date:</strong> {due_date} </li>
-                <li><strong>Description:</strong> {description}</li>
-                <li><strong>Type:</strong> {type}</li>
-                <li><strong>Assigned To:</strong> {assigned_to}</li>
-            </ul>
-        </div>
+            {/* Expanded Card here: */}
+            {isExpanded &&
+                <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
+                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
+                    onClick={event => {
+                        event.stopPropagation();
+                        alert("Edit task clicked for task: " + description);
+                    }}
+                    ></img>
+                    <ul className="mt-2 space-y-1 text-sm text-gray-600">
+                        <li><strong>Status:</strong> {status}</li>
+                        <li><strong>Due Date:</strong> {due_date} </li>
+                        <li><strong>Description:</strong> {description}</li>
+                        <li><strong>Type:</strong> {type}</li>
+                        <li><strong>Assigned To:</strong> {assigned_to}</li>
+                    </ul>
+                </div>
             }
         </div>
     );
