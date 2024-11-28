@@ -41,7 +41,8 @@ export default function TaskCard({
             {/* Expanded Description Task Card here: */}
             {isExpanded && !isEditing &&  
                 <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10 inline"
+                    <div className ="flex justify-between items-center mb-2">
+                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
                     onClick={event => {
                         event.stopPropagation(); // Ensures that we don't un-expand the card if we click on the edit icon
                         // alert("Edit task clicked for task: " + description);
@@ -50,7 +51,7 @@ export default function TaskCard({
                     ></img>
 
                     {/* Delete task here: */}
-                    <img src="/icons/task-delete.svg" alt="task delete icon" className="w-8 h-7 ml-28 inline"
+                    <img src="/icons/task-delete.svg" alt="task delete icon" className="w-8 h-7"
                     onClick={event => {
                         event.stopPropagation(); // Ensures that we don't un-expand the card if we click on the delete icon
                         fetch(`${API_BASE}/delete_task/${id}`, {method: "DELETE"})
@@ -61,8 +62,8 @@ export default function TaskCard({
                         })
                         .catch(error => console.error("Error deleting task:", error));
                     }}
-                    
                     ></img>
+                    </div>
                     <ul className="mt-2 space-y-1 text-sm text-gray-600">
                         <li><strong>Status:</strong> {status}</li>
                         <li><strong>Due Date:</strong> {due_date} </li>
