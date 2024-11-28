@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import { set } from "zod";
 
 type TaskCardProps = {
     assigned_to: string;
@@ -22,7 +23,9 @@ export default function TaskCard({
     return (
         <div
             onClick={() => {
-                setIsExpanded(!isExpanded)
+                // Ensures that we stop editing after un-expanding the task card
+                if (isExpanded && isEditing) setIsEditing(false); 
+                setIsExpanded(!isExpanded); 
             }}
             className="flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md"
         >
@@ -30,7 +33,7 @@ export default function TaskCard({
             <span className="text-sm text-gray-500">{due_date}</span>
 
             {/* Expanded Description Task Card here: */}
-            {isExpanded && !isEditing && 
+            {isExpanded && !isEditing &&  
                 <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
                     <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
                     onClick={event => {
