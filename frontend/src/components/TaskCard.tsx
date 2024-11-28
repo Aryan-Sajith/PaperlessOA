@@ -29,13 +29,14 @@ export default function TaskCard({
             <p className="text-md font-medium">{description}</p>
             <span className="text-sm text-gray-500">{due_date}</span>
 
-            {/* Expanded Card here: */}
-            {isExpanded &&
+            {/* Expanded Description Task Card here: */}
+            {isExpanded && !isEditing && 
                 <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
                     <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
                     onClick={event => {
                         event.stopPropagation();
-                        alert("Edit task clicked for task: " + description);
+                        // alert("Edit task clicked for task: " + description);
+                        setIsEditing(!isEditing);
                     }}
                     ></img>
                     <ul className="mt-2 space-y-1 text-sm text-gray-600">
@@ -45,6 +46,18 @@ export default function TaskCard({
                         <li><strong>Type:</strong> {type}</li>
                         <li><strong>Assigned To:</strong> {assigned_to}</li>
                     </ul>
+                </div>
+            }
+
+            {/* Expanded Editing Task Card here: */}
+            {isExpanded && isEditing &&
+                <div>
+                <p>Editing Test Here!</p>
+                <button className="border-black-200"
+                onClick={(event) => {
+                    event.stopPropagation();
+                    setIsEditing(!isEditing)
+                    }}>Click to go back to description!</button>
                 </div>
             }
         </div>
