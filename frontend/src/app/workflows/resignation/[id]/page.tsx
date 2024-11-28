@@ -1,32 +1,42 @@
 "use client";
-import React, { useState } from 'react';
+import React, {use, useEffect, useState} from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import JSON5 from "json5";
 
-const ResignationForm = () => {
+const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
+  const id = use(params).id
   const [formData, setFormData] = useState({
     reason: '',
-    resign_type: '',
     type: '',
-    assignee_id: '',
-    cur_id: '', // employee_id for current user (needed for creating new workflow)
+    workflow_id: '',
     name: '',
-    employee_id: '' // employee_id for which the resign is going to remove
+    employee_id: ''
   });
 
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
 
-  const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
-  }
+  useEffect(() => {
+    fetch(`${API_BASE}workflow/${id}`)
+        .then(response =>{
+          return response.json()
+        })
+        .then(data => {
+          const JSON5 = require('json5');
+          const content = JSON5.parse(data.content)
+          setFormData({
+            reason: content.reason || "",
+            type: "resignation",
+            workflow_id: id,
+            name: content.name || "",
+            employee_id: content.employee_id || ""
+          })
+        })
+  }, []);
+
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
         setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
@@ -45,11 +55,6 @@ const ResignationForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'resignation'
-      formData['assignee_id'] = nextAssignee.employee_id
-      formData['cur_id'] = '2'
-      formData['name'] = selectedEmployee.name
-      formData['employee_id'] = selectedEmployee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,14 +92,13 @@ const ResignationForm = () => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Resignation
+        Resignation {id}
       </Typography>
 
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
-          <Typography>Who is resigned</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
+          <Typography>{formData.name} is taking a resign</Typography>
           <TextField
             fullWidth
             margin="normal"

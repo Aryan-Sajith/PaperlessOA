@@ -29,21 +29,37 @@ def create_workflow():
     data = request.get_json()
     current_app.logger.info(data)
 
-    # Validate required fields
-    # if not data or not all(field in data for field in ["assignee_id", "status", "content", "type", "workflow_id"]):
-    #     return jsonify({"error": "Missing required workflow fields"}), 400
-
     try:
+        #
+        parent_id = 2
+        if 'workflow_id' not in data:
+            # create workflows that have no parent workflow
+            parent_workflow = Workflow(
+                id=None,
+                assignee_id=data['cur_id'] if "cur_id" in data else 1,
+                status="initialized",
+                content=str(data),
+                type=data['type'],
+                workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
+                timestamp=datetime.utcnow()
+            )
+            db.session.add(parent_workflow)
+            db.session.commit()
+            parent_id = parent_workflow.id
+
+        # create a workflow
         new_workflow = Workflow(
+            id=None,
             assignee_id=data['assignee_id'] if "assignee_id" in data else 1,
-            status=data['status'] if "status" in data else "None",
+            status="in progress",
             content=str(data),
             type=data['type'],
-            workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
-            time_stamp=datetime.utcnow()
+            workflow_id=data['workflow_id'] if "workflow_id" in data else parent_id,
+            timestamp=datetime.utcnow()
         )
         db.session.add(new_workflow)
         db.session.commit()
+
         return jsonify(new_workflow.to_dict()), 201
 
     except Exception as e:
@@ -76,8 +92,6 @@ def update_workflow(workflow_id):
         if 'type' in data:
             workflow.type = data['type']
 
-        workflow.time_stamp = datetime.utcnow()  # Update timestamp on edit
-
         db.session.commit()
         return jsonify(workflow.to_dict()), 200
 
@@ -87,7 +101,7 @@ def update_workflow(workflow_id):
 
 
 # Route to delete a workflow by ID
-@workflow_bp.route('/workflows/<int:workflow_id>', methods=['DELETE'])
+@workflow_bp.route('/delete_workflows/<int:workflow_id>', methods=['DELETE'])
 def delete_workflow(workflow_id):
     workflow = Workflow.query.get(workflow_id)
 
@@ -106,23 +120,36 @@ def delete_workflow(workflow_id):
 @workflow_bp.route('/approve_workflow', methods=['POST'])
 def approve_workflow():
     data = request.json
+    current_app.logger.info(data)
 
     workflow_type = data.get('type')
     workflow_id = data.get('workflow_id')
-    details = data.get('details')  # Contains additional data for the workflow
+    details = data  # Contains additional data for the workflow
 
+    mark_complete(workflow_id)
     if not workflow_type or not workflow_id:
         return jsonify({"error": "Missing required fields: 'type' or 'workflow_id'"}), 400
 
     # Handle workflow types
     if workflow_type == "onboarding":
         return handle_onboarding(details)
-    elif workflow_type == "removal":
-        return handle_removal(details)
+    elif workflow_type == "resignation":
+        return handle_resignation(details)
     elif workflow_type == "promotion":
         return handle_promotion(details)
+    elif workflow_type == "absence":
+        return handle_absence(details)
     else:
         return jsonify({"error": f"Unsupported workflow type: {workflow_type}"}), 400
+
+def mark_complete(workflow_id):
+    """Mark the current and parent workflow as completed"""
+    cur_id = workflow_id
+    while cur_id != 2:
+        workflow = Workflow.query.get(cur_id)
+        workflow.status = "Complete"
+        cur_id = workflow.workflow_id
+        db.session.commit()
 
 
 def handle_onboarding(details):
@@ -146,7 +173,7 @@ def handle_onboarding(details):
         return jsonify({"error": f"Failed to onboard employee: {str(e)}"}), 500
 
 
-def handle_removal(details):
+def handle_resignation(details):
     """Handles the removal workflow."""
     try:
         employee_id = details['employee_id']
@@ -155,6 +182,14 @@ def handle_removal(details):
             return jsonify({"error": "Employee not found"}), 404
         db.session.delete(employee)
         db.session.commit()
+        return jsonify({"message": "Employee removed successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to remove employee: {str(e)}"}), 500
+
+def handle_absence(details):
+    """Handles the removal workflow."""
+    try:
         return jsonify({"message": "Employee removed successfully"}), 200
     except Exception as e:
         db.session.rollback()
