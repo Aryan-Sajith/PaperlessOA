@@ -4,6 +4,8 @@ import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {type} from "node:os";
+import {Employee} from "@/util/ZodTypes";
+import {SingleValue} from "react-select";
 
 const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
   const id = use(params).id
@@ -17,7 +19,10 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     birth_date: '',
     comments: '',
     type: '',
-    workflow_id: ''
+    workflow_id: '',
+    assignee_id: '',
+    manager_name: '',
+    manager_id: ''
   });
 
   useEffect(() => {
@@ -38,7 +43,10 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             position: content.position || "",
             comments: content.comments || "",
             type: "onboarding",
-            workflow_id: id
+            workflow_id: id,
+            assignee_id: content.assignee_id || "",
+            manager_name: content.manager_name || "",
+            manager_id: content.manager_id || ""
           })
         })
   }, []);
@@ -51,9 +59,19 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     }));
   };
 
+  const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+
+  const handleNextAssignee = (employee: SingleValue<Employee>) => {
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
+  }
+
   const handleSubmitToNext = async () => {
     try {
-      formData['type'] = 'onboarding'
+      formData['assignee_id'] = nextAssignee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -183,8 +201,9 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             onChange={handleInputChange}
             variant="outlined"
           />
+          <Typography>{formData['manager_name']} will be the manager of the onboarding person</Typography>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>
       </Box>
 

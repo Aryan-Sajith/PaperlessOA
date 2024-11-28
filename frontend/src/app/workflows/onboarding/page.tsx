@@ -18,18 +18,14 @@ const OnboardingForm = () => {
     start_date: '',
     birth_date: '',
     comments: '',
-    type: ''
+    type: '',
+    manager_name: '',
+    manager_id: '',
+    assignee_id: ''
   });
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+  const [manager, setManager] = useState<Employee | null>(null)
 
-  const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
-  }
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
         setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
@@ -37,6 +33,15 @@ const OnboardingForm = () => {
         setNextAssignee(null); // Handle case where no employee is selected
       }
   }
+
+  const handleManager = (employee: SingleValue<Employee>) => {
+      if (employee) {
+        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+      } else {
+        setManager(null); // Handle case where no employee is selected
+      }
+  }
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -49,6 +54,9 @@ const OnboardingForm = () => {
   const handleSubmitToNext = async () => {
     try {
       formData['type'] = 'onboarding'
+      formData['manager_name'] = manager.name
+      formData['manager_id'] = manager.employee_id
+      formData['assignee_id'] = nextAssignee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -178,6 +186,8 @@ const OnboardingForm = () => {
             onChange={handleInputChange}
             variant="outlined"
           />
+          <Typography>select the the manager for this employee</Typography>
+          <EmployeeDropdown onEmployeeSelect={handleManager}/>
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>

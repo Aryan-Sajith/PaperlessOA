@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
 
 from .employee_routes import employee_bp
-from .models import Workflow, db, Employee
+from .models import Workflow, db, Employee, EmployeeManager
 from datetime import datetime
 
 workflow_bp = Blueprint('workflow_bp', __name__)
@@ -42,7 +42,7 @@ def create_workflow():
                 status="initialized",
                 content=str(data),
                 type=data['type'],
-                workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
+                workflow_id=data['workflow_id'] if "workflow_id" in data else 16,
                 timestamp=datetime.utcnow()
             )
             db.session.add(parent_workflow)
@@ -147,7 +147,7 @@ def approve_workflow():
 def mark_complete(workflow_id):
     """Mark the current and parent workflow as completed"""
     cur_id = workflow_id
-    while cur_id != 2:
+    while cur_id != 16:
         workflow = Workflow.query.get(cur_id)
         workflow.status = "Complete"
         cur_id = workflow.workflow_id
@@ -157,7 +157,6 @@ def mark_complete(workflow_id):
 def handle_onboarding(details):
     """Handles the onboarding workflow."""
     try:
-        current_app.logger.info(details['name'])
         new_employee = Employee(
             employee_id=None,
             position=details['position'],
@@ -172,6 +171,15 @@ def handle_onboarding(details):
         )
         db.session.add(new_employee)
         db.session.commit()
+        if 'manager_id' in details:
+            NewManagerRelation = EmployeeManager(
+                id=None,
+                employee_id=new_employee.employee_id,
+                manager_id=details['manager_id'],
+            )
+            db.session.add(NewManagerRelation)
+            db.session.commit()
+
         return jsonify({"message": "Employee onboarded successfully"}), 201
     except Exception as e:
         db.session.rollback()
