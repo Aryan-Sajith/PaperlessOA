@@ -6,6 +6,7 @@ import { SingleValue } from 'react-select';
 import { Employee } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
+import TaskStatusDropdown from "./TaskStatusDropdown";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -15,7 +16,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
   const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
   const [taskData, setTaskData] = useState<Omit<Task, "id">>({
-    status: "",
+    status: "In Progress",
     due_date: "",
     description: "",
     type: "",
@@ -76,7 +77,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
       }));
     }
   };
-  
+
   return (
     <div>
       {/* Floating Add/Close Button */}
@@ -115,19 +116,14 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             gap: "10px",
           }}
         >
-          <input
-            type="text"
-            name="status"
-            placeholder="Status"
-            value={taskData.status}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
+          <div>
+            <TaskStatusDropdown
+              onStatusSelect={(status) =>
+                setTaskData((prev) => ({ ...prev, status }))
+              }
+              currentStatus={taskData.status}
+            />
+          </div>
           <input
             type="date"
             name="due_date"
@@ -168,7 +164,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             }}
           />
           <div>
-          <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+            <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
           </div>
           <button
             onClick={handleAddTask}
