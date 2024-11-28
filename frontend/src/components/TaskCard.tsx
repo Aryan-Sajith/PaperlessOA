@@ -23,8 +23,6 @@ export default function TaskCard({
     return (
         <div
             onClick={() => {
-                // Ensures that we stop editing after un-expanding the task card
-                if (isExpanded && isEditing) setIsEditing(false); 
                 setIsExpanded(!isExpanded); 
             }}
             className="flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md"
