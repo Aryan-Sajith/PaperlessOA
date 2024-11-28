@@ -53,3 +53,33 @@ def create_task():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to create task", "details": str(e)}), 500
+        
+@task_bp.route('/update_task/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    data = request.get_json()
+
+    # Validate the required fields
+    if not data or not all(field in data for field in ["assignee_id", "status", "description", "type", "due_date"]):
+        return jsonify({"error": "Missing required task fields"}), 400
+
+    try:
+        task = Task.query.get(task_id)
+
+        if task: 
+            # Update the task fields
+            task.assignee_id = data['assignee_id']
+            task.status = data['status']
+            task.description = data['description']
+            task.type = data['type']
+            task.due_date = datetime.strptime(data['due_date'], '%Y-%m-%d')
+
+            # Commit database changes to ensure the task is updated
+            db.session.commit()
+
+            return jsonify(task.to_dict()), 200  # Return the updated task as a JSON response with a 200 status code
+        else:
+            return jsonify({"message": "Task not found"}), 404
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update task", "details": str(e)}), 500
