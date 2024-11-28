@@ -24,8 +24,6 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
-        e.preventDefault();
-        e.stopPropagation(); // Ensures that we don't un-expand the task card while editing
         const { name, value } = e.target;
         setTaskData((prev) => ({
             ...prev,
