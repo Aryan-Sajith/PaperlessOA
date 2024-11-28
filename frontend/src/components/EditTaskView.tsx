@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import EmployeeDropdown from '@/components/EmployeeDropDown';
 import { SingleValue } from 'react-select';
-import { Employee } from '@/util/ZodTypes';
+import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
+import TaskStatusDropdown from "./TaskStatusDropdown";
 
 type editTaskViewProps = {
     task_to_update: Task;
@@ -18,7 +19,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
         due_date: task_to_update.due_date,
         description: task_to_update.description,
         type: task_to_update.type,
-        assignee_id: task_to_update.assignee_id, 
+        assignee_id: task_to_update.assignee_id,
     }); // Task form state
 
     const handleInputChange = (
@@ -92,19 +93,14 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                     gap: "10px",
                 }}
             >
-                <input
-                    type="text"
-                    name="status"
-                    placeholder="Status"
-                    value={taskData.status}
-                    onChange={handleInputChange}
-                    style={{
-                        padding: "8px",
-                        fontSize: "14px",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                    }}
-                />
+                <div>
+                    <TaskStatusDropdown
+                        onStatusSelect={(status) =>
+                            setTaskData((prev) => ({ ...prev, status }))
+                        }
+                        currentStatus={taskData.status as TaskStatus}
+                    />
+                </div>
                 <input
                     type="date"
                     name="due_date"
@@ -145,7 +141,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                     }}
                 />
                 <div>
-                    <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} assignee_id={task_to_update.assignee_id}/>
+                    <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} assignee_id={task_to_update.assignee_id} />
                 </div>
                 <button
                     onClick={handleEditTask}

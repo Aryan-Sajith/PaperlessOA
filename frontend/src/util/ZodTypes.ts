@@ -13,3 +13,10 @@ const employee = z.object({
 })
 
 export type Employee = z.infer<typeof employee>
+
+export const taskStatus = z.enum([
+    "In Progress",
+    "Completed"
+])
+
+export type TaskStatus = z.infer<typeof taskStatus>;
