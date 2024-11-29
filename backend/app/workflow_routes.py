@@ -42,7 +42,7 @@ def create_workflow():
                 status="initialized",
                 content=str(data),
                 type=data['type'],
-                workflow_id=data['workflow_id'] if "workflow_id" in data else 16,
+                workflow_id=data['workflow_id'] if "workflow_id" in data else None,
                 timestamp=datetime.utcnow()
             )
             db.session.add(parent_workflow)
@@ -147,7 +147,7 @@ def approve_workflow():
 def mark_complete(workflow_id):
     """Mark the current and parent workflow as completed"""
     cur_id = workflow_id
-    while cur_id != 16:
+    while cur_id is not None:
         workflow = Workflow.query.get(cur_id)
         workflow.status = "Complete"
         cur_id = workflow.workflow_id
@@ -180,6 +180,16 @@ def handle_onboarding(details):
             db.session.add(NewManagerRelation)
             db.session.commit()
 
+        if 'subordinates_id' in details:
+            # handle multiple subordinates ID
+            for subordinate_id in details['subordinates_id']:
+                NewSubordinateRelation = EmployeeManager(
+                    id=None,
+                    employee_id=subordinate_id,
+                    manager_id=new_employee.employee_id,
+                )
+                db.session.add(NewSubordinateRelation)
+                db.session.commit()
         return jsonify({"message": "Employee onboarded successfully"}), 201
     except Exception as e:
         db.session.rollback()

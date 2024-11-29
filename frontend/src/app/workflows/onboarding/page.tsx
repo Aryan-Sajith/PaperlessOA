@@ -6,9 +6,13 @@ import {API_BASE} from "@/util/path";
 import {useParams} from "react-router-dom";
 import {useRouter} from "next/router";
 import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
+import {MultiValue, SingleValue} from "react-select";
+import MultiEmployeeDropdown from "@/components/MultiEmployeeDropDown";
+import {any} from "prop-types";
+import JSON5 from "json5";
 
 const OnboardingForm = () => {
+  const [subordinates, setSubordinates] = useState<Employee[] | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,7 +25,8 @@ const OnboardingForm = () => {
     type: '',
     manager_name: '',
     manager_id: '',
-    assignee_id: ''
+    assignee_id: '',
+    subordinates_id: []
   });
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
   const [manager, setManager] = useState<Employee | null>(null)
@@ -53,6 +58,7 @@ const OnboardingForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
+      formData['subordinates_id'] = subordinates?.map((emp) => emp.value.employee_id)
       formData['type'] = 'onboarding'
       formData['manager_name'] = manager.name
       formData['manager_id'] = manager.employee_id
@@ -96,7 +102,6 @@ const OnboardingForm = () => {
       <Typography variant="h4" mb={4}>
         Onboarding
       </Typography>
-
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
@@ -186,6 +191,8 @@ const OnboardingForm = () => {
             onChange={handleInputChange}
             variant="outlined"
           />
+          <Typography>select the the subordinates (if any) for this employee</Typography>
+          <MultiEmployeeDropdown onEmployeeSelect={setSubordinates} />
           <Typography>select the the manager for this employee</Typography>
           <EmployeeDropdown onEmployeeSelect={handleManager}/>
           <Typography>select the next assignee if neccessary</Typography>

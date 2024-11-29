@@ -22,7 +22,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     workflow_id: '',
     assignee_id: '',
     manager_name: '',
-    manager_id: ''
+    manager_id: '',
+    subordinates_id: []
   });
 
   useEffect(() => {
@@ -46,7 +47,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             workflow_id: id,
             assignee_id: content.assignee_id || "",
             manager_name: content.manager_name || "",
-            manager_id: content.manager_id || ""
+            manager_id: content.manager_id || "",
+            subordinates_id: content.subordinates_id || []
           })
         })
   }, []);
