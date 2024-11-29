@@ -1,89 +1,68 @@
-import  EmployeeBox  from "../../components/EmployeeBox"
-import TaskList from "@/components/TaskList";
-interface Employee {
-    id: number;
-    name: string;
-    role: string;
-    photoUrl: string;
-    subordinates?: Employee[];
-}
+"use client";
 
-type Task = {
-    id: string;
-    title: string;
-    status: string;
-    due_date: string;
-    description: string;
-    type: string;
-    assignee: string;
-  }
+import React, { useState, useEffect } from "react";
+import { Employee } from "@/util/ZodTypes";
+import { API_BASE } from "@/util/path";
 
-interface ProfileProps {
-    employee: Employee;
-    tasks: Task[];
-}
+export default function Profile() {
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // Hardcoded for now-- will be login based later
+    const employee_name = "Aryan Sajith";
+    const encoded_employee_name = encodeURIComponent(employee_name);
 
-const tasks: Task[] = [
-    { id: "1", title: "Task 1", due_date: "2024-11-15", description: "Details about Task 1", assignee: "Aryan", status: "incomplete", type: "High priority" },
-    { id: "2", title: "Task 2", due_date: "2024-11-16", description: "Details about Task 2", assignee: "William", status: "complete", type: "Low priority" },
-  ];
+    useEffect(() => {
+        fetch(`${API_BASE}/employee/${encoded_employee_name}`)
+            .then((response) => response.json())
+            .then((employee: Employee) => {
+                setSelectedEmployee(employee);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error(`Failed to fetch employee: ${employee_name}`, error);
+            });
+    }, []);
 
-const employee = {
-    id: 1,
-    name: "John Doe",
-    role: "Team Lead",
-    photoUrl: "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg",
-    subordinates: [
-        { id: 2, name: "Jane Smith", role: "Developer", photoUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcR6eHoxPGX4cPrRuRJZQ3JxsiApNSDSiRUJYiBv5N3cT4yxfwqf8LfDtuUX69867yCQLW0qvXPJdOfsYIq9A9mdO3Nhj6ulwtIVyZY-EhI" },
-        { id: 3, name: "Joe boden", role: "Designer", photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Joe_Biden_presidential_portrait.jpg/1200px-Joe_Biden_presidential_portrait.jpg" },
-    ],
-};
-
-
-export default function profile(){
-    return(
-<div className="w-full h-screen p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-<div className="flex flex-row space-x-4 justify-center items-center">
-{/* Circular Photo */}
-<img 
-src={employee.photoUrl} 
-alt={`${employee.name}'s photo`} 
-className="w-24 h-24 rounded-full mb-4"
-/>
-
-<div>
- {/* Name and Role */}
- <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    {employee.name}
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {employee.role}
-                </p>   
-</div>
-</div>
-<hr className="border-t-4 border-gray-400 my-4"/>
-
-<div className="flex flex-row space-x-20 justify-center">
-    <div className="flex flex-row space-x-4 justify-center">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white"> 
-        Assigned Tasks</h2>
-        
-
-    </div>
-    <div/>
-    <div/>
-    <div className="flex flex-row space-x-4 justify-center">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white space-y-2">
-            Subordinates
-        </h2>
-        <div className="mt-2 space-y-4">
-                        {employee.subordinates.map((sub) => (
-                            <EmployeeBox key={sub.id} employee={sub} />
-                        ))}
+    return (
+        <div className="flex items-center justify-center h-screen">
+            {isLoading ? (
+                <p className="text-lg font-semibold text-gray-600">Loading...</p>
+            ) : (
+                selectedEmployee && (
+                    <div className="dark:bg-gray-800 shadow-md rounded-lg p-24 w-3/5 h-auto max-w-xl">
+                        <img
+                            src={"https://static.vecteezy.com/system/resources/previews/011/961/865/non_2x/programmer-icon-line-color-illustration-vector.jpg"} // Placeholder if image URL isn't provided
+                            alt={`${selectedEmployee.name} profile`}
+                            className="w-32 h-32 rounded-full mx-auto mb-4"
+                        />
+                        <h1 className="text-white text-3xl font-bold text-center text-gray-800">
+                            {selectedEmployee.name}
+                        </h1>
+                        <h2 className="text-2xl text-center text-gray-400 mb-4">
+                            {selectedEmployee.position}
+                        </h2>
+                        <div className="text-xl text-center text-gray-200 font-mono space-y-3">
+                            <p>
+                                <strong>Level:</strong> {selectedEmployee.level}
+                            </p>
+                            <p>
+                                <strong>Salary:</strong> ${selectedEmployee.salary.toLocaleString()}
+                            </p>
+                            <p>
+                                <strong>Start Date:</strong>{" "}
+                                {new Date(selectedEmployee.start_date).toLocaleDateString()}
+                            </p>
+                            <p>
+                                <strong>Birth Date:</strong>{" "}
+                                {new Date(selectedEmployee.birth_date).toLocaleDateString()}
+                            </p>
+                            <p>
+                                <strong>Status:</strong> {selectedEmployee.status}
+                            </p>
+                        </div>
                     </div>
-    </div>
-</div>
-
-</div>
-    )
+                )
+            )}
+        </div>
+    );
 }
