@@ -14,6 +14,7 @@ class Employee(db.Model):
     name = db.Column(db.String(255))
     salary = db.Column(db.BigInteger)
     level = db.Column(db.String(50))
+    email = db.Column(db.String(255))
 
     # Relationships
     managed_employees = relationship('EmployeeManager', foreign_keys='EmployeeManager.manager_id', back_populates='manager')
@@ -31,7 +32,8 @@ class Employee(db.Model):
             "birth_date": self.birth_date.isoformat() if self.birth_date else None,
             "name": self.name,
             "salary": self.salary,
-            "level": self.level
+            "level": self.level,
+            "email": self.email,
         }
 
 

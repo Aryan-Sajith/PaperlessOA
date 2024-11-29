@@ -5,18 +5,48 @@ import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {useParams} from "react-router-dom";
 import {useRouter} from "next/router";
+import {Employee} from "@/util/ZodTypes";
+import {MultiValue, SingleValue} from "react-select";
+import MultiEmployeeDropdown from "@/components/MultiEmployeeDropDown";
+import {any} from "prop-types";
+import JSON5 from "json5";
 
 const OnboardingForm = () => {
+  const [subordinates, setSubordinates] = useState<Employee[] | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     salary: '',
     level: '',
+    position: '',
     start_date: '',
     birth_date: '',
     comments: '',
-    type: ''
+    type: '',
+    manager_name: '',
+    manager_id: '',
+    assignee_id: '',
+    subordinates_id: []
   });
+  const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+  const [manager, setManager] = useState<Employee | null>(null)
+
+  const handleNextAssignee = (employee: SingleValue<Employee>) => {
+      if (employee) {
+        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+      } else {
+        setNextAssignee(null); // Handle case where no employee is selected
+      }
+  }
+
+  const handleManager = (employee: SingleValue<Employee>) => {
+      if (employee) {
+        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+      } else {
+        setManager(null); // Handle case where no employee is selected
+      }
+  }
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -28,7 +58,11 @@ const OnboardingForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
+      formData['subordinates_id'] = subordinates?.map((emp) => emp.value.employee_id)
       formData['type'] = 'onboarding'
+      formData['manager_name'] = manager.name
+      formData['manager_id'] = manager.employee_id
+      formData['assignee_id'] = nextAssignee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,7 +102,6 @@ const OnboardingForm = () => {
       <Typography variant="h4" mb={4}>
         Onboarding
       </Typography>
-
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
@@ -87,15 +120,6 @@ const OnboardingForm = () => {
             label="Email"
             name="email"
             value={formData.email}
-            onChange={handleInputChange}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Salary"
-            name="salary"
-            value={formData.salary}
             onChange={handleInputChange}
             variant="outlined"
           />
@@ -140,17 +164,39 @@ const OnboardingForm = () => {
 
         {/* Right Workflow Steps */}
         <Box flex={1}>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'lightblue' }}>
-            <Typography>Initialization - Mike</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Review - Jacob</Typography>
-          </Paper>
-          <Paper elevation={3} sx={{ p: 2, mb: 2, bgcolor: 'grey.300' }}>
-            <Typography>Completion - Leo</Typography>
-          </Paper>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Salary"
+            name="salary"
+            value={formData.salary}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Level"
+            name="level"
+            value={formData.level}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Position"
+            name="position"
+            value={formData.position}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <Typography>select the the subordinates (if any) for this employee</Typography>
+          <MultiEmployeeDropdown onEmployeeSelect={setSubordinates} />
+          <Typography>select the the manager for this employee</Typography>
+          <EmployeeDropdown onEmployeeSelect={handleManager}/>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>
       </Box>
 

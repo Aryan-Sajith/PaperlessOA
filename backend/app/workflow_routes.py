@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
-from .models import Workflow, db, Employee
+
+from .employee_routes import employee_bp
+from .models import Workflow, db, Employee, EmployeeManager
 from datetime import datetime
 
 workflow_bp = Blueprint('workflow_bp', __name__)
@@ -40,7 +42,7 @@ def create_workflow():
                 status="initialized",
                 content=str(data),
                 type=data['type'],
-                workflow_id=data['workflow_id'] if "workflow_id" in data else 2,
+                workflow_id=data['workflow_id'] if "workflow_id" in data else None,
                 timestamp=datetime.utcnow()
             )
             db.session.add(parent_workflow)
@@ -145,7 +147,7 @@ def approve_workflow():
 def mark_complete(workflow_id):
     """Mark the current and parent workflow as completed"""
     cur_id = workflow_id
-    while cur_id != 2:
+    while cur_id is not None:
         workflow = Workflow.query.get(cur_id)
         workflow.status = "Complete"
         cur_id = workflow.workflow_id
@@ -156,20 +158,42 @@ def handle_onboarding(details):
     """Handles the onboarding workflow."""
     try:
         new_employee = Employee(
+            employee_id=None,
             position=details['position'],
-            is_manager=details['is_manager'],
+            is_manager=details['is_manager'] if 'is_manager' in details else False,
             start_date=details['start_date'],
-            status=details['status'],
+            status="online",
             birth_date=details['birth_date'],
             name=details['name'],
             salary=details['salary'],
-            level=details['level']
+            level=details['level'],
+            email=details['email'],
         )
         db.session.add(new_employee)
         db.session.commit()
+        if 'manager_id' in details:
+            NewManagerRelation = EmployeeManager(
+                id=None,
+                employee_id=new_employee.employee_id,
+                manager_id=details['manager_id'],
+            )
+            db.session.add(NewManagerRelation)
+            db.session.commit()
+
+        if 'subordinates_id' in details:
+            # handle multiple subordinates ID
+            for subordinate_id in details['subordinates_id']:
+                NewSubordinateRelation = EmployeeManager(
+                    id=None,
+                    employee_id=subordinate_id,
+                    manager_id=new_employee.employee_id,
+                )
+                db.session.add(NewSubordinateRelation)
+                db.session.commit()
         return jsonify({"message": "Employee onboarded successfully"}), 201
     except Exception as e:
         db.session.rollback()
+        current_app.logger.error(e)
         return jsonify({"error": f"Failed to onboard employee: {str(e)}"}), 500
 
 
