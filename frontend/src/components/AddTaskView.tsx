@@ -15,9 +15,15 @@ type AddTaskViewProps = {
 export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
   const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
-  const [taskData, setTaskData] = useState<Omit<Task, "id">>({
+  const DEFAULT_ADD_TASK_VALUES = { // Ensures default add task values so that adding a task doesn't fail if no fields are filled
+    description: "Task not described!",
+    type: "Task type not specified!",
     status: "In Progress",
-    due_date: "",
+    assignee_id: 1,
+  } as const;
+  const [taskData, setTaskData] = useState<Omit<Task, "id">>({
+    status: "",
+    due_date: new Date().toISOString().split("T")[0], // Default to today's date
     description: "",
     type: "",
     assignee_id: 1, // Default assignee(for now), we can update this later when login is setup 
@@ -36,12 +42,20 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   };
 
   const handleAddTask = () => {
+    const finalTaskData= { // Ensures default add task values are utilized for API request if no fields are filled
+      ...taskData,
+      description: taskData.description || DEFAULT_ADD_TASK_VALUES.description,
+      type: taskData.type || DEFAULT_ADD_TASK_VALUES.type,
+      status: taskData.status || DEFAULT_ADD_TASK_VALUES.status,
+      assignee_id: taskData.assignee_id || DEFAULT_ADD_TASK_VALUES.assignee_id,
+    }
+
     fetch(`${API_BASE}/create_task`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(taskData),
+      body: JSON.stringify(finalTaskData),
     })
       .then((response) => response.json())
       .then((newTask: Task) => {
