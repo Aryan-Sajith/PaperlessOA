@@ -23,7 +23,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     assignee_id: '',
     manager_name: '',
     manager_id: '',
-    subordinates_id: []
+    subordinates_id: [],
+    subordinates_name: []
   });
 
   useEffect(() => {
@@ -48,7 +49,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             assignee_id: content.assignee_id || "",
             manager_name: content.manager_name || "",
             manager_id: content.manager_id || "",
-            subordinates_id: content.subordinates_id || []
+            subordinates_id: content.subordinates_id || [],
+            subordinates_name: content.subordinates_name || []
           })
         })
   }, []);
@@ -203,7 +205,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             onChange={handleInputChange}
             variant="outlined"
           />
-          <Typography>{formData['manager_name']} will be the manager of the onboarding person</Typography>
+          <Typography>{JSON.stringify(formData['subordinates_name'])} will be the subordinates of {formData['name']}</Typography>
+          <Typography>{formData['manager_name']} will be the manager of {formData['name']}</Typography>
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>

@@ -26,7 +26,8 @@ const OnboardingForm = () => {
     manager_name: '',
     manager_id: '',
     assignee_id: '',
-    subordinates_id: []
+    subordinates_id: [],
+    subordinates_name: []
   });
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
   const [manager, setManager] = useState<Employee | null>(null)
@@ -59,6 +60,7 @@ const OnboardingForm = () => {
   const handleSubmitToNext = async () => {
     try {
       formData['subordinates_id'] = subordinates?.map((emp) => emp.value.employee_id)
+      formData['subordinates_name'] = subordinates?.map((emp) => emp.value.name)
       formData['type'] = 'onboarding'
       formData['manager_name'] = manager.name
       formData['manager_id'] = manager.employee_id
