@@ -29,10 +29,10 @@ def get_workflow_by_employee_id(employee_id):
 @workflow_bp.route('/create_workflow', methods=['POST'])
 def create_workflow():
     data = request.get_json()
-    current_app.logger.info(data)
 
     try:
-        #
+        if not 'type' in data:
+            return jsonify({"error": "Missing 'type' in data"}), 400
         parent_id = 2
         if 'workflow_id' not in data:
             # create workflows that have no parent workflow
@@ -53,7 +53,7 @@ def create_workflow():
         new_workflow = Workflow(
             id=None,
             assignee_id=data['assignee_id'] if "assignee_id" in data else 1,
-            status="in progress",
+            status=data['status'] if 'status' in data else "in progress",
             content=str(data),
             type=data['type'],
             workflow_id=data['workflow_id'] if "workflow_id" in data else parent_id,
@@ -75,9 +75,11 @@ def get_workflow_by_id(workflow_id):
     workflow = Workflow.query.filter_by(id=workflow_id).first()
     if workflow:
         return jsonify(workflow.to_dict())
+    else:
+        return jsonify({"message": "No workflow found for this id"}), 404
 
 # Route to update a workflow by ID
-@workflow_bp.route('/workflows/<int:workflow_id>', methods=['PUT'])
+@workflow_bp.route('/workflow/<int:workflow_id>', methods=['PUT'])
 def update_workflow(workflow_id):
     data = request.get_json()
     workflow = Workflow.query.get(workflow_id)
@@ -103,17 +105,17 @@ def update_workflow(workflow_id):
 
 
 # Route to delete a workflow by ID
-@workflow_bp.route('/delete_workflows/<int:workflow_id>', methods=['DELETE'])
+@workflow_bp.route('/workflow/<int:workflow_id>', methods=['DELETE'])
 def delete_workflow(workflow_id):
     workflow = Workflow.query.get(workflow_id)
 
     if not workflow:
-        return jsonify({"error": "Workflow not found"}), 404
+        return jsonify({"error": "Workflow not found."}), 404
 
     try:
         db.session.delete(workflow)
         db.session.commit()
-        return jsonify({"message": "Workflow deleted successfully"}), 200
+        return jsonify({"message": "Workflow deleted successfully."}), 200
 
     except Exception as e:
         db.session.rollback()
