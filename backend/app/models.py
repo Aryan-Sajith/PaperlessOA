@@ -1,9 +1,10 @@
 from . import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from flask_login import UserMixin
 
 # Define the Employee model
-class Employee(db.Model):
+class Employee(UserMixin, db.Model):
     __tablename__ = 'employee'
     employee_id = db.Column(db.Integer, primary_key=True)
     position = db.Column(db.String(255))
@@ -15,6 +16,7 @@ class Employee(db.Model):
     salary = db.Column(db.BigInteger)
     level = db.Column(db.String(50))
     email = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255))
 
     # Relationships
     managed_employees = relationship('EmployeeManager', foreign_keys='EmployeeManager.manager_id', back_populates='manager')
