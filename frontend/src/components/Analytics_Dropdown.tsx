@@ -2,11 +2,18 @@
 
 import React, { useState } from 'react';
 
-type Option = 'All' | 'Workflow' | 'Pending';
+type Option = "All" | "Workflow" | "Pending" | "Day" | "Week" | "Year";
 
-export default function DropdownMenu() {
+interface DropdownMenuProps {
+  type: "task" | "time"; // Accept either "task" or "time"
+}
+
+export default function DropdownMenu({type}: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<Option>('All');
+
+  const options: Option[] = type === "task" ? ["All", "Workflow", "Pending"] : ["Day", "Week", "Year"];
+
+  const [selectedOption, setSelectedOption] = useState<Option>(options[0]);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -37,7 +44,7 @@ export default function DropdownMenu() {
       {isOpen && (
         <div className="absolute mt-2 w-40 bg-white rounded-md shadow-lg">
           <ul className="py-1">
-            {(['All', 'Workflow', 'Pending'] as Option[]).map((option) => (
+            {options.map((option) => (
               <li
                 key={option}
                 onClick={() => handleOptionClick(option)}

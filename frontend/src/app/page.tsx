@@ -16,6 +16,7 @@ export default function HomePage() {
       <p>Tasks page <Link href="/tasks" className="text-blue-400 underline">tasks page</Link></p>
         <p>Workflow page <Link href="/workflows" className="text-blue-400 underline">workflow page</Link></p>
         <p>Profile page <Link href="/profile" className="text-blue-400 underline">Profile Page</Link></p>
+        <p>Analytics page <Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
     </div>
   )
  

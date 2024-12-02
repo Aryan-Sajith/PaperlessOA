@@ -16,7 +16,7 @@ export default function TaskBar({ completedTasks, pendingTasks }: TaskBarProps) 
     <div className="w-full h-12 flex rounded-md overflow-hidden text-white">
       {/* Completed Tasks Section */}
       <div
-        style={{ width: `${completedPercentage}%` }}
+        style={{ width: `${completedPercentage}%`}}
         className="bg-green-500 flex items-center justify-center"
       >
         <p className="text-sm font-semibold">
