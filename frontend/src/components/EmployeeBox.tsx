@@ -1,17 +1,12 @@
 "use client";
 import React, { useState } from "react";
-
-export interface Employee {
-    id: number;
-    name: string;
-    role: string;
-    photoUrl: string;
-    subordinates?: Employee[];
-}
+import { Employee } from "@/util/ZodTypes";
 
 interface EmployeeBoxProps {
     employee: Employee;
 }
+
+const joebiden = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Joe_Biden_presidential_portrait.jpg/1200px-Joe_Biden_presidential_portrait.jpg"
 
 const EmployeeBox: React.FC<EmployeeBoxProps> = ({ employee }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -28,21 +23,24 @@ const EmployeeBox: React.FC<EmployeeBoxProps> = ({ employee }) => {
             >
                 {/* Circular Photo */}
                 <img 
-                    src={employee.photoUrl} 
+                    src={joebiden} 
                     alt={`${employee.name}'s photo`} 
                     className="w-24 h-24 rounded-full mb-4"
                 />
-                {/* Name and Role */}
+                {/* Name */}
                 <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     {employee.name}
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {employee.role}
-                </p>
+                {/* Attributes */}
+                <div className="text-sm text-gray-600 dark:text-gray-300">
+                    <p>{employee.position}</p>
+                    <p>{employee.salary}</p>
+                    <p>{employee.status}</p>
+                </div>
             </div>
 
             {/* Subordinates */}
-            {isExpanded && employee.subordinates && (
+            {/* {isExpanded && employee.subordinates && (
                 <div className="mt-4">
                     <h3 className="text-sm font-medium text-gray-800 dark:text-white">
                         Subordinates:
@@ -53,7 +51,7 @@ const EmployeeBox: React.FC<EmployeeBoxProps> = ({ employee }) => {
                         ))}
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

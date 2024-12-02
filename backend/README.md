@@ -20,3 +20,7 @@ DB_NAME=your_database_name
 
 ## Run the app
 run the app using `python3 run.py`
+
+## Run the test
+in the `backend` directory, run `python3 -m pytest test
+` 

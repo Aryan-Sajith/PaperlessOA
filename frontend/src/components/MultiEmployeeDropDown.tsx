@@ -1,24 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { API_BASE } from "@/util/path";
-import Select, { SingleValue } from "react-select";
+import {API_BASE} from "@/util/path";
+import Select, {MultiValue, SingleValue} from "react-select";
 import { Employee } from '@/util/ZodTypes';
 
 const customStyles = {
-    menu: (provided) => ({
-        ...provided,
-        zIndex: 1050, // Ensure dropdown is on top
-    }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 1050, // Ensure dropdown is on top
+  }),
 };
 
-interface EmployeeDropdownProps {
-    onEmployeeSelect: (employee: SingleValue<Employee>) => void;
-    assignee_id?: number;
+interface MultiEmployeeDropdownProps {
+    onEmployeeSelect: (employee: MultiValue<Employee>) => void;
 }
 
 // DropDown takes an employee property so that the selected employee json can be accessed where the component is used
-const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect, assignee_id }) => {
+const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmployeeSelect }) => {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isClient, setIsClient] = useState(false);
@@ -27,7 +26,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect, a
     useEffect(() => {
         setIsClient(true);
         // Fetch employee data from the Flask backend API
-        fetch(API_BASE + '/employees')
+        fetch(API_BASE + 'employees')
             .then(response => {
                 return response.json()
             })
@@ -37,8 +36,6 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect, a
                     value: emp,
                     label: emp.name
                 }));
-                // Ensures that the selected employee is displayed as the default option when editing tasks
-                if (assignee_id) setSelectedEmployee(employeeOptions.find(emp => emp.value.employee_id === assignee_id));
                 setEmployees(employeeOptions);
             })
             .catch(error => {
@@ -48,18 +45,19 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect, a
     if (!isClient) return null
 
     return (
-        <Select
-            options={employees}
-            value={selectedEmployee}
-            onChange={(selectedOption) => {
-                onEmployeeSelect(selectedOption)
-                setSelectedEmployee(selectedOption)
-            }}
-            placeholder="Search for an employee"
-            isSearchable
-            styles={customStyles}
-        />
+            <Select
+                isMulti
+                options={employees}
+                value={selectedEmployee}
+                onChange={(selectedOption) => {
+                    onEmployeeSelect(selectedOption)
+                    setSelectedEmployee(selectedOption)
+                }}
+                placeholder="Search for an employee"
+                isSearchable
+                styles={customStyles}
+            />
     );
 };
 
-export default EmployeeDropdown;
+export default MultiEmployeeDropdown;

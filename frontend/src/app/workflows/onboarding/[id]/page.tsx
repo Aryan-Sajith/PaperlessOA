@@ -1,18 +1,14 @@
 "use client";
-import React, { useState } from 'react';
+import React, {useState, use, useEffect} from 'react';
 import { Box, Typography, TextField, Button, Paper} from '@mui/material';
 import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
-import {useParams} from "react-router-dom";
-import {useRouter} from "next/router";
+import {type} from "node:os";
 import {Employee} from "@/util/ZodTypes";
-import {MultiValue, SingleValue} from "react-select";
-import MultiEmployeeDropdown from "@/components/MultiEmployeeDropDown";
-import {any} from "prop-types";
-import JSON5 from "json5";
+import {SingleValue} from "react-select";
 
-const OnboardingForm = () => {
-  const [subordinates, setSubordinates] = useState<Employee[] | null>(null)
+const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
+  const id = use(params).id
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,31 +19,41 @@ const OnboardingForm = () => {
     birth_date: '',
     comments: '',
     type: '',
+    workflow_id: '',
+    assignee_id: '',
     manager_name: '',
     manager_id: '',
-    assignee_id: '',
     subordinates_id: [],
     subordinates_name: []
   });
-  const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
-  const [manager, setManager] = useState<Employee | null>(null)
 
-  const handleNextAssignee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setNextAssignee(null); // Handle case where no employee is selected
-      }
-  }
-
-  const handleManager = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setManager(null); // Handle case where no employee is selected
-      }
-  }
-
+  useEffect(() => {
+    fetch(`${API_BASE}workflow/${id}`)
+        .then(response =>{
+          return response.json()
+        })
+        .then(data => {
+          const JSON5 = require('json5');
+          const content = JSON5.parse(data.content)
+          setFormData({
+            name: content.name || "",
+            email: content.email || "",
+            salary: content.salary || "",
+            level: content.level || "",
+            start_date: content.start_date || "",
+            birth_date: content.birth_date || "",
+            position: content.position || "",
+            comments: content.comments || "",
+            type: "onboarding",
+            workflow_id: id,
+            assignee_id: content.assignee_id || "",
+            manager_name: content.manager_name || "",
+            manager_id: content.manager_id || "",
+            subordinates_id: content.subordinates_id || [],
+            subordinates_name: content.subordinates_name || []
+          })
+        })
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -57,13 +63,18 @@ const OnboardingForm = () => {
     }));
   };
 
+  const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+
+  const handleNextAssignee = (employee: SingleValue<Employee>) => {
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
+  }
+
   const handleSubmitToNext = async () => {
     try {
-      formData['subordinates_id'] = subordinates?.map((emp) => emp.value.employee_id)
-      formData['subordinates_name'] = subordinates?.map((emp) => emp.value.name)
-      formData['type'] = 'onboarding'
-      formData['manager_name'] = manager.name
-      formData['manager_id'] = manager.employee_id
       formData['assignee_id'] = nextAssignee.employee_id
       const response = await fetch(API_BASE + 'create_workflow', {
         method: 'POST',
@@ -83,7 +94,7 @@ const OnboardingForm = () => {
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('/api/approve_workflow', {
+      const response = await fetch(API_BASE + 'approve_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -102,8 +113,9 @@ const OnboardingForm = () => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Onboarding
+        Onboarding {id}
       </Typography>
+
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
@@ -193,10 +205,8 @@ const OnboardingForm = () => {
             onChange={handleInputChange}
             variant="outlined"
           />
-          <Typography>select the the subordinates (if any) for this employee</Typography>
-          <MultiEmployeeDropdown onEmployeeSelect={setSubordinates} />
-          <Typography>select the the manager for this employee</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleManager}/>
+          <Typography>{JSON.stringify(formData['subordinates_name'])} will be the subordinates of {formData['name']}</Typography>
+          <Typography>{formData['manager_name']} will be the manager of {formData['name']}</Typography>
           <Typography>select the next assignee if neccessary</Typography>
           <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
         </Box>

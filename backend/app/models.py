@@ -1,9 +1,10 @@
 from . import db
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from flask_login import UserMixin
 
 # Define the Employee model
-class Employee(db.Model):
+class Employee(UserMixin, db.Model):
     __tablename__ = 'employee'
     employee_id = db.Column(db.Integer, primary_key=True)
     position = db.Column(db.String(255))
@@ -14,6 +15,8 @@ class Employee(db.Model):
     name = db.Column(db.String(255))
     salary = db.Column(db.BigInteger)
     level = db.Column(db.String(50))
+    email = db.Column(db.String(255))
+    password_hash = db.Column(db.String(255))
 
     # Relationships
     managed_employees = relationship('EmployeeManager', foreign_keys='EmployeeManager.manager_id', back_populates='manager')
@@ -31,8 +34,13 @@ class Employee(db.Model):
             "birth_date": self.birth_date.isoformat() if self.birth_date else None,
             "name": self.name,
             "salary": self.salary,
-            "level": self.level
+            "level": self.level,
+            "email": self.email,
         }
+        
+    def get_id(self):
+        """Return the employee_id to satisfy Flask-Login's requirements."""
+        return str(self.employee_id)
 
 
 # Define the EmployeeManager model
@@ -63,7 +71,7 @@ class Workflow(db.Model):
     content = db.Column(db.Text)
     type = db.Column(db.String(50))
     workflow_id = db.Column(db.Integer, ForeignKey('workflow.id'))
-    time_stamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime)
 
     # Relationships
     assignee = relationship('Employee', back_populates='workflows')
@@ -77,7 +85,7 @@ class Workflow(db.Model):
             "content": self.content,
             "type": self.type,
             "workflow_id": self.workflow_id,
-            "time_stamp": self.time_stamp.isoformat() if self.time_stamp else None
+            "timestamp": self.timestamp.isoformat() if self.timestamp else None
         }
 
 

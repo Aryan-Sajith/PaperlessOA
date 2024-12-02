@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import EmployeeDropdown from '@/components/EmployeeDropDown';
+import { SingleValue } from 'react-select';
+import { Employee } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
+import TaskStatusDropdown from "./TaskStatusDropdown";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -8,12 +14,19 @@ type AddTaskViewProps = {
 
 export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
+  const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
+  const DEFAULT_ADD_TASK_VALUES = { // Ensures default add task values so that adding a task doesn't fail if no fields are filled
+    description: "Task not described!",
+    type: "Task type not specified!",
+    status: "In Progress",
+    assignee_id: 1,
+  } as const;
   const [taskData, setTaskData] = useState<Omit<Task, "id">>({
     status: "",
-    due_date: "",
+    due_date: new Date().toISOString().split("T")[0], // Default to today's date
     description: "",
     type: "",
-    assignee_id: 0, // Default assignee
+    assignee_id: 1, // Default assignee(for now), we can update this later when login is setup 
   }); // Task form state
 
   const toggleView = () => setIsViewOpen((prev) => !prev); // Open/close view
@@ -29,12 +42,20 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   };
 
   const handleAddTask = () => {
+    const finalTaskData= { // Ensures default add task values are utilized for API request if no fields are filled
+      ...taskData,
+      description: taskData.description || DEFAULT_ADD_TASK_VALUES.description,
+      type: taskData.type || DEFAULT_ADD_TASK_VALUES.type,
+      status: taskData.status || DEFAULT_ADD_TASK_VALUES.status,
+      assignee_id: taskData.assignee_id || DEFAULT_ADD_TASK_VALUES.assignee_id,
+    }
+
     fetch(`${API_BASE}/create_task`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(taskData),
+      body: JSON.stringify(finalTaskData),
     })
       .then((response) => response.json())
       .then((newTask: Task) => {
@@ -51,6 +72,24 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
       .catch((error) => {
         console.error("Error creating task:", error);
       });
+  };
+
+  const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
+    if (assignee) {
+      setSelectedAssignee(assignee.value);
+
+      // Update assignee_id since valid employee has been selected
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: assignee.value.employee_id,
+      }));
+    } else {
+      setSelectedAssignee(null);
+      setTaskData((prev) => ({
+        ...prev,
+        assignee_id: 0, // Reset to a neutral state
+      }));
+    }
   };
 
   return (
@@ -91,19 +130,14 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             gap: "10px",
           }}
         >
-          <input
-            type="text"
-            name="status"
-            placeholder="Status"
-            value={taskData.status}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
+          <div>
+            <TaskStatusDropdown
+              onStatusSelect={(status) =>
+                setTaskData((prev) => ({ ...prev, status }))
+              }
+              currentStatus={taskData.status}
+            />
+          </div>
           <input
             type="date"
             name="due_date"
@@ -143,19 +177,9 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
               borderRadius: "5px",
             }}
           />
-          <input
-            type="number"
-            name="assignee_id"
-            placeholder="Assignee ID"
-            value={taskData.assignee_id}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
+          <div>
+            <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+          </div>
           <button
             onClick={handleAddTask}
             style={{

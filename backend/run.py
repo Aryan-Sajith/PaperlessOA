@@ -10,8 +10,6 @@ def handle_preflight():
         res.headers['X-Content-Type-Options'] = '*'
         return res
 
-
-
 if __name__ == '__main__':
-    app.run(debug=True, port=50_000)
+    app.run(debug=True, port=50000)
     

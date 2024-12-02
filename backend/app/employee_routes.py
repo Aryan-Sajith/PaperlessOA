@@ -19,6 +19,17 @@ def get_employee_by_name(name):
     else:
         return jsonify({"error": "Employee not found"}), 404
 
+# Route to get an employee name by employee_id
+@employee_bp.route('/employee/<int:employee_id>', methods=['GET'])
+def get_employee_by_id(employee_id):
+    employee = Employee.query.filter_by(employee_id=employee_id).first()
+
+    if employee:
+        return jsonify({"name": employee.name})
+    else:
+        return jsonify({"error": "Employee not found"}), 404
+    
+
 # Route to get all subordinates under a specific manager
 @employee_bp.route('/manager/<int:manager_id>/subordinates', methods=['GET'])
 def get_subordinate(manager_id):
