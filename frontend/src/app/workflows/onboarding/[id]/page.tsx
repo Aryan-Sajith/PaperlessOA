@@ -23,6 +23,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     assignee_id: '',
     manager_name: '',
     manager_id: '',
+    password: '',
     subordinates_id: [],
     subordinates_name: []
   });
@@ -50,7 +51,8 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
             manager_name: content.manager_name || "",
             manager_id: content.manager_id || "",
             subordinates_id: content.subordinates_id || [],
-            subordinates_name: content.subordinates_name || []
+            subordinates_name: content.subordinates_name || [],
+            password: content.password || "",
           })
         })
   }, []);

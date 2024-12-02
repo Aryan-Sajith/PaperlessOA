@@ -16,6 +16,7 @@ const OnboardingForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
     salary: '',
     level: '',
     position: '',
@@ -122,6 +123,15 @@ const OnboardingForm = () => {
             label="Email"
             name="email"
             value={formData.email}
+            onChange={handleInputChange}
+            variant="outlined"
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Password"
+            name="password"
+            value={formData.password}
             onChange={handleInputChange}
             variant="outlined"
           />
