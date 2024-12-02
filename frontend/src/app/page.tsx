@@ -1,4 +1,3 @@
-// frontend/src/app/page.tsx
 "use client";
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react';
@@ -11,7 +10,7 @@ export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE}/current_user`, {
+    fetch(`${API_BASE}/current_user`, { // Retrieve the current user via cookies
       credentials: 'include',
       mode: 'cors'
     })
@@ -40,6 +39,7 @@ export default function HomePage() {
     return null; // Don't show anything while redirecting
   }
 
+  // Since user is authenticated and loading is complete, render the home page
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Home Page</h1>
