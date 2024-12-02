@@ -8,9 +8,12 @@ workflow_bp = Blueprint('workflow_bp', __name__)
 
 
 # Route to get all workflows
-@workflow_bp.route('/workflows', methods=['GET'])
+@workflow_bp.route('/workflows', methods=['POST'])
 def get_workflows():
-    workflows = Workflow.query.all()
+    if "employee_id" in request.json:
+        workflows = Workflow.query.filter(Employee.employee_id == request.json["employee_id"])
+    else:
+        workflows = Workflow.query.all()
     workflows_list = [workflow.to_dict() for workflow in workflows]
     return jsonify(workflows_list)
 
