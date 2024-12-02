@@ -52,7 +52,7 @@ const PromotionForm = () => {
       formData['name'] = selectedEmployee.name
       formData['employee_id'] = selectedEmployee.employee_id
       formData['type'] = 'promotion'
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

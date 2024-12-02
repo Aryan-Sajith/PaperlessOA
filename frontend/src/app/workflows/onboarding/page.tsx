@@ -65,7 +65,7 @@ const OnboardingForm = () => {
       formData['manager_name'] = manager.name
       formData['manager_id'] = manager.employee_id
       formData['assignee_id'] = nextAssignee.employee_id
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -83,7 +83,7 @@ const OnboardingForm = () => {
 
   const handleApprove = async () => {
     try {
-      const response = await fetch('/api/approve_workflow', {
+      const response = await fetch('/approve_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
