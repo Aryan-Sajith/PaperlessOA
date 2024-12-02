@@ -12,7 +12,6 @@ export default function Login() {
     });
     const [error, setError] = useState('');
 
-    // frontend/src/app/login/page.tsx
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -21,15 +20,14 @@ export default function Login() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include',
-                // Important: Match ports exactly
+                credentials: 'include', // Critical: Ensures the browser enables cookies
                 mode: 'cors',
                 body: JSON.stringify(credentials)
             });
 
             const data = await res.json();
 
-            if (data.success) {
+            if (data.success) { // Login successful
                 router.push('/');
             } else {
                 setError(data.error || 'Login failed');
@@ -45,6 +43,7 @@ export default function Login() {
                 <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
                 {error && <p className="text-red-500 mb-4">{error}</p>}
                 <form onSubmit={handleLogin}>
+                    {/* Email Element: */}
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Email
@@ -57,6 +56,7 @@ export default function Login() {
                             required
                         />
                     </div>
+                    {/* Password Element: */}
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Password
@@ -69,6 +69,7 @@ export default function Login() {
                             required
                         />
                     </div>
+                    {/* Submit Button Element: */}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"

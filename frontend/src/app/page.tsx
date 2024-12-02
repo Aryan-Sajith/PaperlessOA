@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { API_BASE } from '@/util/path';
 
 export default function HomePage() {
-  const router = useRouter();
+  const router = useRouter(); // Router instance to redirect user based on authentication status
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
