@@ -1,18 +1,19 @@
-from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required, login_manager
+from functools import wraps
+from flask import Blueprint, request, jsonify 
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from .models import Employee
 
 auth_bp = Blueprint('auth', __name__)
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
     if not email or not password:
-        return jsonify({'error': 'Server error: User email or password cannot be retrieved'}), 400
+        return jsonify({'error': 'User email or password is invalid!'}), 400
 
     user = Employee.query.filter_by(email=email).first()
     if not user:

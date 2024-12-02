@@ -37,6 +37,10 @@ class Employee(UserMixin, db.Model):
             "level": self.level,
             "email": self.email,
         }
+        
+    def get_id(self):
+        """Return the employee_id to satisfy Flask-Login's requirements."""
+        return str(self.employee_id)
 
 
 # Define the EmployeeManager model

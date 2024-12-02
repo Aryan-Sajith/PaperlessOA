@@ -24,6 +24,13 @@ def create_app():
     # Secret key used to secure session management
     app.secret_key = os.getenv('SECRET_KEY')
 
+    # Setup for session cookies
+    app.config.update(
+        SESSION_COOKIE_SECURE=False,  # Required for HTTP in dev
+        SESSION_COOKIE_DOMAIN="localhost",  # Required for domain matching
+        SESSION_COOKIE_SAMESITE='Lax'  # CSRF protection
+    )
+
     # Database configuration
     username = os.getenv("DB_USERNAME")
     password = os.getenv("DB_PASSWORD")
