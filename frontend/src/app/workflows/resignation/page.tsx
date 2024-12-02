@@ -50,7 +50,7 @@ const ResignationForm = () => {
       formData['cur_id'] = '2'
       formData['name'] = selectedEmployee.name
       formData['employee_id'] = selectedEmployee.employee_id
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

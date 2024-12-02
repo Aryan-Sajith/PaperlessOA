@@ -11,7 +11,7 @@ const WorkflowList = () => {
 
   // UseEffect to fetch workflows
   useEffect(() => {
-      fetch(`${API_BASE}workflows`)
+      fetch(`${API_BASE}/workflows`)
           .then(response => response.json())
           .then(data => setWorkflows(data))
     }, []);

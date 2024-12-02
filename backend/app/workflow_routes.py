@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
-
+from werkzeug.security import generate_password_hash
 from .employee_routes import employee_bp
 from .models import Workflow, db, Employee, EmployeeManager
 from datetime import datetime
@@ -161,6 +161,7 @@ def handle_onboarding(details):
     try:
         new_employee = Employee(
             employee_id=None,
+            password_hash=generate_password_hash(details['password']),
             position=details['position'],
             is_manager=details['is_manager'] if 'is_manager' in details else False,
             start_date=details['start_date'],

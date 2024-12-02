@@ -48,7 +48,7 @@ const AbsenceForm = () => {
       formData['type'] = 'absence';
       formData['assignee_id'] = nextAssignee.employee_id
       formData['name'] = selectedEmployee.name
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -26,7 +26,7 @@ const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmploye
     useEffect(() => {
         setIsClient(true);
         // Fetch employee data from the Flask backend API
-        fetch(API_BASE + 'employees')
+        fetch(API_BASE + '/employees')
             .then(response => {
                 return response.json()
             })

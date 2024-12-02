@@ -20,7 +20,7 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
 
   useEffect(() => {
-    fetch(`${API_BASE}workflow/${id}`)
+    fetch(`${API_BASE}/workflow/${id}`)
         .then(response =>{
           return response.json()
         })
@@ -55,7 +55,7 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
 
   const handleSubmitToNext = async () => {
     try {
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

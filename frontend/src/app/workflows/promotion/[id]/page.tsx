@@ -32,7 +32,7 @@ const PromotionForm = ({params}:{params: Promise<{id: string}>}) => {
   }
 
   useEffect(() => {
-    fetch(`${API_BASE}workflow/${id}`)
+    fetch(`${API_BASE}/workflow/${id}`)
         .then(response =>{
           return response.json()
         })
@@ -65,7 +65,7 @@ const PromotionForm = ({params}:{params: Promise<{id: string}>}) => {
   const handleSubmitToNext = async () => {
     try {
       formData['assignee_id'] = nextAssignee.employee_id
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

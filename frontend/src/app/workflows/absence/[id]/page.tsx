@@ -18,7 +18,7 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
     name: ''
   });
   useEffect(() => {
-    fetch(`${API_BASE}workflow/${id.id}`)
+    fetch(`${API_BASE}/workflow/${id.id}`)
         .then(response =>{
           return response.json()
         })
@@ -57,7 +57,7 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
     try {
       formData['type'] = 'absence';
       formData['assignee_id'] = selectedEmployee.employee_id
-      const response = await fetch(API_BASE + 'create_workflow', {
+      const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -14,7 +14,7 @@ export default function EmployeeTable () {
 
     // Fetch employees from API on component mount
     useEffect(() => {
-        fetch(API_BASE + 'employees')
+        fetch(API_BASE + '/employees')
             .then(response => {
                 return response.json()
             })
