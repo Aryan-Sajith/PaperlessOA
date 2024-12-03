@@ -1,3 +1,5 @@
+import { title } from "process";
+
 export const SidebarData = [
   {
     title: "Home",
@@ -22,5 +24,9 @@ export const SidebarData = [
   {
     title: "Table",
     path: "/employee-table",
+  },
+  {
+    title: "Analytics",
+    path: "/analytics",
   },
 ];

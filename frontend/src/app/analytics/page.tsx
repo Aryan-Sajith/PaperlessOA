@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import DropdownMenu from "@/components/Analytics_Dropdown";
-import TaskBar from "@/components/TaskBar";
+import TaskBar from "@/components/Analytics_TaskBar";
 import PieChart from "@/components/PieChart";
 import { API_BASE } from "@/util/path";
 
