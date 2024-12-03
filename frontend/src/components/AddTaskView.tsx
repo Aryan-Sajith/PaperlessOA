@@ -7,12 +7,14 @@ import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
+import { taskViewType } from "./TasksToggle";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  refetchTasks: () => void;
 };
 
-export default function AddTaskView({ setTasks }: AddTaskViewProps) {
+export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
   const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
   const DEFAULT_ADD_TASK_VALUES = { // Ensures default add task values so that adding a task doesn't fail if no fields are filled
@@ -68,6 +70,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
           assignee_id: 0,
         }); // Reset form
         setIsViewOpen(false); // Close the view
+        refetchTasks(); // Refetch tasks to ensure the new task is displayed in the correct view
       })
       .catch((error) => {
         console.error("Error creating task:", error);

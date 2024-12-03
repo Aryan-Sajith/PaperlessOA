@@ -3,8 +3,10 @@
 
 import React, { useState } from 'react';
 
+export type taskViewType = 'My' | 'Employees';
+
 interface TasksToggleProps {
-    onToggle: (view: 'My' | 'Employees') => void;
+    onToggle: (view: taskViewType) => void;
 }
 
 // Component to toggle between My Tasks and Employee Tasks

@@ -4,7 +4,7 @@ import TaskList from "@/components/TaskList";
 import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
 import { useAuth } from "@/hooks/useAuth";
-import TasksToggle from "@/components/TasksToggle";
+import TasksToggle, { taskViewType } from "@/components/TasksToggle";
 
 export type Task = {
   id?: string;
@@ -19,6 +19,7 @@ export type Task = {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<taskViewType>("My");
   const { user, loading } = useAuth();
 
   const fetchTasks = async (view: string) => {
@@ -53,7 +54,10 @@ export default function TasksPage() {
   return (
     <div>
       {/* Tasks Toggle Slider: */}
-      <TasksToggle onToggle={view => fetchTasks(view)} />
+      <TasksToggle onToggle={view => {
+        fetchTasks(view);
+        setCurrentView(view);
+      }} />
 
       {/* Task List: */}
       {tasks.length > 0 ? (
@@ -63,7 +67,10 @@ export default function TasksPage() {
       )}
 
       {/* Add Task View: */}
-      <AddTaskView setTasks={setTasks} />
+      <AddTaskView
+        setTasks={setTasks}
+        refetchTasks={() => fetchTasks(currentView)}
+      />
     </div>
   );
 }
