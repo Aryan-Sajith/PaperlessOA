@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
-import EditTaskView from "./EditTaskView"
+import EditTaskView from "./EditTaskView";
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
+import { CalendarDays, Edit3, Trash2, User } from "lucide-react";
 
 type TaskCardProps = {
-    id: string | undefined;  
+    id: string | undefined;
     assigned_to: string;
     assignee_id: number;
     status: string;
@@ -13,7 +14,7 @@ type TaskCardProps = {
     type: string;
     due_date: string;
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-}
+};
 
 export default function TaskCard({
     id,
@@ -25,65 +26,102 @@ export default function TaskCard({
     due_date,
     setTasks
 }: Readonly<TaskCardProps>) {
-    const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
 
+    // Function to map status string to color
+    const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'completed':
+                return 'bg-green-100 text-green-800';
+            case 'in progress':
+                return 'bg-blue-100 text-blue-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    // Function to handle task deletion
+    const handleDelete = async (event: React.MouseEvent) => {
+        event.stopPropagation(); // Prevent card expansion on delete
+        try {
+            const response = await fetch(`${API_BASE}/delete_task/${id}`, {
+                method: "DELETE"
+            });
+            const data = await response.json();
+            alert(`Successfully deleted the following task: \n${description}`);
+            // Update tasks state by removing the deleted task
+            setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    };
+
     return (
-        <div
-            onClick={() => {
-                setIsExpanded(!isExpanded); 
-            }}
-            className="flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md"
-        >
-            <p className="text-md font-medium">{description}</p>
-            <span className="text-sm text-gray-500">{due_date}</span>
+        <div className="mb-4">
+            <div
+                className="bg-white rounded-lg shadow-sm border border-blue-200"
+            >
+                {/* Main Card Content */}
+                <div className="p-4">
+                    <div className="flex justify-between items-start gap-4">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
+                                    {status}
+                                </span>
+                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                    {type}
+                                </span>
+                            </div>
+                            <p className="text-gray-900 font-medium">{description}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {/* Edit Task: */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsEditing(!isEditing);
+                                }}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <Edit3 className="w-4 h-4 text-gray-500" />
+                            </button>
 
-            {/* Expanded Description Task Card here: */}
-            {isExpanded && !isEditing &&  
-                <div className="bg-white shadow-md rounded-md p-4 border border-gray-200">
-                    <div className ="flex justify-between items-center mb-2">
-                    <img src="/icons/task-edit.svg" alt="task edit icon" className="w-10 h-10"
-                    onClick={event => {
-                        event.stopPropagation(); // Ensures that we don't un-expand the card if we click on the edit icon
-                        // alert("Edit task clicked for task: " + description);
-                        setIsEditing(!isEditing);
-                    }}
-                    ></img>
-
-                    {/* Delete task here: */}
-                    <img src="/icons/task-delete.svg" alt="task delete icon" className="w-8 h-7"
-                    onClick={event => {
-                        event.stopPropagation(); // Ensures that we don't un-expand the card if we click on the delete icon
-                        fetch(`${API_BASE}/delete_task/${id}`, {method: "DELETE"})
-                        .then(response => response.json())
-                        .then(_ => { // Update tasks so that deleted task is removed from the list
-                            alert(`Successfully deleted the following task: \n${description}`);
-                            setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
-                        })
-                        .catch(error => console.error("Error deleting task:", error));
-                    }}
-                    ></img>
+                            {/* Delete Task: */}
+                            <button
+                                onClick={handleDelete}
+                                className="p-2 hover:bg-red-50 rounded-full transition-colors"
+                            >
+                                <Trash2 className="w-4 h-4 text-red-500" />
+                            </button>
+                        </div>
                     </div>
-                    <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                        <li><strong>Status:</strong> {status}</li>
-                        <li><strong>Due Date:</strong> {due_date} </li>
-                        <li><strong>Description:</strong> {description}</li>
-                        <li><strong>Type:</strong> {type}</li>
-                        <li><strong>Assigned To:</strong> {assigned_to}</li>
-                    </ul>
-                </div>
-            }
 
-            {/* Expanded Editing Task Card here: */}
-            {isExpanded && isEditing &&
-                <div onClick={(event) => event.stopPropagation()}> {/* Critical to ensuring card doesn't un-expand while editing*/}
-                    <EditTaskView task_to_update={
-                        { id, assignee_id, status, description, type, due_date }} 
-                        setTasks={setTasks} 
-                        setIsEditing={setIsEditing}/>
+                    <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                        <div className="flex items-center gap-1">
+                            {/* Due Date: */}
+                            <CalendarDays className="w-4 h-4" />
+                            <span>{due_date}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {/* Assigned To: */}
+                            <User className="w-4 h-4" />
+                            <span>{assigned_to}</span>
+                        </div>
+                    </div>
                 </div>
-            }
+            </div>
+
+            {/* Edit View */}
+            {isEditing && (
+                <div onClick={(event) => event.stopPropagation()} className="mt-2">
+                    <EditTaskView
+                        task_to_update={{ id, assignee_id, status, description, type, due_date }}
+                        setTasks={setTasks}
+                        setIsEditing={setIsEditing}
+                    />
+                </div>
+            )}
         </div>
     );
 }
-

@@ -8,6 +8,7 @@ import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
 import { taskViewType } from "./TasksToggle";
+import { CalendarDays, FileText, Plus, Type, X } from "lucide-react";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -95,109 +96,147 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
 
   return (
     <div>
-      {/* Floating Add/Close Button */}
+      {/* Enhanced Floating Action Button (FAB) with smooth transitions */}
       <button
         onClick={toggleView}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          backgroundColor: isViewOpen ? "#e74c3c" : "#2596be", // Red when open, blue otherwise
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "60px",
-          height: "60px",
-          fontSize: "24px",
-        }}
+        className={`
+                fixed bottom-5 right-5 
+                w-14 h-14 
+                rounded-full 
+                shadow-lg 
+                flex items-center justify-center 
+                transition-all duration-300 ease-in-out
+                hover:scale-105
+                ${isViewOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}
+            `}
+        aria-label={isViewOpen ? "Close add task form" : "Open add task form"}
       >
-        {isViewOpen ? "×" : "+"} {/* Close (×) if open, Add (+) if closed */}
+        {/* Dynamic icon transition */}
+        <div className="text-white">
+          {isViewOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Plus className="h-6 w-6" />
+          )}
+        </div>
       </button>
 
-      {/* Add Task View */}
+      {/* Modal/Popup with enhanced styling and animations */}
       {isViewOpen && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "100px",
-            right: "20px",
-            width: "300px",
-            padding: "15px",
-            backgroundColor: "white",
-            borderRadius: "10px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            display: "flex",
-            flexDirection: "column",
-            gap: "10px",
-          }}
-        >
-          <div>
-            <TaskStatusDropdown
-              onStatusSelect={(status) =>
-                setTaskData((prev) => ({ ...prev, status }))
-              }
-              currentStatus={taskData.status as TaskStatus}
-            />
+        <div className="fixed bottom-24 right-5 w-80 animate-slide-up">
+          <div className="bg-white rounded-lg shadow-xl p-6 space-y-4 border border-gray-100">
+            {/* Form Title */}
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Add New Task
+            </h3>
+
+            {/* Status Dropdown Section */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Status
+              </label>
+              <TaskStatusDropdown
+                onStatusSelect={(status) =>
+                  setTaskData((prev) => ({ ...prev, status }))
+                }
+                currentStatus={taskData.status as TaskStatus}
+              />
+            </div>
+
+            {/* Date Input Group */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Due Date
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <CalendarDays className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="date"
+                  name="due_date"
+                  value={taskData.due_date}
+                  onChange={handleInputChange}
+                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
+                                         focus:ring-blue-500 focus:border-blue-500 
+                                         transition-colors duration-200
+                                         sm:text-sm h-10"
+                />
+              </div>
+            </div>
+
+            {/* Description Input Group */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FileText className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  name="description"
+                  value={taskData.description}
+                  onChange={handleInputChange}
+                  placeholder="Enter task description"
+                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
+                                         focus:ring-blue-500 focus:border-blue-500 
+                                         transition-colors duration-200
+                                         sm:text-sm h-10"
+                />
+              </div>
+            </div>
+
+            {/* Type Input Group */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Type
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Type className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  name="type"
+                  value={taskData.type}
+                  onChange={handleInputChange}
+                  placeholder="Enter task type"
+                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
+                                         focus:ring-blue-500 focus:border-blue-500 
+                                         transition-colors duration-200
+                                         sm:text-sm h-10"
+                />
+              </div>
+            </div>
+
+            {/* Employee Dropdown Section */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Assign To
+              </label>
+              <div className="relative">
+                <EmployeeDropdown
+                  onEmployeeSelect={handleSelectAssignee}
+                  showSubordinatesOnly={true}
+                />
+              </div>
+            </div>
+
+            {/* Add Task Button */}
+            <button
+              onClick={handleAddTask}
+              className="w-full bg-blue-600 text-white px-4 py-2 rounded-md
+                                 hover:bg-blue-700 
+                                 transition-colors duration-200
+                                 flex items-center justify-center gap-2
+                                 mt-6"
+            >
+              <Plus className="h-5 w-5" />
+              Create Task
+            </button>
           </div>
-          <input
-            type="date"
-            name="due_date"
-            placeholder="Due Date"
-            value={taskData.due_date}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
-          <input
-            type="text"
-            name="description"
-            placeholder="Description"
-            value={taskData.description}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
-          <input
-            type="text"
-            name="type"
-            placeholder="Type"
-            value={taskData.type}
-            onChange={handleInputChange}
-            style={{
-              padding: "8px",
-              fontSize: "14px",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-            }}
-          />
-          <div>
-            <EmployeeDropdown
-              onEmployeeSelect={handleSelectAssignee}
-              showSubordinatesOnly={true}
-            />
-          </div>
-          <button
-            onClick={handleAddTask}
-            style={{
-              backgroundColor: "#2ecc71",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              padding: "10px",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            ✓ Add Task
-          </button>
         </div>
       )}
     </div>
