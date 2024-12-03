@@ -8,17 +8,18 @@ import {SingleValue} from "react-select";
 import JSON5 from "json5";
 
 const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
-  const id = use(params)
+  const id = use(params).id
   const [formData, setFormData] = useState({
     start_date: '',
     end_date: '',
     reason: '',
     type: '',
     assignee_id: '',
-    name: ''
+    name: '',
+    workflow_id: '',
   });
   useEffect(() => {
-    fetch(`${API_BASE}/workflow/${id.id}`)
+    fetch(`${API_BASE}/workflow/${id}`)
         .then(response =>{
           return response.json()
         })
@@ -31,7 +32,8 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
             reason: content.reason || "",
             type: "absence",
             assignee_id: data.assignee_id || "",
-            name: content.name || ""
+            name: content.name || "",
+            workflow_id: id
           })
         })
   }, []);
@@ -94,7 +96,7 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
   return (
     <Box p={4} bgcolor="grey.200" height="100vh">
       <Typography variant="h4" mb={4}>
-        Absence
+        Absence {id}
       </Typography>
       <Typography>{formData.name} is taking the Absence</Typography>
       <Box display="flex" justifyContent="space-between">
