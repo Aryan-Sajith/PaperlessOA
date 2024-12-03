@@ -4,14 +4,29 @@ import { Box, Typography, Paper, Button, List, ListItem, IconButton } from '@mui
 import Link from "next/link";
 import {Simulate} from "react-dom/test-utils";
 import {API_BASE} from "@/util/path";
+import {Employee} from "@/util/ZodTypes";
 
 // Workflow list page
 const WorkflowList = () => {
   const [workflows, setWorkflows] = useState([]);
+  // const [currentUser, setCurrentUser] = useState<Employee | null>(null)
+  //   useEffect(() => {
+  //       fetch(`${API_BASE}/current_user`)
+  //           .then(response => {
+  //               console.error(response)
+  //               return response.json()
+  //           })
+  //           .then(data => setCurrentUser(data))
+  //           .then(data => console.error(currentUser))
+  //   }, []);
 
   // UseEffect to fetch workflows
   useEffect(() => {
-      fetch(`${API_BASE}/workflows`)
+      fetch(`${API_BASE}/workflows` ,{
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({"employee_id" : 1})
+          })
           .then(response => response.json())
           .then(data => setWorkflows(data))
     }, []);
