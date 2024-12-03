@@ -21,7 +21,7 @@ export default function RootLayout({
           <ProtectedRoute>
             {(user) => (
               <>
-                {alert(`You can access the logged in user data in this way: ${JSON.stringify(user)}`)}
+                {/* {alert(`You can access the logged in user data in this way: ${JSON.stringify(user)}`)} */}
                 <Navbar />
                 <div className="flex h-screen w-full">
                   <Sidebar />
