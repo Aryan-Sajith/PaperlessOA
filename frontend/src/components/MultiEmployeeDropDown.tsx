@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import {API_BASE} from "@/util/path";
-import Select, {MultiValue, SingleValue} from "react-select";
+import { API_BASE } from "@/util/path";
+import Select, { MultiValue } from "react-select";
 import { Employee } from '@/util/ZodTypes';
 
 const customStyles = {
-  menu: (provided) => ({
-    ...provided,
-    zIndex: 1050, // Ensure dropdown is on top
-  }),
+    menu: (provided) => ({
+        ...provided,
+        zIndex: 1050, // Ensure dropdown is on top
+    }),
 };
 
 interface MultiEmployeeDropdownProps {
@@ -45,18 +45,18 @@ const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmploye
     if (!isClient) return null
 
     return (
-            <Select
-                isMulti
-                options={employees}
-                value={selectedEmployee}
-                onChange={(selectedOption) => {
-                    onEmployeeSelect(selectedOption)
-                    setSelectedEmployee(selectedOption)
-                }}
-                placeholder="Search for an employee"
-                isSearchable
-                styles={customStyles}
-            />
+        <Select
+            isMulti
+            options={employees}
+            value={selectedEmployee}
+            onChange={(selectedOption) => {
+                onEmployeeSelect(selectedOption)
+                setSelectedEmployee(selectedOption)
+            }}
+            placeholder="Search for an employee"
+            isSearchable
+            styles={customStyles}
+        />
     );
 };
 
