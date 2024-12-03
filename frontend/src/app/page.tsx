@@ -3,6 +3,8 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { API_BASE } from '@/util/path';
+import { Tab } from '@mui/material';
+import TabToggle from '@/components/TabToggle';
 
 export default function HomePage() {
   const router = useRouter(); // Router instance to redirect user based on authentication status
@@ -51,6 +53,7 @@ export default function HomePage() {
         <p><Link href="/profile" className="text-blue-400 underline">Profile Page</Link></p>
         <p>Analytics page <Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
       </div>
+      {/* <TabToggle onToggle={(view) => console.log(view)} /> */}
     </div>
   );
 }
