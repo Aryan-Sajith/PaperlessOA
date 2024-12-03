@@ -25,8 +25,8 @@ export default function TasksPage() {
     if (!loading && user) {
       // Fetch tasks based on view(Personal or Subordinates)
       const url = view === "My"
-        ? `${API_BASE}/tasks/employee/${user.employee_id}`
-        : `${API_BASE}/tasks`;
+        ? `${API_BASE}/tasks/employee/${user.employee_id}` // Personal tasks
+        : `${API_BASE}/tasks/manager/${user.employee_id}`; // Subordinate tasks
       try {
         // If no error occurs, fetch tasks and set tasks state
         const response = await fetch(url);

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from .models import Task, db
+from .models import Employee, EmployeeManager, Task, db
 from datetime import datetime
 
 
@@ -23,6 +23,22 @@ def get_tasks_by_id(employee_id):
         return jsonify(tasks_list)
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
+
+@task_bp.route('/tasks/manager/<int:manager_id>', methods=['GET'])
+def get_subordinate_tasks(manager_id):
+    # Query Task table for tasks assigned to employees managed by the given manager_id
+    subordinate_tasks = (Task.query
+        .join(Employee, Task.assignee_id == Employee.employee_id)
+        .join(EmployeeManager, Employee.employee_id == EmployeeManager.employee_id)
+        .filter(EmployeeManager.manager_id == manager_id)
+        .all())
+
+    # Check if tasks are found
+    if subordinate_tasks:
+        tasks_list = [task.to_dict() for task in subordinate_tasks]
+        return jsonify(tasks_list)
+    else:
+        return jsonify({"message": "No tasks found for employees managed by this manager"}), 404
 
 @task_bp.route('/create_task', methods=['POST'])
 def create_task():
