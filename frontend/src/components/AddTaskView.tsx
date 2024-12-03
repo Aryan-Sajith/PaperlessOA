@@ -22,7 +22,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
     assignee_id: 1,
   } as const;
   const [taskData, setTaskData] = useState<Omit<Task, "id">>({
-    status: "",
+    status: "In Progress",
     due_date: new Date().toISOString().split("T")[0], // Default to today's date
     description: "",
     type: "",
