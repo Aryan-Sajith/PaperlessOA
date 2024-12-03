@@ -32,7 +32,7 @@ export default function TasksPage() {
           setError(error.message);
         });
     }
-  }, [user, loading]); // Add user and loading as dependencies
+  }, [user, loading, tasks]); // Add user and loading as dependencies
 
   if (loading) {
     return <div>Loading user data...</div>;

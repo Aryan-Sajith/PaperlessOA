@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import EmployeeDropdown from '@/components/EmployeeDropDown';
 import { SingleValue } from 'react-select';
-import { Employee } from '@/util/ZodTypes';
+import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
@@ -22,7 +22,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
     assignee_id: 1,
   } as const;
   const [taskData, setTaskData] = useState<Omit<Task, "id">>({
-    status: "In Progress",
+    status: "",
     due_date: new Date().toISOString().split("T")[0], // Default to today's date
     description: "",
     type: "",
@@ -133,7 +133,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
               onStatusSelect={(status) =>
                 setTaskData((prev) => ({ ...prev, status }))
               }
-              currentStatus={taskData.status}
+              currentStatus={taskData.status as TaskStatus}
             />
           </div>
           <input
