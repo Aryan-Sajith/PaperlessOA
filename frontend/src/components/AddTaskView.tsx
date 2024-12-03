@@ -61,7 +61,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
     })
       .then((response) => response.json())
       .then((newTask: Task) => {
-        setTasks((prevTasks) => [...prevTasks, newTask]); // Add new task
+        setTasks((prevTasks) => Array.isArray(prevTasks) ? [...prevTasks, newTask] : [newTask]);
         setTaskData({
           status: "",
           due_date: new Date().toISOString().split("T")[0], // Default to today's date

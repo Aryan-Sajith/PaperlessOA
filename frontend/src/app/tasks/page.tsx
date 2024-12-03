@@ -60,10 +60,18 @@ export default function TasksPage() {
       }} />
 
       {/* Task List: */}
-      {tasks.length > 0 ? (
-        <TaskList tasks={tasks} setTasks={setTasks} />
-      ) : (
+      {loading ? (
         <p>Loading tasks...</p>
+      ) : tasks.length > 0 ? (
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      ) : ( // If no tasks exist, display a UX friendly message
+        <div style={{
+          textAlign: 'center',
+          margin: '2rem',
+          color: '#666'
+        }}>
+          <p>No tasks yet, feel free to assign!</p>
+        </div>
       )}
 
       {/* Add Task View: */}
