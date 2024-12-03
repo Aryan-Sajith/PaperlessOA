@@ -1,16 +1,18 @@
-// TabToggle.tsx
+// TasksToggle.tsx
 "use client";
 
 import React, { useState } from 'react';
 
-interface TabToggleProps {
-    onToggle: (view: 'personal' | 'employees') => void;
+interface TasksToggleProps {
+    onToggle: (view: 'My' | 'Employees') => void;
 }
 
-const TabToggle: React.FC<TabToggleProps> = ({ onToggle }) => {
-    const [activeTab, setActiveTab] = useState<'personal' | 'employees'>('personal');
+// Component to toggle between My Tasks and Employee Tasks
+const TasksToggle: React.FC<TasksToggleProps> = ({ onToggle }) => {
+    const [activeTab, setActiveTab] = useState<'My' | 'Employees'>('My');
 
-    const handleTabChange = (tab: 'personal' | 'employees') => {
+    // Function to handle tab change
+    const handleTabChange = (tab: 'My' | 'Employees') => {
         setActiveTab(tab);
         onToggle(tab);
     };
@@ -28,28 +30,28 @@ const TabToggle: React.FC<TabToggleProps> = ({ onToggle }) => {
             }}
         >
             <button
-                onClick={() => handleTabChange('personal')}
+                onClick={() => handleTabChange('My')}
                 style={{
                     padding: '8px 16px',
                     border: 'none',
                     borderRadius: '6px',
-                    backgroundColor: activeTab === 'personal' ? '#2596be' : 'transparent',
-                    color: activeTab === 'personal' ? 'white' : '#333',
+                    backgroundColor: activeTab === 'My' ? '#2596be' : 'transparent',
+                    color: activeTab === 'My' ? 'white' : '#333',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     fontSize: '14px',
                 }}
             >
-                Personal Tasks
+                My Tasks
             </button>
             <button
-                onClick={() => handleTabChange('employees')}
+                onClick={() => handleTabChange('Employees')}
                 style={{
                     padding: '8px 16px',
                     border: 'none',
                     borderRadius: '6px',
-                    backgroundColor: activeTab === 'employees' ? '#2596be' : 'transparent',
-                    color: activeTab === 'employees' ? 'white' : '#333',
+                    backgroundColor: activeTab === 'Employees' ? '#2596be' : 'transparent',
+                    color: activeTab === 'Employees' ? 'white' : '#333',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     fontSize: '14px',
@@ -61,4 +63,4 @@ const TabToggle: React.FC<TabToggleProps> = ({ onToggle }) => {
     );
 };
 
-export default TabToggle;
+export default TasksToggle;

@@ -4,6 +4,7 @@ import TaskList from "@/components/TaskList";
 import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
 import { useAuth } from "@/hooks/useAuth";
+import TasksToggle from "@/components/TasksToggle";
 
 export type Task = {
   id?: string;
@@ -18,33 +19,39 @@ export type Task = {
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const { user, loading } = useAuth(); // Add loading from useAuth
+  const { user, loading } = useAuth();
+
+  const fetchTasks = async (view: string) => {
+    if (!loading && user) {
+      const url = view === "My"
+        ? `${API_BASE}/tasks/employee/${user.employee_id}`
+        : `${API_BASE}/tasks`;
+
+      try {
+        const response = await fetch(url);
+        const returnedTasks = await response.json();
+        setTasks(returnedTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
+      }
+    }
+  };
 
   useEffect(() => {
-    if (!loading && user) { // Only fetch if authentication is completed and user exists
-      fetch(`${API_BASE}/tasks/employee/${user.employee_id}`)
-        .then((response) => response.json())
-        .then((returnedTasks) => {
-          setTasks(returnedTasks);
-        })
-        .catch((error) => {
-          console.error("Error fetching tasks:", error);
-          setError(error.message);
-        });
-    }
-  }, [user, loading, tasks]); // Add user and loading as dependencies
+    fetchTasks("My"); // Load personal tasks by default
+  }, [user, loading]);
 
-  if (loading) {
-    return <div>Loading user data...</div>;
-  }
-
-  if (error) {
-    return <div>Tasks Failed to Load. Ran into error: {error}</div>;
-  }
+  if (loading) return <div>Loading user data...</div>;
+  if (error) return <div>Tasks Failed to Load. Ran into error: {error}</div>;
 
   return (
     <div>
-      <h1>Tasks</h1>
+      <TasksToggle onToggle={view => fetchTasks(view)} />
       {tasks.length > 0 ? (
         <TaskList tasks={tasks} setTasks={setTasks} />
       ) : (
