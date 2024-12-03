@@ -6,6 +6,7 @@ import {API_BASE} from "@/util/path";
 import {type} from "node:os";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import {useAuth} from "@/hooks/useAuth";
 
 const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
   const id = use(params).id
@@ -25,7 +26,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
     manager_id: '',
     password: '',
     subordinates_id: [],
-    subordinates_name: []
+    subordinates_name: [],
   });
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import {useAuth} from "@/hooks/useAuth";
 
 const AbsenceForm = () => {
   const [formData, setFormData] = useState({
@@ -13,10 +14,12 @@ const AbsenceForm = () => {
     reason: '',
     type: '',
     assignee_id: '',
-    name: ''
+    name: '',
+    cur_id: ''
   });
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+  const { user, loading } = useAuth();
 
   const handleSelectEmployee = (employee: SingleValue<Employee>) => {
       if (employee) {
@@ -48,6 +51,7 @@ const AbsenceForm = () => {
       formData['type'] = 'absence';
       formData['assignee_id'] = nextAssignee.employee_id
       formData['name'] = selectedEmployee.name
+      formData['cur_id'] = user?.employee_id
       const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
