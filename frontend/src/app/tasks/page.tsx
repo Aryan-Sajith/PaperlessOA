@@ -23,15 +23,16 @@ export default function TasksPage() {
 
   const fetchTasks = async (view: string) => {
     if (!loading && user) {
+      // Fetch tasks based on view(Personal or Subordinates)
       const url = view === "My"
         ? `${API_BASE}/tasks/employee/${user.employee_id}`
         : `${API_BASE}/tasks`;
-
       try {
+        // If no error occurs, fetch tasks and set tasks state
         const response = await fetch(url);
         const returnedTasks = await response.json();
         setTasks(returnedTasks);
-      } catch (error) {
+      } catch (error) { // If an error occurs, log it and set error state
         console.error("Error fetching tasks:", error);
         if (error instanceof Error) {
           setError(error.message);
@@ -44,19 +45,24 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchTasks("My"); // Load personal tasks by default
-  }, [user, loading]);
+  }, [user, loading]); // Fetch tasks when user or loading status changes
 
   if (loading) return <div>Loading user data...</div>;
   if (error) return <div>Tasks Failed to Load. Ran into error: {error}</div>;
 
   return (
     <div>
+      {/* Tasks Toggle Slider: */}
       <TasksToggle onToggle={view => fetchTasks(view)} />
+
+      {/* Task List: */}
       {tasks.length > 0 ? (
         <TaskList tasks={tasks} setTasks={setTasks} />
       ) : (
         <p>Loading tasks...</p>
       )}
+
+      {/* Add Task View: */}
       <AddTaskView setTasks={setTasks} />
     </div>
   );
