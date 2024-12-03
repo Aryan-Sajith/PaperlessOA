@@ -10,6 +10,7 @@ import {MultiValue, SingleValue} from "react-select";
 import MultiEmployeeDropdown from "@/components/MultiEmployeeDropDown";
 import {any} from "prop-types";
 import JSON5 from "json5";
+import {useAuth} from "@/hooks/useAuth";
 
 const OnboardingForm = () => {
   const [subordinates, setSubordinates] = useState<Employee[] | null>(null)
@@ -28,10 +29,12 @@ const OnboardingForm = () => {
     manager_id: '',
     assignee_id: '',
     subordinates_id: [],
-    subordinates_name: []
+    subordinates_name: [],
+    cur_id: ''
   });
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
   const [manager, setManager] = useState<Employee | null>(null)
+  const { user, loading } = useAuth();
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
@@ -66,6 +69,7 @@ const OnboardingForm = () => {
       formData['manager_name'] = manager.name
       formData['manager_id'] = manager.employee_id
       formData['assignee_id'] = nextAssignee.employee_id
+      formData['cur_id'] = user?.employee_id
       const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

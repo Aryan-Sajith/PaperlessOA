@@ -5,6 +5,7 @@ import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import {useAuth} from "@/hooks/useAuth";
 
 const PromotionForm = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const PromotionForm = () => {
 
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
+  const { user, loading } = useAuth();
 
   const handleSelectEmployee = (employee: SingleValue<Employee>) => {
       if (employee) {
@@ -48,7 +50,7 @@ const PromotionForm = () => {
   const handleSubmitToNext = async () => {
     try {
       formData['assignee_id'] = nextAssignee.employee_id
-      formData['cur_id'] = '2'
+      formData['cur_id'] = user?.employee_id
       formData['name'] = selectedEmployee.name
       formData['employee_id'] = selectedEmployee.employee_id
       formData['type'] = 'promotion'

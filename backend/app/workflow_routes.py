@@ -11,7 +11,7 @@ workflow_bp = Blueprint('workflow_bp', __name__)
 @workflow_bp.route('/workflows', methods=['POST'])
 def get_workflows():
     if "employee_id" in request.json:
-        workflows = Workflow.query.filter(Employee.employee_id == request.json["employee_id"])
+        workflows = Workflow.query.filter(Workflow.assignee_id == request.json["employee_id"])
     else:
         workflows = Workflow.query.all()
     workflows_list = [workflow.to_dict() for workflow in workflows]

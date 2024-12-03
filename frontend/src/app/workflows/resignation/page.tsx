@@ -5,6 +5,7 @@ import EmployeeDropdown from "@/components/EmployeeDropDown";
 import {API_BASE} from "@/util/path";
 import {Employee} from "@/util/ZodTypes";
 import {SingleValue} from "react-select";
+import {useAuth} from "@/hooks/useAuth";
 
 const ResignationForm = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +16,10 @@ const ResignationForm = () => {
     cur_id: '', // employee_id for current user (needed for creating new workflow)
     name: '',
     employee_id: '' // employee_id for which the resign is going to remove
+
   });
 
+  const { user, loading } = useAuth();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)
 
@@ -47,7 +50,7 @@ const ResignationForm = () => {
     try {
       formData['type'] = 'resignation'
       formData['assignee_id'] = nextAssignee.employee_id
-      formData['cur_id'] = '2'
+      formData['cur_id'] = user?.employee_id
       formData['name'] = selectedEmployee.name
       formData['employee_id'] = selectedEmployee.employee_id
       const response = await fetch(API_BASE + '/create_workflow', {
