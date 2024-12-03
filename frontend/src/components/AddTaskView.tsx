@@ -42,7 +42,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   };
 
   const handleAddTask = () => {
-    const finalTaskData= { // Ensures default add task values are utilized for API request if no fields are filled
+    const finalTaskData = { // Ensures default add task values are utilized for API request if no fields are filled
       ...taskData,
       description: taskData.description || DEFAULT_ADD_TASK_VALUES.description,
       type: taskData.type || DEFAULT_ADD_TASK_VALUES.type,
@@ -76,12 +76,10 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
 
   const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
     if (assignee) {
-      setSelectedAssignee(assignee.value);
-
-      // Update assignee_id since valid employee has been selected
+      setSelectedAssignee(assignee);
       setTaskData((prev) => ({
         ...prev,
-        assignee_id: assignee.value.employee_id,
+        assignee_id: assignee.employee_id,
       }));
     } else {
       setSelectedAssignee(null);
@@ -178,7 +176,10 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             }}
           />
           <div>
-            <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+            <EmployeeDropdown
+              onEmployeeSelect={handleSelectAssignee}
+              showSubordinatesOnly={true}
+            />
           </div>
           <button
             onClick={handleAddTask}
