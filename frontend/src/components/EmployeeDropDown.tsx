@@ -34,11 +34,9 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
         value: Employee;
         label: string;
     } | null>(null);
-    const [isClient, setIsClient] = useState(false);
     const { user, loading } = useAuth();
 
     useEffect(() => {
-        setIsClient(true);
 
         if (providedEmployees) {
             const employeeOptions = providedEmployees.map(emp => ({
@@ -52,7 +50,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
                 );
                 setSelectedEmployee(foundEmployee || null);
             }
-        } else if (!loading) { // Only fetch if loading is complete
+        } else if (!loading) { // Only fetch tasks main user data is loaded
             const fetchEmployees = async () => {
                 try {
                     let url = API_BASE + '/employees';
@@ -88,7 +86,6 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
         }
     }, [showSubordinatesOnly, loading]);
 
-    if (!isClient) return null;
 
     return (
         <Select
