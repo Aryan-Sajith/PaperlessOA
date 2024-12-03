@@ -1,6 +1,7 @@
 // Top navbar component
 
 import React from 'react'
+import ProtectedRoute from './ProtectedRoute'
 
 export default function Navbar() {
   return (
@@ -10,9 +11,11 @@ export default function Navbar() {
         <input type='text' placeholder='Search' className='placeholder-black'></input>
       </div>
 
-      <div>
-        <p>William Saulnier</p>
-      </div>
+      <ProtectedRoute>
+        {(user) => (
+            <p>{user.name}</p>
+        )}
+      </ProtectedRoute>
     </header>
   )
 }
