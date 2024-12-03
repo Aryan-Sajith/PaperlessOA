@@ -101,7 +101,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                         name="due_date"
                         value={taskData.due_date}
                         onChange={handleInputChange}
-                        className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
+                        className="py-2 pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
                     />
                 </div>
             </div>

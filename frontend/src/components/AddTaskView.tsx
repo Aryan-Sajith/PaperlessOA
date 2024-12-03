@@ -157,7 +157,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
                   name="due_date"
                   value={taskData.due_date}
                   onChange={handleInputChange}
-                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
+                  className="py-2 pl-10 block w-full rounded-md border-gray-300 shadow-sm 
                                          focus:ring-blue-500 focus:border-blue-500 
                                          transition-colors duration-200
                                          sm:text-sm h-10"
