@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import TaskList from "@/components/TaskList";
 import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
+import { useAuth } from "@/hooks/useAuth";
+import TasksToggle, { taskViewType } from "@/components/TasksToggle";
 
 export type Task = {
   id?: string;
@@ -15,36 +17,68 @@ export type Task = {
 };
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState<Task[]>([]); // State to store tasks
-  const [error, setError] = useState<string | null>(null); // State for error handling
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [currentView, setCurrentView] = useState<taskViewType>("My");
+  const { user, loading } = useAuth();
+
+  const fetchTasks = async (view: string) => {
+    if (!loading && user) {
+      // Fetch tasks based on view(Personal or Subordinates)
+      const url = view === "My"
+        ? `${API_BASE}/tasks/employee/${user.employee_id}` // Personal tasks
+        : `${API_BASE}/tasks/manager/${user.employee_id}`; // Subordinate tasks
+      try {
+        // If no error occurs, fetch tasks and set tasks state
+        const response = await fetch(url);
+        const returnedTasks = await response.json();
+        setTasks(returnedTasks);
+      } catch (error) { // If an error occurs, log it and set error state
+        console.error("Error fetching tasks:", error);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
+      }
+    }
+  };
 
   useEffect(() => {
-    // Fetch tasks from the backend
-    fetch(`${API_BASE}/tasks`)
-      .then((response) => response.json())
-      .then((returnedTasks) => {
-        setTasks(returnedTasks); // Update the tasks state
-      })
-      .catch((error) => {
-        console.error("Error fetching tasks:", error);
-        setError(error.message); // Set the error state
-      });
-  }, []); // Empty dependency array ensures this runs once on mount
+    fetchTasks("My"); // Load personal tasks by default
+  }, [user, loading]); // Fetch tasks when user or loading status changes
 
-  if (error) {
-    return <div>Tasks Failed to Load. Ran into error: {error}</div>; // Display error if fetch fails
-  }
+  if (loading) return <div>Loading user data...</div>;
+  if (error) return <div>Tasks Failed to Load. Ran into error: {error}</div>;
 
   return (
     <div>
-      <h1>Tasks</h1>
-      {tasks.length > 0 ? (
-        <TaskList tasks={tasks} setTasks={setTasks}/>
-      ) : (
-        <p>Loading tasks...</p> // Display a loading message while fetching
+      {/* Tasks Toggle Slider: */}
+      <TasksToggle onToggle={view => {
+        fetchTasks(view);
+        setCurrentView(view);
+      }} />
+
+      {/* Task List: */}
+      {loading ? (
+        <p>Loading tasks...</p>
+      ) : tasks.length > 0 ? (
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      ) : ( // If no tasks exist, display a UX friendly message
+        <div style={{
+          textAlign: 'center',
+          margin: '2rem',
+          color: '#666'
+        }}>
+          <p>No tasks yet, feel free to assign!</p>
+        </div>
       )}
-      {/* Add Task View */}
-      <AddTaskView setTasks={setTasks} />
+
+      {/* Add Task View: */}
+      <AddTaskView
+        setTasks={setTasks}
+        refetchTasks={() => fetchTasks(currentView)}
+      />
     </div>
   );
 }

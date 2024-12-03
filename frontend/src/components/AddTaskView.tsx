@@ -3,16 +3,18 @@
 import React, { useEffect, useState } from "react";
 import EmployeeDropdown from '@/components/EmployeeDropDown';
 import { SingleValue } from 'react-select';
-import { Employee } from '@/util/ZodTypes';
+import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
+import { taskViewType } from "./TasksToggle";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  refetchTasks: () => void;
 };
 
-export default function AddTaskView({ setTasks }: AddTaskViewProps) {
+export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps) {
   const [isViewOpen, setIsViewOpen] = useState(false); // Toggle Add Task view
   const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
   const DEFAULT_ADD_TASK_VALUES = { // Ensures default add task values so that adding a task doesn't fail if no fields are filled
@@ -42,7 +44,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
   };
 
   const handleAddTask = () => {
-    const finalTaskData= { // Ensures default add task values are utilized for API request if no fields are filled
+    const finalTaskData = { // Ensures default add task values are utilized for API request if no fields are filled
       ...taskData,
       description: taskData.description || DEFAULT_ADD_TASK_VALUES.description,
       type: taskData.type || DEFAULT_ADD_TASK_VALUES.type,
@@ -59,7 +61,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
     })
       .then((response) => response.json())
       .then((newTask: Task) => {
-        setTasks((prevTasks) => [...prevTasks, newTask]); // Add new task
+        setTasks((prevTasks) => Array.isArray(prevTasks) ? [...prevTasks, newTask] : [newTask]);
         setTaskData({
           status: "",
           due_date: new Date().toISOString().split("T")[0], // Default to today's date
@@ -68,6 +70,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
           assignee_id: 0,
         }); // Reset form
         setIsViewOpen(false); // Close the view
+        refetchTasks(); // Refetch tasks to ensure the new task is displayed in the correct view
       })
       .catch((error) => {
         console.error("Error creating task:", error);
@@ -76,12 +79,10 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
 
   const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
     if (assignee) {
-      setSelectedAssignee(assignee.value);
-
-      // Update assignee_id since valid employee has been selected
+      setSelectedAssignee(assignee);
       setTaskData((prev) => ({
         ...prev,
-        assignee_id: assignee.value.employee_id,
+        assignee_id: assignee.employee_id,
       }));
     } else {
       setSelectedAssignee(null);
@@ -135,7 +136,7 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
               onStatusSelect={(status) =>
                 setTaskData((prev) => ({ ...prev, status }))
               }
-              currentStatus={taskData.status}
+              currentStatus={taskData.status as TaskStatus}
             />
           </div>
           <input
@@ -178,7 +179,10 @@ export default function AddTaskView({ setTasks }: AddTaskViewProps) {
             }}
           />
           <div>
-            <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} />
+            <EmployeeDropdown
+              onEmployeeSelect={handleSelectAssignee}
+              showSubordinatesOnly={true}
+            />
           </div>
           <button
             onClick={handleAddTask}
