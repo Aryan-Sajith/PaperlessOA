@@ -22,7 +22,6 @@ export default function hierarchy() {
 
 
     const handleSelect = (employee: SingleValue<Employee>) => {
-        alert(`Selected: ${JSON.stringify(employee)}`);
         if (employee) {
             // Employee is selected
             setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
