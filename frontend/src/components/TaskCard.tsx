@@ -13,7 +13,8 @@ type TaskCardProps = {
     description: string;
     type: string;
     due_date: string;
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>; // Function to update tasks state
+    refetchTasks: () => void; // Function to refetch tasks so that the UI updates after editing
 };
 
 export default function TaskCard({
@@ -24,7 +25,8 @@ export default function TaskCard({
     description,
     type,
     due_date,
-    setTasks
+    setTasks,
+    refetchTasks
 }: Readonly<TaskCardProps>) {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -121,6 +123,7 @@ export default function TaskCard({
                         task_to_update={{ id, assignee_id, status, description, type, due_date }}
                         setTasks={setTasks}
                         setIsEditing={setIsEditing}
+                        refetchTasks={refetchTasks}
                     />
                 </div>
             )}

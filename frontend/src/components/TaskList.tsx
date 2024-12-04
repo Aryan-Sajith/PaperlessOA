@@ -4,13 +4,15 @@ import TaskCard from "./TaskCard";
 import { API_BASE } from "@/util/path";
 
 type TaskListProps = {
-    tasks: Task[];
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    tasks: Task[]; // List of tasks to display
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>; // Function to update tasks state
+    refetchTasks: () => void; // Function to refetch tasks so that the UI updates after editing
 };
 
 export default function TaskList({
     tasks,
-    setTasks
+    setTasks,
+    refetchTasks
 }: TaskListProps) {
     // State to store assignee names instead of utilizing IDs in the UI
     const [assigneeNames, setAssigneeNames] = useState<Record<number, string>>({});
@@ -72,6 +74,7 @@ export default function TaskList({
                     type={task.type}
                     due_date={task.due_date}
                     setTasks={setTasks}
+                    refetchTasks={refetchTasks}
                 />
             ))}
         </div>

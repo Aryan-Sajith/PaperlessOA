@@ -9,12 +9,13 @@ import { CalendarDays, FileText, Save, Type } from "lucide-react";
 import TaskTypeDropdown from "./TaskTypeDropdown";
 
 type editTaskViewProps = {
-    task_to_update: Task;
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+    task_to_update: Task; // Specifies the task to update
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>; // Function to update tasks state
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>; // Function to toggle edit view
+    refetchTasks: () => void; // Function to refetch tasks so that the UI updates after editing
 };
 
-export default function EditTaskView({ task_to_update, setTasks, setIsEditing }: editTaskViewProps) {
+export default function EditTaskView({ task_to_update, setTasks, setIsEditing, refetchTasks }: editTaskViewProps) {
     const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
     const [taskData, setTaskData] = useState<Omit<Task, "id">>({
         status: task_to_update.status,
@@ -52,6 +53,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                     type: "",
                     assignee_id: 0,
                 }); // Reset form
+                refetchTasks(); // Refetch tasks to update UI
                 setIsEditing(false); // Close the view
             })
             .catch((error) => {

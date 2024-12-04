@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee, TaskStatus, TaskType } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
-import { taskViewType } from "./TasksToggle";
 import { CalendarDays, FileText, Plus, Type, X } from "lucide-react";
 import TaskTypeDropdown from "./TaskTypeDropdown";
 
