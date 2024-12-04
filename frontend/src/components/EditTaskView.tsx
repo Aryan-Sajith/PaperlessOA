@@ -5,6 +5,7 @@ import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
+import { CalendarDays, FileText, Save, Type } from "lucide-react";
 
 type editTaskViewProps = {
     task_to_update: Task;
@@ -59,14 +60,13 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
 
     const handleSelectAssignee = (assignee: SingleValue<Employee>) => {
         if (assignee) {
-            setSelectedAssignee(assignee.value);
-
+            setSelectedAssignee(assignee);
             // Update assignee_id since valid employee has been selected
             setTaskData((prev) => ({
                 ...prev,
-                assignee_id: assignee.value.employee_id,
+                assignee_id: assignee.employee_id,
             }));
-        } else {
+        } else { // Reset assignee_id if no employee is selected
             setSelectedAssignee(null);
             setTaskData((prev) => ({
                 ...prev,
@@ -76,88 +76,89 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
     };
 
     return (
-        <div>
-            {/* Edit Task View */}
-            <div
-                style={{
-                    // position: "fixed",
-                    bottom: "100px",
-                    right: "20px",
-                    width: "300px",
-                    padding: "15px",
-                    backgroundColor: "white",
-                    borderRadius: "10px",
-                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                }}
-            >
-                <div>
-                    <TaskStatusDropdown
-                        onStatusSelect={(status) =>
-                            setTaskData((prev) => ({ ...prev, status }))
-                        }
-                        currentStatus={taskData.status as TaskStatus}
+        // Modern card container with consistent shadow and rounded corners
+        <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
+            {/* Status dropdown wrapper with improved spacing */}
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <TaskStatusDropdown
+                    onStatusSelect={(status) =>
+                        setTaskData((prev) => ({ ...prev, status }))
+                    }
+                    currentStatus={taskData.status as TaskStatus}
+                />
+            </div>
+
+            {/* Date input group with icon */}
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Due Date</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <CalendarDays className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        type="date"
+                        name="due_date"
+                        value={taskData.due_date}
+                        onChange={handleInputChange}
+                        className="py-2 pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
                     />
                 </div>
-                <input
-                    type="date"
-                    name="due_date"
-                    placeholder="Due Date"
-                    value={taskData.due_date}
-                    onChange={handleInputChange}
-                    style={{
-                        padding: "8px",
-                        fontSize: "14px",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                    }}
-                />
-                <input
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    value={taskData.description}
-                    onChange={handleInputChange}
-                    style={{
-                        padding: "8px",
-                        fontSize: "14px",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                    }}
-                />
-                <input
-                    type="text"
-                    name="type"
-                    placeholder="Type"
-                    value={taskData.type}
-                    onChange={handleInputChange}
-                    style={{
-                        padding: "8px",
-                        fontSize: "14px",
-                        border: "1px solid #ccc",
-                        borderRadius: "5px",
-                    }}
-                />
-                <div>
-                    <EmployeeDropdown onEmployeeSelect={handleSelectAssignee} assignee_id={task_to_update.assignee_id} />
-                </div>
-                <button
-                    onClick={handleEditTask}
-                    style={{
-                        backgroundColor: "#2ecc71",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "5px",
-                        padding: "10px",
-                        fontSize: "16px",
-                        cursor: "pointer",
-                    }}
-                >
-                    ✓ Update Task
-                </button>
             </div>
+
+            {/* Description input group with icon */}
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FileText className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        type="text"
+                        name="description"
+                        value={taskData.description}
+                        onChange={handleInputChange}
+                        className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
+                        placeholder="Enter task description"
+                    />
+                </div>
+            </div>
+
+            {/* Type input group with icon */}
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Type</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Type className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        type="text"
+                        name="type"
+                        value={taskData.type}
+                        onChange={handleInputChange}
+                        className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
+                        placeholder="Enter task type"
+                    />
+                </div>
+            </div>
+
+            {/* Employee dropdown wrapper */}
+            <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Assignee</label>
+                <EmployeeDropdown
+                    onEmployeeSelect={handleSelectAssignee}
+                    assignee_id={task_to_update.assignee_id}
+                />
+            </div>
+
+            {/* Update button with icon and hover effect */}
+            <button
+                onClick={handleEditTask}
+                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200"
+            >
+                <Save className="h-5 w-5" />
+                Update Task
+            </button>
         </div>
     );
 }
