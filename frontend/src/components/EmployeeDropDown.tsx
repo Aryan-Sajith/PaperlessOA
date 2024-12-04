@@ -17,14 +17,14 @@ interface EmployeeDropdownProps {
     onEmployeeSelect: (employee: SingleValue<Employee>) => void;
     assignee_id?: number; // If provided, will select this employee by default
     employees?: Employee[]; // If provided, will use these employees instead of fetching
-    showSubordinatesOnly?: boolean; // Set true if you want to show subordinates and the current user
+    showSubordinatesAndUser?: boolean; // Set true if you want to show subordinates and the current user
 }
 
 const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
     onEmployeeSelect,
     assignee_id,
     employees: providedEmployees,
-    showSubordinatesOnly = false
+    showSubordinatesAndUser = false
 }) => {
     const [employees, setEmployees] = useState<Array<{
         value: Employee;
@@ -56,7 +56,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
                     let url = `${API_BASE}/employees`;
 
                     // Only fetch subordinates if explicitly requested and user is loaded
-                    if (showSubordinatesOnly && !loading && user) {
+                    if (showSubordinatesAndUser && !loading && user) {
                         url = `${API_BASE}/manager/${user.employee_id}/subordinates`;
                     }
 
@@ -65,8 +65,8 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
 
                     let employeeList = [];
 
-                    // Always include current user if authenticated
-                    if (!loading && user) {
+                    // Include current user if showing subordinates for task assignment purposes
+                    if (!loading && user && showSubordinatesAndUser) {
                         employeeList.push({ value: user, label: user.name });
                     }
 
@@ -97,7 +97,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
 
             fetchEmployees();
         }
-    }, [loading, user, providedEmployees, assignee_id, showSubordinatesOnly]);
+    }, [loading, user, providedEmployees, assignee_id, showSubordinatesAndUser]);
 
     return (
         <Select

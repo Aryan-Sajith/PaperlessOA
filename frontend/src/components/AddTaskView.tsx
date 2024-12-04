@@ -219,7 +219,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
               <div className="relative">
                 <EmployeeDropdown
                   onEmployeeSelect={handleSelectAssignee}
-                  showSubordinatesOnly={true}
+                  showSubordinates={true}
                 />
               </div>
             </div>
