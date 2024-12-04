@@ -1,7 +1,7 @@
 export const SidebarData = [
   {
-    title: "Home",
-    path: "/",
+    title: "Profile",
+    path: "/profile",
   },
   {
     title: "Hierarchy",
@@ -23,8 +23,5 @@ export const SidebarData = [
     title: "Analytics",
     path: "/analytics",
   },
-  {
-    title: "Profile",
-    path: "/profile",
-  },
+  
 ];
