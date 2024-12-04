@@ -66,9 +66,11 @@ export default function TaskCard({
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
+                                {/* Task Status: */}
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
                                     {status}
                                 </span>
+                                {/* Task Type: */}
                                 <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                                     {type}
                                 </span>
