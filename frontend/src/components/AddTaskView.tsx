@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
-import { Employee, TaskStatus } from '@/util/ZodTypes';
+import { Employee, TaskStatus, TaskType } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
-import { taskViewType } from "./TasksToggle";
 import { CalendarDays, FileText, Plus, Type, X } from "lucide-react";
+import TaskTypeDropdown from "./TaskTypeDropdown";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -67,7 +67,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
           status: "",
           due_date: new Date().toISOString().split("T")[0], // Default to today's date
           description: "",
-          type: "",
+          type: "Other", // Default to "Other" task type
           assignee_id: 0,
         }); // Reset form
         setIsViewOpen(false); // Close the view
@@ -188,27 +188,15 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
               </div>
             </div>
 
-            {/* Type Input Group */}
+            {/* Task type dropdown wrapper with improved spacing */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Type
-              </label>
-              <div className="relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Type className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  name="type"
-                  value={taskData.type}
-                  onChange={handleInputChange}
-                  placeholder="Enter task type"
-                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
-                                         focus:ring-blue-500 focus:border-blue-500 
-                                         transition-colors duration-200
-                                         sm:text-sm h-10"
-                />
-              </div>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <TaskTypeDropdown
+                onTypeSelect={type =>
+                  setTaskData((prev) => ({ ...prev, type }))
+                }
+                currentType={taskData.type as TaskType}
+              />
             </div>
 
             {/* Employee Dropdown Section */}

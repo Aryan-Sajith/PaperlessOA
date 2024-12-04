@@ -64,7 +64,7 @@ export default function TasksPage() {
       {loading ? (
         <p>Loading tasks...</p>
       ) : tasks.length > 0 ? (
-        <TaskList tasks={tasks} setTasks={setTasks} />
+        <TaskList tasks={tasks} setTasks={setTasks} refetchTasks={() => fetchTasks(currentView)} />
       ) : ( // If no tasks exist, display a UX friendly message
         <div style={{
           textAlign: 'center',

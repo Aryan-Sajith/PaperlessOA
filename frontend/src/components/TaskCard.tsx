@@ -13,7 +13,8 @@ type TaskCardProps = {
     description: string;
     type: string;
     due_date: string;
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>; // Function to update tasks state
+    refetchTasks: () => void; // Function to refetch tasks so that the UI updates after editing
 };
 
 export default function TaskCard({
@@ -24,7 +25,8 @@ export default function TaskCard({
     description,
     type,
     due_date,
-    setTasks
+    setTasks,
+    refetchTasks
 }: Readonly<TaskCardProps>) {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -66,9 +68,11 @@ export default function TaskCard({
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
+                                {/* Task Status: */}
                                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
                                     {status}
                                 </span>
+                                {/* Task Type: */}
                                 <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                                     {type}
                                 </span>
@@ -119,6 +123,7 @@ export default function TaskCard({
                         task_to_update={{ id, assignee_id, status, description, type, due_date }}
                         setTasks={setTasks}
                         setIsEditing={setIsEditing}
+                        refetchTasks={refetchTasks}
                     />
                 </div>
             )}

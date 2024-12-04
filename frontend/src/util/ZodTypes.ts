@@ -20,3 +20,17 @@ export const taskStatus = z.enum([
 ])
 
 export type TaskStatus = z.infer<typeof taskStatus>;
+
+export const taskType = z.enum([
+    "Administrative",
+    "Finance",
+    "HR",
+    "IT",
+    "Communication",
+    "Facitilies",
+    "Projects",
+    "Legal",
+    "Other"
+])
+
+export type TaskType = z.infer<typeof taskType>;

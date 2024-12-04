@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
-import { Employee, TaskStatus } from '@/util/ZodTypes';
+import { Employee, TaskStatus, TaskType } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
 import { CalendarDays, FileText, Save, Type } from "lucide-react";
+import TaskTypeDropdown from "./TaskTypeDropdown";
 
 type editTaskViewProps = {
-    task_to_update: Task;
-    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+    task_to_update: Task; // Specifies the task to update
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>; // Function to update tasks state
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>; // Function to toggle edit view
+    refetchTasks: () => void; // Function to refetch tasks so that the UI updates after editing
 };
 
-export default function EditTaskView({ task_to_update, setTasks, setIsEditing }: editTaskViewProps) {
+export default function EditTaskView({ task_to_update, setTasks, setIsEditing, refetchTasks }: editTaskViewProps) {
     const [selectedAssignee, setSelectedAssignee] = useState<Employee | null>(null);
     const [taskData, setTaskData] = useState<Omit<Task, "id">>({
         status: task_to_update.status,
@@ -51,6 +53,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
                     type: "",
                     assignee_id: 0,
                 }); // Reset form
+                refetchTasks(); // Refetch tasks to update UI
                 setIsEditing(false); // Close the view
             })
             .catch((error) => {
@@ -125,21 +128,15 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
             </div>
 
             {/* Type input group with icon */}
+            {/* Task type dropdown wrapper with improved spacing */}
             <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Type</label>
-                <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Type className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                        type="text"
-                        name="type"
-                        value={taskData.type}
-                        onChange={handleInputChange}
-                        className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
-                        placeholder="Enter task type"
-                    />
-                </div>
+                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <TaskTypeDropdown
+                    onTypeSelect={type =>
+                        setTaskData((prev) => ({ ...prev, type }))
+                    }
+                    currentType={taskData.type as TaskType}
+                />
             </div>
 
             {/* Employee dropdown wrapper */}
