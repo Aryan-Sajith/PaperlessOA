@@ -1,25 +1,48 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import DropdownMenu from "@/components/Analytics_Dropdown";
 import TaskBar from "@/components/Analytics_TaskBar";
 import PieChart from "@/components/PieChart";
+import { useAuth } from "@/hooks/useAuth";
 import { API_BASE } from "@/util/path";
 
 export default function Analytics() {
-  const [workflows, setWorkflows] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [completedCount, setCompletedCount] = useState(0);
+  const [inProgressCount, setInProgressCount] = useState(0);
+  const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
-    fetch(`${API_BASE}/workflows`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => setWorkflows(data))
-      .catch((error) => console.error("Fetch error:", error));
-  }, []);
+    if (!loading && user){
+        // fetch(`${API_BASE}/tasks/employee/${user.employee_id}`)
+        fetch(`${API_BASE}/tasks`)
+        .then((response) => {
+            console.log(response);
+            if (response.status == 404){
+                return "";
+            }
+            else if (!response.ok) {
+            throw new Error("Network response was not ok " + response.statusText);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            setTasks(data);
+            const completed = data.filter((task: any) => task.status === "Completed").length;
+            const inProgress = data.filter((task: any) => task.status === "In Progress").length;
+            setCompletedCount(completed);
+            setInProgressCount(inProgress);
+          })
+        .then(console.log)
+        .catch((error) => console.error("Fetch error:", error));
+    }
+  }, [user, loading]);
+
+  console.log("workflows"); 
+  for (let w of tasks){
+    console.log(w);
+  }
 
   return (
     <div style={pageStyle}>
@@ -32,18 +55,36 @@ export default function Analytics() {
         {/* Inline DropdownMenu and text */}
         <div style={inlineContainerStyle}>
           <DropdownMenu type="task" />
-          <span style={textStyle}>Tasks completed within the past</span>
+          <span style={textStyle}>Tasks assigned within the past</span>
           <DropdownMenu type="time"/>
         </div>
 
         {/* TaskBar aligned below */}
         <div style={taskbarWrapperStyle}>
-          <TaskBar completedTasks={10} pendingTasks={5} />
+          <TaskBar completedTasks={completedCount} pendingTasks={inProgressCount} />
         </div>
 
         {/* Pie Chart */}
         <div style={chartWrapperStyle}>
-          <PieChart completedTasks={10} pendingTasks={5} />
+          <PieChart completedTasks={completedCount} pendingTasks={inProgressCount} />
+        </div>
+
+        {/* Display Tasks */}
+        <div style={workflowListStyle}>
+          <h2 style={subTitleStyle}>Tasks</h2>
+          {tasks.length > 0 ? (
+            <ul style={listStyle}>
+              {tasks.map((workflow) => (
+                <li key={workflow.id} style={listItemStyle}>
+                  {workflow.name}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={textStyle}>
+              {loading ? "Loading tasks..." : "No tasks found."}
+            </p>
+          )}
         </div>
 
       </div>

@@ -49,7 +49,7 @@ export default function HomePage() {
         <p><Link href="/tasks" className="text-blue-400 underline">Tasks page</Link></p>
         <p><Link href="/workflows" className="text-blue-400 underline">Workflow page</Link></p>
         <p><Link href="/profile" className="text-blue-400 underline">Profile Page</Link></p>
-        <p>Analytics page <Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
+        <p><Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
       </div>
     </div>
   );
