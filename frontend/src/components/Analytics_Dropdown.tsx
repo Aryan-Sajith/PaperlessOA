@@ -2,16 +2,17 @@
 
 import React, { useState } from 'react';
 
-type Option = "All" | "Workflow" | "Pending" | "Day" | "Week" | "Year";
+type Option = "All" | "Workflow" | "Pending" | "Past Day"| "Past Week"| "Past Month"| "Next Day"| "Next Week"| "Next Month";
 
 interface DropdownMenuProps {
   type: "task" | "time"; // Accept either "task" or "time"
+  onChange?: (selectedOption: Option) => void; // Optional callback for changes
 }
 
-export default function DropdownMenu({type}: DropdownMenuProps) {
+export default function DropdownMenu({type, onChange}: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const options: Option[] = type === "task" ? ["All", "Workflow", "Pending"] : ["Day", "Week", "Year"];
+  const options: Option[] = type === "task" ? ["All", "Workflow", "Pending"] : ["Past Day", "Past Week", "Past Month", "Next Day", "Next Week", "Next Month"];
 
   const [selectedOption, setSelectedOption] = useState<Option>(options[0]);
 
@@ -20,6 +21,9 @@ export default function DropdownMenu({type}: DropdownMenuProps) {
   const handleOptionClick = (option: Option) => {
     setSelectedOption(option);
     setIsOpen(false);
+    if (onChange) {
+      onChange(option); // Notify parent component
+    }
   };
 
   return (

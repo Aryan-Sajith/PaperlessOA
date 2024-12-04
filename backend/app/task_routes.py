@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 from .models import Employee, EmployeeManager, Task, db
 from datetime import datetime
@@ -23,6 +24,69 @@ def get_tasks_by_id(employee_id):
         return jsonify(tasks_list)
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
+    
+def get_tasks_by_id_from_time_frame(employee_id, start_date, end_date):
+    """
+    Helper Function for selecting date range of tasks
+    """
+    # Query tasks for the employee
+    tasks = Task.query.filter(Task.assignee_id == employee_id).all()
+
+    if tasks:
+        # Filter tasks within the date range
+        filtered_tasks = [
+            task.to_dict() for task in tasks
+            if 'due_date' in task.to_dict() and start_date <= datetime.strptime(task.to_dict()['due_date'], "%Y-%m-%d").date() <= end_date
+        ]
+
+        if filtered_tasks:
+            return jsonify(filtered_tasks)
+        else:
+            return jsonify({"message": "No tasks found within the specified time frame"}), 404
+    else:
+        return jsonify({"message": "No tasks found for this employee"}), 404
+    
+# Past Day
+@task_bp.route('/tasks/employee/<int:employee_id>/past_day', methods=['GET'])
+def get_tasks_past_day(employee_id):
+    today = datetime.now().date()
+    yesterday = today - timedelta(days=1)
+    return get_tasks_by_id_from_time_frame(employee_id, yesterday, today)
+
+# Past Week
+@task_bp.route('/tasks/employee/<int:employee_id>/past_week', methods=['GET'])
+def get_tasks_past_week(employee_id):
+    today = datetime.now().date()
+    past_week = today - timedelta(days=7)
+    return get_tasks_by_id_from_time_frame(employee_id, past_week, today)
+
+# Past Month
+@task_bp.route('/tasks/employee/<int:employee_id>/past_month', methods=['GET'])
+def get_tasks_past_month(employee_id):
+    today = datetime.now().date()
+    past_month = today - timedelta(days=30)
+    return get_tasks_by_id_from_time_frame(employee_id, past_month, today)
+
+# Next Day
+@task_bp.route('/tasks/employee/<int:employee_id>/next_day', methods=['GET'])
+def get_tasks_next_day(employee_id):
+    today = datetime.now().date()
+    tomorrow = today + timedelta(days=1)
+    return get_tasks_by_id_from_time_frame(employee_id, today, tomorrow)
+
+# Next Week
+@task_bp.route('/tasks/employee/<int:employee_id>/next_week', methods=['GET'])
+def get_tasks_next_week(employee_id):
+    today = datetime.now().date()
+    next_week = today + timedelta(days=7)
+    return get_tasks_by_id_from_time_frame(employee_id, today, next_week)
+
+# Next Month
+@task_bp.route('/tasks/employee/<int:employee_id>/next_month', methods=['GET'])
+def get_tasks_next_month(employee_id):
+    today = datetime.now().date()
+    next_month = today + timedelta(days=30)
+    return get_tasks_by_id_from_time_frame(employee_id, today, next_month)
 
 @task_bp.route('/tasks/manager/<int:manager_id>', methods=['GET'])
 def get_subordinate_tasks(manager_id):

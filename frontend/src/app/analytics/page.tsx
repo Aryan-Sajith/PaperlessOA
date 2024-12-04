@@ -11,51 +11,64 @@ export default function Analytics() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [inProgressCount, setInProgressCount] = useState(0);
+  const [timeFrame, setTimeFrame] = useState("past_day");
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
-    if (!loading && user){
-        fetch(`${API_BASE}/tasks/employee/${user.employee_id}`)
-        .then((response) => {
-            console.log(response);
-            if (response.status == 404){
-                return "";
-            }
-            else if (!response.ok) {
-            throw new Error("Network response was not ok " + response.statusText);
-            }
-            return response.json();
-        })
-        .then((data) => {
-            setTasks(data);
-            const completed = data.filter((task: any) => task.status === "Completed").length;
-            const inProgress = data.filter((task: any) => task.status === "In Progress").length;
-            setCompletedCount(completed);
-            setInProgressCount(inProgress);
-          })
-        .then(console.log)
-        .catch((error) => console.error("Fetch error:", error));
+    if (!loading && user) {
+      fetchTasks(timeFrame);
     }
-  }, [user, loading]);
+  }, [user, loading, timeFrame]);
 
-  console.log("workflows"); 
-  for (let w of tasks){
-    console.log(w);
-  }
+  const fetchTasks = (selectedTimeFrame: string) => {
+    fetch(`${API_BASE}/tasks/employee/${user.employee_id}/${selectedTimeFrame}`)
+      .then((response) => {
+        if (response.status === 404) {
+          return [];
+        } else if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setTasks(data);
+        const completed = data.filter((task: any) => task.status === "Completed").length;
+        const inProgress = data.filter((task: any) => task.status === "In Progress").length;
+        setCompletedCount(completed);
+        setInProgressCount(inProgress);
+      })
+      .catch((error) => console.error("Fetch error:", error));
+  };
+
+  const handleTimeFrameChange = (newTimeFrame: string) => {
+    // Map human-readable options to backend API parameters
+    const timeFrameMapping: Record<string, string> = {
+      "Past Day": "past_day",
+      "Past Week": "past_week",
+      "Past Month": "past_month",
+      "Next Day": "next_day",
+      "Next Week": "next_week",
+      "Next Month": "next_month",
+    };
+    setTimeFrame(timeFrameMapping[newTimeFrame]);
+  };
 
   return (
     <div style={pageStyle}>
       <h1 style={titleStyle}>Analytics Dashboard</h1>
       <p style={descriptionStyle}>
-        Explore tasks and workflows to gain insights into project performance.
+        Explore tasks to gain insights into project performance.
       </p>
 
       <div style={cardStyle}>
         {/* Inline DropdownMenu and text */}
         <div style={inlineContainerStyle}>
           <DropdownMenu type="task" />
-          <span style={textStyle}>Tasks assigned within the past</span>
-          <DropdownMenu type="time"/>
+          <span style={textStyle}>Tasks due in</span>
+          <DropdownMenu
+            type="time"
+            onChange={handleTimeFrameChange} // Handle dropdown change
+          />
         </div>
 
         {/* TaskBar aligned below */}
@@ -73,9 +86,9 @@ export default function Analytics() {
           <h2 style={subTitleStyle}>Tasks</h2>
           {tasks.length > 0 ? (
             <ul style={listStyle}>
-              {tasks.map((workflow) => (
-                <li key={workflow.id} style={listItemStyle}>
-                  {workflow.name}
+              {tasks.map((task) => (
+                <li key={task.id} style={listItemStyle}>
+                  {task.description}
                 </li>
               ))}
             </ul>
