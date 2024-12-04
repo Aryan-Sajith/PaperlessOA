@@ -41,15 +41,15 @@ export default function HomePage() {
 
   // Since user is authenticated and loading is complete, render the home page
   return (
-    <div className="p-8">
+    <div>
       {/* Home Page Content */}
-      <h1 className="text-2xl font-bold mb-6">Home Page</h1>
+      <h1 className="text-2xl font-bold mb-6">Home</h1>
       <div className="space-y-4">
         <p><Link href="/hierarchy" className="text-blue-400 underline">Hierarchy page</Link></p>
         <p><Link href="/tasks" className="text-blue-400 underline">Tasks page</Link></p>
         <p><Link href="/workflows" className="text-blue-400 underline">Workflow page</Link></p>
         <p><Link href="/profile" className="text-blue-400 underline">Profile Page</Link></p>
-        <p>Analytics page <Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
+        <p><Link href="/analytics" className="text-blue-400 underline">Analytics Page</Link></p>
       </div>
     </div>
   );
