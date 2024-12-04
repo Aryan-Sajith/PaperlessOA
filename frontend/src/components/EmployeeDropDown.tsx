@@ -24,6 +24,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
     onEmployeeSelect,
     assignee_id,
     employees: providedEmployees,
+    showSubordinatesOnly = false
 }) => {
     const [employees, setEmployees] = useState<Array<{
         value: Employee;
@@ -48,34 +49,46 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
                 );
                 setSelectedEmployee(foundEmployee || null);
             }
-        } else if (!loading) { // Only fetch tasks main user data is loaded
+        } else {
             const fetchEmployees = async () => {
                 try {
-                    let url = API_BASE + '/employees';
-                    if (!loading && user) {
+                    // Default to fetching all employees
+                    let url = `${API_BASE}/employees`;
+
+                    // Only fetch subordinates if explicitly requested and user is loaded
+                    if (showSubordinatesOnly && !loading && user) {
                         url = `${API_BASE}/manager/${user.employee_id}/subordinates`;
-
-                        const response = await fetch(url);
-                        const data = await response.json();
-
-                        // Handle case where no subordinates exist
-                        const employeeList = [{ value: user, label: user.name }]; // Ensure user can assign tasks to themselves
-
-                        if (Array.isArray(data)) { // Add subordinates to employee dropdown if they exist
-                            for (const employee of data) {
-                                employeeList.push({ value: employee, label: employee.name });
-                            }
-                        }
-                        setEmployees(employeeList);
-                        if (assignee_id) {
-                            const foundEmployee = employeeList.find(emp =>
-                                emp.value.employee_id === assignee_id
-                            );
-                            setSelectedEmployee(foundEmployee || null);
-                        }
                     }
-                    else {
-                        console.error(`User not loaded yet`);
+
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    let employeeList = [];
+
+                    // Always include current user if authenticated
+                    if (!loading && user) {
+                        employeeList.push({ value: user, label: user.name });
+                    }
+
+                    // Add fetched employees
+                    if (Array.isArray(data)) {
+                        employeeList = [
+                            ...employeeList,
+                            ...data.map(emp => ({
+                                value: emp,
+                                label: emp.name
+                            }))
+                        ];
+                    }
+
+                    setEmployees(employeeList);
+
+                    // Set selected employee if assignee_id provided
+                    if (assignee_id) {
+                        const foundEmployee = employeeList.find(emp =>
+                            emp.value.employee_id === assignee_id
+                        );
+                        setSelectedEmployee(foundEmployee || null);
                     }
                 } catch (error) {
                     console.error('Error fetching employees:', error);
@@ -84,8 +97,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
 
             fetchEmployees();
         }
-    }, [loading]);
-
+    }, [loading, user, providedEmployees, assignee_id, showSubordinatesOnly]);
 
     return (
         <Select
@@ -97,7 +109,6 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
             }}
             placeholder="Search for an employee"
             isSearchable
-            styles={customStyles}
         />
     );
 };

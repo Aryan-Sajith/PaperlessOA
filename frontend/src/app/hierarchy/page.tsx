@@ -19,15 +19,15 @@ import { set } from 'zod';
 export default function hierarchy() {
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
     const [subordinates, setSubordinates] = useState<Employee[] | null>(null);
-    
+
 
     const handleSelect = (employee: SingleValue<Employee>) => {
         if (employee) {
             // Employee is selected
-            setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+            setSelectedEmployee(employee); // This is underlined but its not an error, it is just react-select being weird...
 
             // Fetch subordinates
-            fetch(API_BASE + '/manager/' + employee.value.employee_id + '/subordinates')
+            fetch(API_BASE + '/manager/' + employee.employee_id + '/subordinates')
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
@@ -39,15 +39,15 @@ export default function hierarchy() {
                 .catch(error => {
                     console.error('Error fetching subordinates:', error);
                 });
-            }
+        }
 
     }
 
 
     return (
         <div>
-            <EmployeeDropdown onEmployeeSelect={handleSelect}/>            
-            {selectedEmployee && <EmployeeBox employee={selectedEmployee} subordinates={subordinates}/>}    
+            <EmployeeDropdown onEmployeeSelect={handleSelect} />
+            {selectedEmployee && <EmployeeBox employee={selectedEmployee} subordinates={subordinates ?? []} />}
         </div>
     );
 }
