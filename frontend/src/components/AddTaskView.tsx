@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import EmployeeDropdown from '@/components/EmployeeDropDown';
+import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
@@ -217,9 +217,9 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
                 Assign To
               </label>
               <div className="relative">
-                <EmployeeDropdown
+                <AddNEditTaskEmployeeDropDown
                   onEmployeeSelect={handleSelectAssignee}
-                  showSubordinates={true}
+                  showSubordinatesAndUser={true}
                 />
               </div>
             </div>

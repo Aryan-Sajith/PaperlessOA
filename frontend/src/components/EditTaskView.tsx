@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import EmployeeDropdown from '@/components/EmployeeDropDown';
+import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
@@ -145,9 +145,10 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
             {/* Employee dropdown wrapper */}
             <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">Assignee</label>
-                <EmployeeDropdown
+                <AddNEditTaskEmployeeDropDown
                     onEmployeeSelect={handleSelectAssignee}
                     assignee_id={task_to_update.assignee_id}
+                    showSubordinatesAndUser={true}
                 />
             </div>
 
