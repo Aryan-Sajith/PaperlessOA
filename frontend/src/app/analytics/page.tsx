@@ -81,24 +81,6 @@ export default function Analytics() {
           <PieChart completedTasks={completedCount} pendingTasks={inProgressCount} />
         </div>
 
-        {/* Display Tasks */}
-        <div style={workflowListStyle}>
-          <h2 style={subTitleStyle}>Tasks</h2>
-          {tasks.length > 0 ? (
-            <ul style={listStyle}>
-              {tasks.map((task) => (
-                <li key={task.id} style={listItemStyle}>
-                  {task.description}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p style={textStyle}>
-              {loading ? "Loading tasks..." : "No tasks found."}
-            </p>
-          )}
-        </div>
-
       </div>
     </div>
   );
