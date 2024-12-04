@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import DropdownMenu from "@/components/Analytics_Dropdown";
 import TaskBar from "@/components/Analytics_TaskBar";
 import PieChart from "@/components/PieChart";
@@ -12,6 +12,7 @@ export default function Analytics() {
   const [completedCount, setCompletedCount] = useState(0);
   const [inProgressCount, setInProgressCount] = useState(0);
   const [timeFrame, setTimeFrame] = useState("past_day");
+  const [noTasksFound, setNoTasksFound] = useState(false); // Tracks whether no tasks are found
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
@@ -24,10 +25,12 @@ export default function Analytics() {
     fetch(`${API_BASE}/tasks/employee/${user.employee_id}/${selectedTimeFrame}`)
       .then((response) => {
         if (response.status === 404) {
+          setNoTasksFound(true);
           return [];
         } else if (!response.ok) {
           throw new Error("Network response was not ok " + response.statusText);
         }
+        setNoTasksFound(false);
         return response.json();
       })
       .then((data) => {
@@ -64,23 +67,29 @@ export default function Analytics() {
         {/* Inline DropdownMenu and text */}
         <div style={inlineContainerStyle}>
           <DropdownMenu type="task" />
-          <span style={textStyle}>Tasks due in</span>
+          <span style={textStyle}>Tasks due in the </span>
           <DropdownMenu
             type="time"
             onChange={handleTimeFrameChange} // Handle dropdown change
           />
         </div>
 
-        {/* TaskBar aligned below */}
-        <div style={taskbarWrapperStyle}>
-          <TaskBar completedTasks={completedCount} pendingTasks={inProgressCount} />
-        </div>
+        {/* Conditional Rendering */}
+        {noTasksFound ? (
+          <p style={noTasksFoundStyle}>No tasks found.</p>
+        ) : (
+          <>
+            {/* TaskBar aligned below */}
+            <div style={taskbarWrapperStyle}>
+              <TaskBar completedTasks={completedCount} pendingTasks={inProgressCount} />
+            </div>
 
-        {/* Pie Chart */}
-        <div style={chartWrapperStyle}>
-          <PieChart completedTasks={completedCount} pendingTasks={inProgressCount} />
-        </div>
-
+            {/* Pie Chart */}
+            <div style={chartWrapperStyle}>
+              <PieChart completedTasks={completedCount} pendingTasks={inProgressCount} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -137,25 +146,9 @@ const chartWrapperStyle: React.CSSProperties = {
   marginBottom: "20px",
 };
 
-const workflowListStyle: React.CSSProperties = {
+const noTasksFoundStyle: React.CSSProperties = {
+  fontSize: "16px",
+  color: "#dc3545",
+  textAlign: "center",
   marginTop: "20px",
-};
-
-const subTitleStyle: React.CSSProperties = {
-  fontSize: "18px",
-  color: "#495057",
-  marginBottom: "10px",
-};
-
-const listStyle: React.CSSProperties = {
-  listStyle: "none",
-  padding: 0,
-};
-
-const listItemStyle: React.CSSProperties = {
-  backgroundColor: "#f1f3f5",
-  padding: "10px",
-  borderRadius: "4px",
-  marginBottom: "8px",
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
 };
