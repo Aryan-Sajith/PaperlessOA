@@ -46,6 +46,7 @@ export default function hierarchy() {
 
     return (
         <div>
+            <h1 className="text-2xl font-bold mb-6">Hierarchy</h1>
             <EmployeeDropdown onEmployeeSelect={handleSelect} />
             {selectedEmployee && <EmployeeBox employee={selectedEmployee} subordinates={subordinates ?? []} />}
         </div>

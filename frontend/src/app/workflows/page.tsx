@@ -34,7 +34,8 @@ const WorkflowList = () => {
     }, [user, loading]);
 
 
-  return (
+  return (<div>
+    <h1 className="text-2xl font-bold mb-6">Workflows</h1>
     <Box p={4} bgcolor="grey.300" height="100vh">
       <Paper
         elevation={3}
@@ -72,7 +73,7 @@ const WorkflowList = () => {
         ))}
       </Box>
     </Box>
-  );
+    </div>);
 };
 
 export default WorkflowList;

@@ -28,6 +28,7 @@ export default function EmployeeTable () {
         
     return (
         <div className="p-4">
+            <h1 className="text-2xl font-bold mb-6">Table</h1>
             <table className="min-w-full border-collapse border border-gray-200">
                 <thead>
                     <tr className="bg-gray-100">

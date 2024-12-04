@@ -2,6 +2,7 @@
 
 import React from 'react'
 import ProtectedRoute from './ProtectedRoute'
+import Link from 'next/link'
 
 export default function Navbar() {
   return (
@@ -13,7 +14,7 @@ export default function Navbar() {
 
       <ProtectedRoute>
         {(user) => (
-            <p>{user.name}</p>
+            <Link href={'/profile'} className='hover:font-bold'>{user.name}</Link>
         )}
       </ProtectedRoute>
     </header>
