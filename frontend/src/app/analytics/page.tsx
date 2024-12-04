@@ -15,8 +15,7 @@ export default function Analytics() {
 
   useEffect(() => {
     if (!loading && user){
-        // fetch(`${API_BASE}/tasks/employee/${user.employee_id}`)
-        fetch(`${API_BASE}/tasks`)
+        fetch(`${API_BASE}/tasks/employee/${user.employee_id}`)
         .then((response) => {
             console.log(response);
             if (response.status == 404){

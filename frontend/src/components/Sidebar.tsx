@@ -8,23 +8,7 @@ import { API_BASE } from '@/util/path';
 import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
-    const router = useRouter();
-
-    async function handleLogOut() {
-        try {
-            fetch(`${API_BASE}/logout`, { method: 'POST', credentials: 'include' })
-                .then((res) => {
-                    if (res.ok) { // Successfuly logged out
-                        router.push('/login');
-                    }
-                    else {
-                        console.error(`Logout error: ${res.status}`);
-                    }
-                })
-        } catch (error) {
-            console.error(`Logout error: ${error}`);
-        }
-    }
+    
 
     return (
         <aside id='sidebar' className='h-full'>
@@ -35,7 +19,7 @@ export default function Sidebar() {
                     </li>
                 })}
                 {/* Logout */}
-                <li onClick={handleLogOut} className='cursor-pointer text-red-500'>Logout</li>
+                
             </ul>
         </aside>
     )
