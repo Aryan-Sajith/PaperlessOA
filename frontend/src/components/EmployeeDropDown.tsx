@@ -15,9 +15,9 @@ const customStyles = {
 
 interface EmployeeDropdownProps {
     onEmployeeSelect: (employee: SingleValue<Employee>) => void;
-    assignee_id?: number;
-    employees?: Employee[];
-    showSubordinatesOnly?: boolean; // New prop
+    assignee_id?: number; // If provided, will select this employee by default
+    employees?: Employee[]; // If provided, will use these employees instead of fetching
+    showSubordinatesOnly?: boolean; // Set true if you want to show subordinates and the current user
 }
 
 const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
