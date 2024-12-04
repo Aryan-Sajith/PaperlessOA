@@ -109,6 +109,7 @@ const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({
             }}
             placeholder="Search for an employee"
             isSearchable
+            styles={customStyles}
         />
     );
 };
