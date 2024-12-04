@@ -34,7 +34,7 @@ def mock_database(monkeypatch):
 
 def test_get_workflows(client, mock_database):
     """Test retrieving all workflows."""
-    response = client.get('/workflows')
+    response = client.post('/workflows', json={})
     assert response.status_code == 200
     data = response.json
     assert isinstance(data, list)
