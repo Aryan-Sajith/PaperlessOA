@@ -22,12 +22,13 @@ export default function hierarchy() {
 
 
     const handleSelect = (employee: SingleValue<Employee>) => {
+        alert(`Selected: ${JSON.stringify(employee)}`);
         if (employee) {
             // Employee is selected
-            setSelectedEmployee(employee); // This is underlined but its not an error, it is just react-select being weird...
+            setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
 
             // Fetch subordinates
-            fetch(API_BASE + '/manager/' + employee.employee_id + '/subordinates')
+            fetch(API_BASE + '/manager/' + employee.value.employee_id + '/subordinates')
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
