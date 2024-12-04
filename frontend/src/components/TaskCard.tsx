@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import EditTaskView from "./EditTaskView"
+import EditTaskView from "./EditTaskView";
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import { SquareCheckBig, Clock } from "lucide-react";
@@ -14,7 +14,7 @@ type TaskCardProps = {
     type: string;
     due_date: string;
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
-}
+};
 
 export default function TaskCard({
     id,
@@ -26,8 +26,35 @@ export default function TaskCard({
     due_date,
     setTasks
 }: Readonly<TaskCardProps>) {
-    const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+
+    // Function to map status string to color
+    const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'completed':
+                return 'bg-green-100 text-green-800';
+            case 'in progress':
+                return 'bg-blue-100 text-blue-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    // Function to handle task deletion
+    const handleDelete = async (event: React.MouseEvent) => {
+        event.stopPropagation(); // Prevent card expansion on delete
+        try {
+            const response = await fetch(`${API_BASE}/delete_task/${id}`, {
+                method: "DELETE"
+            });
+            const data = await response.json();
+            alert(`Successfully deleted the following task: \n${description}`);
+            // Update tasks state by removing the deleted task
+            setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    };
 
     return (
         <div
@@ -81,8 +108,9 @@ export default function TaskCard({
                         <li><strong>Type:</strong> {type}</li>
                         <li><strong>Assigned To:</strong> {assigned_to}</li>
                     </ul>
+
                 </div>
-            }
+            </div>
 
             {/* Expanded Editing Task Card here: */}
             {isExpanded && isEditing &&
@@ -91,9 +119,9 @@ export default function TaskCard({
                         { id, assignee_id, status, description, type, due_date }}
                         setTasks={setTasks}
                         setIsEditing={setIsEditing} />
+
                 </div>
-            }
+            )}
         </div>
     );
 }
-

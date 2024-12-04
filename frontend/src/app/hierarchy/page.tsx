@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import EmployeeBox from "../../components/EmployeeBox";
 import EmployeeDropdown from '@/components/EmployeeDropDown';
 import { SingleValue } from 'react-select';
@@ -24,12 +24,12 @@ export default function hierarchy() {
             setSelectedEmployee(null); // Handle case where no employee is selected
         }
     }
-    
+
 
     return (
         <div>
-            <EmployeeDropdown onEmployeeSelect={handleSelect}/>            
-            {selectedEmployee && <EmployeeBox employee={selectedEmployee} />}    
+            <EmployeeDropdown onEmployeeSelect={handleSelect} />
+            {selectedEmployee && <EmployeeBox employee={selectedEmployee} />}
         </div>
-);
+    );
 }
