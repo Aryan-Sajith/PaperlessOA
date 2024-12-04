@@ -5,6 +5,7 @@ import { Employee, TaskStatus } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
+import { sortTasks } from "@/util/sortTasks";
 
 type editTaskViewProps = {
     task_to_update: Task;
@@ -42,7 +43,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing }:
         })
             .then((response) => response.json())
             .then((newTask: Task) => {
-                setTasks(prevTasks => prevTasks.map(task => task.id === task_to_update.id ? newTask : task));
+                setTasks(prevTasks => sortTasks(prevTasks.map(task => task.id === task_to_update.id ? newTask : task)));
                 setTaskData({
                     status: "",
                     due_date: new Date().toISOString().split("T")[0], // Default to today's date

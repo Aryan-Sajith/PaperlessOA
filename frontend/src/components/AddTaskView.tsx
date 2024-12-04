@@ -8,6 +8,7 @@ import { Task } from "@/app/tasks/page";
 import { API_BASE } from "@/util/path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
 import { taskViewType } from "./TasksToggle";
+import { sortTasks } from "@/util/sortTasks";
 
 type AddTaskViewProps = {
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -61,7 +62,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
     })
       .then((response) => response.json())
       .then((newTask: Task) => {
-        setTasks((prevTasks) => Array.isArray(prevTasks) ? [...prevTasks, newTask] : [newTask]);
+        setTasks((prevTasks) => sortTasks(Array.isArray(prevTasks) ? [...prevTasks, newTask] : [newTask]));
         setTaskData({
           status: "",
           due_date: new Date().toISOString().split("T")[0], // Default to today's date
