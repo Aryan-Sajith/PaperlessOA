@@ -16,15 +16,15 @@ export const SidebarData = [
     path: "/workflows",
   },
   {
-    title: "Profile",
-    path: "/profile",
-  },
-  {
     title: "Table",
     path: "/employee-table",
   },
   {
     title: "Analytics",
     path: "/analytics",
+  },
+  {
+    title: "Profile",
+    path: "/profile",
   },
 ];

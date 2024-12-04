@@ -35,7 +35,7 @@ export default function Sidebar() {
                     </li>
                 })}
                 {/* Logout */}
-                <li onClick={handleLogOut} className='cursor-pointer'>Logout</li>
+                <li onClick={handleLogOut} className='cursor-pointer text-red-500'>Logout</li>
             </ul>
         </aside>
     )
