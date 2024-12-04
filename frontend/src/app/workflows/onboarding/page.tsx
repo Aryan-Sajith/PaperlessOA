@@ -38,7 +38,7 @@ const OnboardingForm = () => {
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+        setNextAssignee(employee); // This is underlined but its not an error, it is just react-select being weird...
       } else {
         setNextAssignee(null); // Handle case where no employee is selected
       }
@@ -46,7 +46,7 @@ const OnboardingForm = () => {
 
   const handleManager = (employee: SingleValue<Employee>) => {
       if (employee) {
-        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+        setManager(employee); // This is underlined but its not an error, it is just react-select being weird...
       } else {
         setManager(null); // Handle case where no employee is selected
       }
@@ -63,19 +63,23 @@ const OnboardingForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
-      formData['subordinates_id'] = subordinates?.map((emp) => emp.value.employee_id)
-      formData['subordinates_name'] = subordinates?.map((emp) => emp.value.name)
-      formData['type'] = 'onboarding'
-      formData['manager_name'] = manager.name
-      formData['manager_id'] = manager.employee_id
-      formData['assignee_id'] = nextAssignee.employee_id
-      formData['cur_id'] = user?.employee_id
+      const updatedFormData = {
+        ...formData,
+        subordinates_id: subordinates?.map((emp) => emp.employee_id || emp.value?.employee_id) || [],
+        subordinates_name: subordinates?.map((emp) => emp.name || emp.value?.name) || [],
+        type: 'onboarding',
+        manager_name: manager?.name || '',
+        manager_id: manager?.employee_id || '',
+        assignee_id: nextAssignee?.employee_id || '',
+        cur_id: user?.employee_id || '',
+      };
+  
       const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(updatedFormData),
       });
-
+  
       if (response.ok) {
         alert('Workflow submitted to the next assignee successfully!');
       } else {
@@ -85,6 +89,7 @@ const OnboardingForm = () => {
       console.error('Error submitting workflow:', error);
     }
   };
+  
 
   const handleApprove = async () => {
     try {
