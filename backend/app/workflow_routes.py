@@ -10,10 +10,9 @@ workflow_bp = Blueprint('workflow_bp', __name__)
 # Route to get all workflows
 @workflow_bp.route('/workflows', methods=['POST'])
 def get_workflows():
+    workflows = Workflow.query.filter(Workflow.status != "Archived")
     if "employee_id" in request.json:
-        workflows = Workflow.query.filter(Workflow.assignee_id == request.json["employee_id"])
-    else:
-        workflows = Workflow.query.all()
+        workflows = workflows.filter(Workflow.assignee_id == request.json["employee_id"])
     workflows_list = [workflow.to_dict() for workflow in workflows]
     return jsonify(workflows_list)
 
@@ -80,6 +79,18 @@ def get_workflow_by_id(workflow_id):
         return jsonify(workflow.to_dict())
     else:
         return jsonify({"message": "No workflow found for this id"}), 404
+
+@workflow_bp.route('/archive_workflow/<int:workflow_id>', methods=['POST'])
+def archive_workflow_by_id(workflow_id):
+    workflow = Workflow.query.filter_by(id=workflow_id).first()
+    if workflow:
+        workflow.status = "Archived"
+        db.session.commit()
+        return jsonify(workflow.to_dict()), 200
+    else:
+        return jsonify({"message": "No workflow found for this id"}), 404
+
+
 
 # Route to update a workflow by ID
 @workflow_bp.route('/workflow/<int:workflow_id>', methods=['PUT'])

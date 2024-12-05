@@ -11,16 +11,6 @@ import {useAuth} from "@/hooks/useAuth";
 const WorkflowList = () => {
   const [workflows, setWorkflows] = useState([]);
   const { user, loading } = useAuth(); // Add loading from useAuth
-  // const [currentUser, setCurrentUser] = useState<Employee | null>(null)
-  //   useEffect(() => {
-  //       fetch(`${API_BASE}/current_user`)
-  //           .then(response => {
-  //               console.error(response)
-  //               return response.json()
-  //           })
-  //           .then(data => setCurrentUser(data))
-  //           .then(data => console.error(currentUser))
-  //   }, []);
 
   // UseEffect to fetch workflows
   useEffect(() => {
@@ -38,7 +28,7 @@ const WorkflowList = () => {
     <h1 className="text-2xl font-bold mb-6">Workflows</h1>
     <Box p={4} bgcolor="grey.300" height="100vh">
       <Paper
-        elevation={3}
+        elevation={4}
         sx={{ display: 'flex', alignItems: 'left', p: 2, mb: 2 }}>
         <Typography sx={{ flex: 1, textAlign: 'left' }} variant={"h5"}>Workflow Type</Typography>
         <Typography sx={{ flex: 1, textAlign: 'left' }} variant={"h5"}>Status</Typography>
@@ -56,18 +46,40 @@ const WorkflowList = () => {
         {workflows.map((workflow) => (
           <Paper
             key={workflow.id}
-            elevation={3}
+            elevation={4}
             sx={{ display: 'flex', alignItems: 'left', p: 2, mb: 2 }}
           >
             <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.type}</Typography>
             <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.status}</Typography>
             <Typography sx={{ flex: 1, textAlign: 'left' }}>{workflow.timestamp.substring(0, 10)}</Typography>
-            <Box sx={{ flex: 1, textAlign: 'left' }}>
+            <Box sx={{ flex: 0.5, textAlign: 'left' }}>
               <Link href={`/workflows/${workflow.type.toLowerCase()}/${workflow.id}`} passHref>
                 <Button variant={"outlined"} color={"primary"}>
                   Details
                 </Button>
               </Link>
+            </Box>
+            <Box sx={{ flex: 0.5, textAlign: 'left' }}>
+                <Button variant={"outlined"} color={"primary"} onClick={() => {
+                  const workflowId = workflow.id;
+                  fetch(`${API_BASE}/archive_workflow/${workflowId}`, {
+                    method: 'POST', // or 'GET' based on your API requirements
+                  })
+                    .then(response => {
+                      if (response.ok) {
+                        alert('Workflow archived successfully!');
+                        window.location.reload(); // Reload the page
+                      } else {
+                        alert('Failed to archive workflow.');
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                      alert('Error while archiving workflow.');
+                    });
+                }}>
+                  Archive
+                </Button>
             </Box>
           </Paper>
         ))}

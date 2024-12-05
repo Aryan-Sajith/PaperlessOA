@@ -14,6 +14,9 @@ The `__init__.py` initialized the app with connection with the db
 The `db_file` contains the creation of the tables of the db
 
 ## Workflow logic
+### Retrieve Workflow
+Due to the various type of workflows we have, we store just the type and some metadata for the 
+workflow, and leave the 
 ### Create Workflow
 each workflow should be attached with a type field. If the workflow doesn't have a
 parent id attached to it (meaning the frontend just create it instead of assigning them to the next assignee).
