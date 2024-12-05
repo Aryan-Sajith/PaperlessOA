@@ -25,7 +25,7 @@ def get_employee_by_id(employee_id):
     employee = Employee.query.filter_by(employee_id=employee_id).first()
 
     if employee:
-        return jsonify({"name": employee.name})
+        return jsonify(employee.to_dict())
     else:
         return jsonify({"error": "Employee not found"}), 404
     

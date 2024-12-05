@@ -1,7 +1,7 @@
 from unittest.mock import patch, MagicMock
 import pytest
 from flask import Flask
-from app import create_app  # Import your app factory
+from app import create_app  
 
 @pytest.fixture
 def client():
@@ -11,7 +11,7 @@ def client():
     with app.app_context():
         yield app.test_client()
 
-# Example data for testing
+
 mock_employees = [
     {"employee_id": 1, "name": "Alice", "role": "Developer"},
     {"employee_id": 2, "name": "Bob", "role": "Manager"},
@@ -24,7 +24,7 @@ mock_employee_manager = [
 def test_get_employees(client):
     """Test retrieving all employees."""
     with patch("app.models.Employee.query") as mock_query, client.application.app_context():
-        # Mock the .all() method
+        
         mock_query.all.return_value = [MagicMock(to_dict=lambda: emp) for emp in mock_employees]
 
         response = client.get('/employees')
@@ -36,7 +36,7 @@ def test_get_employees(client):
 def test_get_employee_by_name(client):
     """Test retrieving an employee by name."""
     with patch("app.models.Employee.query") as mock_query, client.application.app_context():
-        # Mock the .filter_by().first() chain
+        
         mock_query.filter_by.return_value.first.return_value = MagicMock(
             to_dict=lambda: mock_employees[0]
         )
@@ -59,10 +59,11 @@ def test_get_employee_by_id(client):
     """Test retrieving an employee by ID."""
     with patch("app.models.Employee.query") as mock_query, client.application.app_context():
         mock_query.filter_by.return_value.first.return_value = MagicMock(
-            to_dict=lambda: mock_employees[0]
+            to_dict=lambda: mock_employees[0]  
         )
 
         response = client.get('/employee/1')
+        print(response)
         assert response.status_code == 200
         data = response.json
         assert data['name'] == "Alice"
