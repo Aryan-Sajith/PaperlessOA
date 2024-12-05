@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-type Option = "All" | "Workflow" | "Pending" | "Past Day"| "Past Week"| "Past Month"| "Next Day"| "Next Week"| "Next Month";
+type Option = "All" | "Administrative" |"Finance" |"HR" |"IT" |"Communication" |"Facitilies" |"Projects" |"Legal" |"Other" | "Past Day"| "Past Week"| "Past Month"| "Next Day"| "Next Week"| "Next Month";
 
 interface DropdownMenuProps {
   type: "task" | "time"; // Accept either "task" or "time"
@@ -12,7 +12,8 @@ interface DropdownMenuProps {
 export default function DropdownMenu({type, onChange}: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const options: Option[] = type === "task" ? ["All", "Workflow", "Pending"] : ["Past Day", "Past Week", "Past Month", "Next Day", "Next Week", "Next Month"];
+  const options: Option[] = type === "task" ? ["All", "Administrative", "Finance", "HR", "IT", "Communication", "Facitilies", "Projects", "Legal", "Other"] 
+  : ["Past Day", "Past Week", "Past Month", "Next Day", "Next Week", "Next Month"];
 
   const [selectedOption, setSelectedOption] = useState<Option>(options[0]);
 

@@ -15,11 +15,11 @@ type PieChartProps = {
 export default function PieChart({ completedTasks, pendingTasks }: PieChartProps) {
   // Data for the pie chart
   const data = {
-    labels: ['On Time', 'Pending'],
+    labels: ['Pending', 'Completed'],
     datasets: [
       {
-        data: [completedTasks, pendingTasks], // Values for each segment
-        backgroundColor: ['#4caf50', '#ffeb3b'], // Colors for each segment
+        data: [pendingTasks, completedTasks], // Values for each segment
+        backgroundColor: ['#ffeb3b', '#4caf50'], // Colors for each segment
         borderColor: ['#ffffff', '#ffffff'], // Border colors for each segment
         borderWidth: 2,
       },

@@ -25,18 +25,41 @@ def get_tasks_by_id(employee_id):
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
     
-def get_tasks_by_id_from_time_frame(employee_id, start_date, end_date):
+@task_bp.route('/tasks/employee/<int:employee_id>/<string:task_type>/<string:time_frame>', methods=['GET'])
+def get_tasks_by_id_from_type_and_time_frame(employee_id, task_type, time_frame):
     """
-    Helper Function for selecting date range of tasks
+    Helper Function for selecting date range of tasks.
     """
+    today = datetime.now().date()
+
+    # Mapping of time_frame to timedelta ranges
+    time_frame_mapping = {
+        "Past Day": (-1, 0),
+        "Past Week": (-7, 0),
+        "Past Month": (-30, 0),
+        "Next Day": (1, 1),
+        "Next Week": (1, 7),
+        "Next Month": (1, 30)
+    }
+
+    # Calculate start_date and end_date
+    if time_frame not in time_frame_mapping:
+        return jsonify({"message": "Invalid time frame provided"}), 400
+
+    delta_start, delta_end = time_frame_mapping[time_frame]
+    start_date = today + timedelta(days=delta_start)
+    end_date = today + timedelta(days=delta_end)
+
     # Query tasks for the employee
     tasks = Task.query.filter(Task.assignee_id == employee_id).all()
 
     if tasks:
-        # Filter tasks within the date range
+        # Filter tasks by date range and type (if not "All")
         filtered_tasks = [
             task.to_dict() for task in tasks
-            if 'due_date' in task.to_dict() and start_date <= datetime.strptime(task.to_dict()['due_date'], "%Y-%m-%d").date() <= end_date
+            if 'due_date' in task.to_dict() and
+               start_date <= datetime.strptime(task.to_dict()['due_date'], "%Y-%m-%d").date() <= end_date and
+               (task_type == "All" or task.type == task_type)
         ]
 
         if filtered_tasks:
@@ -46,47 +69,6 @@ def get_tasks_by_id_from_time_frame(employee_id, start_date, end_date):
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
     
-# Past Day
-@task_bp.route('/tasks/employee/<int:employee_id>/past_day', methods=['GET'])
-def get_tasks_past_day(employee_id):
-    today = datetime.now().date()
-    yesterday = today - timedelta(days=1)
-    return get_tasks_by_id_from_time_frame(employee_id, yesterday, today)
-
-# Past Week
-@task_bp.route('/tasks/employee/<int:employee_id>/past_week', methods=['GET'])
-def get_tasks_past_week(employee_id):
-    today = datetime.now().date()
-    past_week = today - timedelta(days=7)
-    return get_tasks_by_id_from_time_frame(employee_id, past_week, today)
-
-# Past Month
-@task_bp.route('/tasks/employee/<int:employee_id>/past_month', methods=['GET'])
-def get_tasks_past_month(employee_id):
-    today = datetime.now().date()
-    past_month = today - timedelta(days=30)
-    return get_tasks_by_id_from_time_frame(employee_id, past_month, today)
-
-# Next Day
-@task_bp.route('/tasks/employee/<int:employee_id>/next_day', methods=['GET'])
-def get_tasks_next_day(employee_id):
-    today = datetime.now().date()
-    tomorrow = today + timedelta(days=1)
-    return get_tasks_by_id_from_time_frame(employee_id, today, tomorrow)
-
-# Next Week
-@task_bp.route('/tasks/employee/<int:employee_id>/next_week', methods=['GET'])
-def get_tasks_next_week(employee_id):
-    today = datetime.now().date()
-    next_week = today + timedelta(days=7)
-    return get_tasks_by_id_from_time_frame(employee_id, today, next_week)
-
-# Next Month
-@task_bp.route('/tasks/employee/<int:employee_id>/next_month', methods=['GET'])
-def get_tasks_next_month(employee_id):
-    today = datetime.now().date()
-    next_month = today + timedelta(days=30)
-    return get_tasks_by_id_from_time_frame(employee_id, today, next_month)
 
 @task_bp.route('/tasks/manager/<int:manager_id>', methods=['GET'])
 def get_subordinate_tasks(manager_id):

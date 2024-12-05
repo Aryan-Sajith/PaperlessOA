@@ -11,18 +11,19 @@ export default function Analytics() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [inProgressCount, setInProgressCount] = useState(0);
-  const [timeFrame, setTimeFrame] = useState("past_day");
+  const [timeFrame, setTimeFrame] = useState("Past Day");
+  const [taskType, setTaskType] = useState("All");
   const [noTasksFound, setNoTasksFound] = useState(false); // Tracks whether no tasks are found
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
     if (!loading && user) {
-      fetchTasks(timeFrame);
+      fetchTasks(taskType, timeFrame);
     }
-  }, [user, loading, timeFrame]);
+  }, [user, loading, taskType, timeFrame]);
 
-  const fetchTasks = (selectedTimeFrame: string) => {
-    fetch(`${API_BASE}/tasks/employee/${user.employee_id}/${selectedTimeFrame}`)
+  const fetchTasks = (selectedTaskType:string, selectedTimeFrame: string) => {
+    fetch(`${API_BASE}/tasks/employee/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}`)
       .then((response) => {
         if (response.status === 404) {
           setNoTasksFound(true);
@@ -43,18 +44,6 @@ export default function Analytics() {
       .catch((error) => console.error("Fetch error:", error));
   };
 
-  const handleTimeFrameChange = (newTimeFrame: string) => {
-    // Map human-readable options to backend API parameters
-    const timeFrameMapping: Record<string, string> = {
-      "Past Day": "past_day",
-      "Past Week": "past_week",
-      "Past Month": "past_month",
-      "Next Day": "next_day",
-      "Next Week": "next_week",
-      "Next Month": "next_month",
-    };
-    setTimeFrame(timeFrameMapping[newTimeFrame]);
-  };
 
   return (
     <div style={pageStyle}>
@@ -66,11 +55,14 @@ export default function Analytics() {
       <div style={cardStyle}>
         {/* Inline DropdownMenu and text */}
         <div style={inlineContainerStyle}>
-          <DropdownMenu type="task" />
+          <DropdownMenu 
+          type="task"
+          onChange={setTaskType}
+          />
           <span style={textStyle}>Tasks due in the </span>
           <DropdownMenu
             type="time"
-            onChange={handleTimeFrameChange} // Handle dropdown change
+            onChange={setTimeFrame} // Handle dropdown change
           />
         </div>
 
