@@ -4,53 +4,56 @@ import React, { useState, useEffect } from "react";
 import DropdownMenu from "@/components/Analytics_Dropdown";
 import TaskBar from "@/components/Analytics_TaskBar";
 import PieChart from "@/components/PieChart";
+import AnalyticsToggle, { analyticsViewType } from "@/components/AnalyticsToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { API_BASE } from "@/util/path";
 
 export default function Analytics() {
-  const [tasks, setTasks] = useState<any[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [inProgressCount, setInProgressCount] = useState(0);
-  const [timeFrame, setTimeFrame] = useState("Past Day");
+  const [timeFrame, setTimeFrame] = useState("Past Month");
   const [taskType, setTaskType] = useState("All");
+  const [currentView, setCurrentView] = useState<analyticsViewType>("My");
   const [noTasksFound, setNoTasksFound] = useState(false); // Tracks whether no tasks are found
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
-    if (!loading && user) {
-      fetchTasks(taskType, timeFrame);
-    }
-  }, [user, loading, taskType, timeFrame]);
+      fetchTasks(taskType, timeFrame, currentView);
+  }, [user, loading, taskType, timeFrame, currentView]);
 
-  const fetchTasks = (selectedTaskType:string, selectedTimeFrame: string) => {
-    fetch(`${API_BASE}/tasks/employee/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}`)
-      .then((response) => {
-        if (response.status === 404) {
-          setNoTasksFound(true);
-          return [];
-        } else if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
-        }
-        setNoTasksFound(false);
-        return response.json();
-      })
-      .then((data) => {
-        setTasks(data);
-        const completed = data.filter((task: any) => task.status === "Completed").length;
-        const inProgress = data.filter((task: any) => task.status === "In Progress").length;
-        setCompletedCount(completed);
-        setInProgressCount(inProgress);
-      })
-      .catch((error) => console.error("Fetch error:", error));
+  const fetchTasks = (selectedTaskType:string, selectedTimeFrame: string, view: string) => {
+    if (!loading && user){
+        const url = view == "My"
+        ? `${API_BASE}/tasks/employee/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Personal analytics
+        : `${API_BASE}/tasks/manager/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Subordinate analytics
+        fetch(url)
+        .then((response) => {
+            if (response.status === 404) {
+            setNoTasksFound(true);
+            return [];
+            } else if (!response.ok) {
+            throw new Error("Network response was not ok " + response.statusText);
+            }
+            setNoTasksFound(false);
+            return response.json();
+        })
+        .then((data) => {
+            const completed = data.filter((task: any) => task.status === "Completed").length;
+            const inProgress = data.filter((task: any) => task.status === "In Progress").length;
+            setCompletedCount(completed);
+            setInProgressCount(inProgress);
+        })
+        .catch((error) => console.error("Fetch error:", error));
+    }
   };
 
 
   return (
-    <div style={pageStyle}>
-      <h1 style={titleStyle}>Analytics Dashboard</h1>
-      <p style={descriptionStyle}>
-        Explore tasks to gain insights into project performance.
-      </p>
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Analytics</h1>
+      <AnalyticsToggle onToggle={view =>{
+        setCurrentView(view);
+      }}/>
 
       <div style={cardStyle}>
         {/* Inline DropdownMenu and text */}
@@ -88,25 +91,6 @@ export default function Analytics() {
 }
 
 // Styles
-const pageStyle: React.CSSProperties = {
-  fontFamily: "'Arial', sans-serif",
-  backgroundColor: "#f8f9fa",
-  padding: "20px",
-  minHeight: "100vh",
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: "24px",
-  color: "#343a40",
-  marginBottom: "10px",
-};
-
-const descriptionStyle: React.CSSProperties = {
-  fontSize: "16px",
-  color: "#6c757d",
-  marginBottom: "20px",
-};
-
 const cardStyle: React.CSSProperties = {
   backgroundColor: "#fff",
   borderRadius: "8px",
