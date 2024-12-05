@@ -31,15 +31,10 @@ export default function TaskCard({
     const [isEditing, setIsEditing] = useState(false);
 
     // Function to map status string to color
-    const getStatusColor = (status: string) => {
-        switch (status.toLowerCase()) {
-            case 'completed':
-                return 'bg-green-100 text-green-800';
-            case 'in progress':
-                return 'bg-blue-100 text-blue-800';
-            default:
-                return 'bg-gray-100 text-gray-800';
-        }
+    const statusColors: { [key: string]: string } = {
+        completed: 'bg-green-100 text-green-800',
+        'in progress': 'bg-blue-100 text-blue-800',
+        default: 'bg-gray-100 text-gray-800'
     };
 
     // Function to handle task deletion
@@ -59,73 +54,59 @@ export default function TaskCard({
     };
 
     return (
-        <div className="mb-4">
-            <div
-                className="bg-white rounded-lg shadow-sm border border-blue-200"
-            >
-                {/* Main Card Content */}
-                <div className="p-4">
-                    <div className="flex justify-between items-start gap-4">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                                {/* Task Status: */}
-                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
-                                    {status}
-                                </span>
-                                {/* Task Type: */}
-                                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                    {type}
-                                </span>
-                            </div>
-                            <p className="text-gray-900 font-medium">{description}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            {/* Edit Task: */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsEditing(!isEditing);
-                                }}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <Edit3 className="w-4 h-4 text-gray-500" />
-                            </button>
-
-                            {/* Delete Task: */}
-                            <button
-                                onClick={handleDelete}
-                                className="p-2 hover:bg-red-50 rounded-full transition-colors"
-                            >
-                                <Trash2 className="w-4 h-4 text-red-500" />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-4 mt-3 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                            {/* Due Date: */}
-                            <CalendarDays className="w-4 h-4" />
-                            <span>{due_date}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            {/* Assigned To: */}
+        // Task card UI container
+        <div className="p-4 mb-4 border rounded bg-gray-100 shadow-lg shadow-black-300">
+            {/* Task preview UI container */}
+            <div className="flex justify-between">
+                <div>
+                    {/* Task status */}
+                    <span className={`px-5 py-1 rounded text-xs font-semibold ${statusColors[status.toLowerCase()] || statusColors.default}`}>
+                        {`Status: ${status}`}
+                    </span>
+                    {/* Task type */}
+                    <span className="px-5 py-1 ml-3 rounded text-xs font-semibold text-gray-600 bg-gray-300">
+                        {`Type: ${type}`}
+                    </span>
+                    {/* Task description */}
+                    <p className="font-medium mt-2 ml-1">{description}</p>
+                    {/* Task metadata UI container */}
+                    <div className="flex gap-4 mt-3 text-sm text-gray-500">
+                        {/* Task due date */}
+                        <span className="flex items-center gap-1">
+                            <CalendarDays className="w-4 h-4 text-gray-700" />
+                            {due_date}
+                        </span>
+                        {/* Task assignee */}
+                        <span className="flex items-center gap-1">
                             <User className="w-4 h-4" />
-                            <span>{assigned_to}</span>
-                        </div>
+                            {assigned_to}
+                        </span>
                     </div>
+                </div>
+                {/* Task modification buttons container*/}
+                <div className="flex items-center gap-6">
+                    {/* Edit task button */}
+                    <button onClick={(e) => {
+                        e.stopPropagation(); // Prevent card expansion on edit
+                        setIsEditing(!isEditing); // Toggle edit view
+                    }} className="hover:p-2 hover:bg-gray-300 rounded">
+                        <Edit3 className="w-4 h-4 text-black-500" />
+                    </button>
+                    {/* Delete task button */}
+                    <button onClick={handleDelete} className="hover:p-2 hover:bg-red-200 rounded">
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                    </button>
                 </div>
             </div>
-
-            {/* Edit View */}
+            
+            {/* Edit task view */}
             {isEditing && (
-                <div onClick={(event) => event.stopPropagation()} className="mt-2">
-                    <EditTaskView
-                        task_to_update={{ id, assignee_id, status, description, type, due_date }}
-                        setTasks={setTasks}
-                        setIsEditing={setIsEditing}
-                        refetchTasks={refetchTasks}
-                    />
-                </div>
+                <EditTaskView
+                    task_to_update={{ id, assignee_id, status, description, type, due_date }}
+                    setTasks={setTasks}
+                    setIsEditing={setIsEditing}
+                    refetchTasks={refetchTasks}
+                />
             )}
         </div>
     );

@@ -95,131 +95,98 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
   };
 
   return (
-    <div>
-      {/* Enhanced Floating Action Button (FAB) with smooth transitions */}
+    // Add Task view UI container
+    <div className="fixed bottom-5 right-5">
+      {/* Add task button */}
       <button
-        onClick={toggleView}
-        className={`
-                fixed bottom-5 right-5 
-                w-14 h-14 
-                rounded-full 
-                shadow-lg 
-                flex items-center justify-center 
-                transition-all duration-300 ease-in-out
-                hover:scale-105
-                ${isViewOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}
-            `}
-        aria-label={isViewOpen ? "Close add task form" : "Open add task form"}
+        onClick={() => setIsViewOpen(!isViewOpen)}
+        className={`w-14 h-14 rounded-full flex items-center justify-center duration-200 
+          ${isViewOpen ?
+            'bg-red-500 hover:bg-red-600' :
+            'bg-blue-500 hover:bg-blue-600'}`}
       >
-        {/* Dynamic icon transition */}
-        <div className="text-white">
-          {isViewOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Plus className="h-6 w-6" />
-          )}
-        </div>
+        {/* Button Icon Variation */}
+        {isViewOpen ? <X className="h-6 w-6 text-white" /> : <Plus className="h-6 w-6 text-white" />}
       </button>
 
-      {/* Modal/Popup with enhanced styling and animations */}
+      {/* Add task view */}
       {isViewOpen && (
-        <div className="fixed bottom-24 right-5 w-80 animate-slide-up">
-          <div className="bg-white rounded-lg shadow-xl p-6 space-y-4 border border-gray-100">
-            {/* Form Title */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Add New Task
-            </h3>
+        // Add task form UI container
+        <div className="absolute bottom-20 right-5 w-80 bg-white rounded-lg p-5 space-y-2 animate-slide-up">
+          {/* Add task form header */}
+          <h3 className="text-lg font-semibold">Add New Task</h3>
 
-            {/* Status Dropdown Section */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Status
-              </label>
+          {/* Add task form fields */}
+          <div className="space-y-4">
+            {/* Task status */}
+            <div>
+              <label className="block font-medium text-sm mb-1">Status</label>
               <TaskStatusDropdown
-                onStatusSelect={(status) =>
-                  setTaskData((prev) => ({ ...prev, status }))
-                }
+                onStatusSelect={status => setTaskData(prev => ({ ...prev, status }))}
                 currentStatus={taskData.status as TaskStatus}
               />
             </div>
 
-            {/* Date Input Group */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Due Date
-              </label>
-              <div className="relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <CalendarDays className="h-5 w-5 text-gray-400" />
-                </div>
+            {/* Task due date UI container*/}
+            <div>
+              {/* Task due date label */}
+              <label className="block font-medium text-sm mb-1">Due Date</label>
+              {/* Task due date input */}
+              <div className="relative">
+                <CalendarDays className="absolute h-5 w-5 left-3 top-2.5 text-gray-600" />
                 <input
                   type="date"
-                  name="due_date"
                   value={taskData.due_date}
-                  onChange={handleInputChange}
-                  className="py-2 pl-10 block w-full rounded-md border-gray-300 shadow-sm 
-                                         focus:ring-blue-500 focus:border-blue-500 
-                                         transition-colors duration-200
-                                         sm:text-sm h-10"
+                  onChange={e => setTaskData(prev => ({ ...prev, due_date: e.target.value }))}
+                  className="pl-8 w-full h-10 border border-gray-300 rounded-md"
                 />
               </div>
             </div>
 
-            {/* Description Input Group */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <div className="relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FileText className="h-5 w-5 text-gray-400" />
-                </div>
+            {/* Task description UI container*/}
+            <div>
+              {/* Task description label */}
+              <label className="block font-medium text-sm mb-1">Description</label>
+              {/* Task description input */}
+              <div className="relative">
+                <FileText className="absolute h-5 w-5 left-3 top-2.5 text-gray-600" />
                 <input
                   type="text"
-                  name="description"
                   value={taskData.description}
-                  onChange={handleInputChange}
+                  onChange={e => setTaskData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder="Enter task description"
-                  className="pl-10 block w-full rounded-md border-gray-300 shadow-sm 
-                                         focus:ring-blue-500 focus:border-blue-500 
-                                         transition-colors duration-200
-                                         sm:text-sm h-10"
+                  className="pl-9 w-full h-10 border border-gray-300 rounded-md"
                 />
               </div>
             </div>
 
-            {/* Task type dropdown wrapper with improved spacing */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Type</label>
+            {/* Task type dropdown */}
+            <div>
+              <label className="block font-medium text-sm mb-1">Type</label>
               <TaskTypeDropdown
-                onTypeSelect={type =>
-                  setTaskData((prev) => ({ ...prev, type }))
-                }
+                onTypeSelect={type => setTaskData(prev => ({ ...prev, type }))}
                 currentType={taskData.type as TaskType}
               />
             </div>
 
-            {/* Employee Dropdown Section */}
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Assign To
-              </label>
-              <div className="relative">
-                <AddNEditTaskEmployeeDropDown
-                  onEmployeeSelect={handleSelectAssignee}
-                  showSubordinatesAndUser={true}
-                />
-              </div>
+            {/* Task assignee dropdown */}
+            <div>
+              <label className="block font-medium text-sm mb-1">Assign To</label>
+              <AddNEditTaskEmployeeDropDown
+                onEmployeeSelect={assignee => {
+                  if (assignee) {
+                    setSelectedAssignee(assignee);
+                    setTaskData(prev => ({ ...prev, assignee_id: assignee.employee_id }));
+                  }
+                }}
+                showSubordinatesAndUser={true}
+              />
             </div>
 
-            {/* Add Task Button */}
+            {/* Task add button */}
             <button
               onClick={handleAddTask}
-              className="w-full bg-blue-600 text-white px-4 py-2 rounded-md
-                                 hover:bg-blue-700 
-                                 transition-colors duration-200
-                                 flex items-center justify-center gap-2
-                                 mt-6"
+              className="w-full p-2 bg-blue-500 hover:bg-blue-600 flex justify-center items-center rounded-md text-white"
             >
               <Plus className="h-5 w-5" />
               Create Task
