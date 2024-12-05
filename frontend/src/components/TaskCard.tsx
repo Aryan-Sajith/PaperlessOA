@@ -73,7 +73,7 @@ export default function TaskCard({
                     <div className="flex gap-4 mt-3 text-sm text-gray-500">
                         {/* Task due date */}
                         <span className="flex items-center gap-1">
-                            <CalendarDays className="w-4 h-4" />
+                            <CalendarDays className="w-4 h-4 text-gray-700" />
                             {due_date}
                         </span>
                         {/* Task assignee */}
