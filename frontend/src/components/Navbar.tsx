@@ -28,7 +28,7 @@ export default function Navbar() {
   return (
     <header className='bg-[#73B7EE] px-[20px] py-[12px] flex justify-between items-center text-[12px] sticky top-0 mx-auto z-40'>
       <div className=' flex space-x-[10px]'>
-        <h1 className='text-xl'>PaperLess CO.</h1>
+        <h1 className='text-xl cursor-pointer'>PaperLess CO.</h1>
       </div>
 
       <ProtectedRoute>
@@ -41,7 +41,7 @@ export default function Navbar() {
       </ProtectedRoute>
       <button 
   onClick={handleLogOut} 
-  className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+  className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 shadow-lg"
 >
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
