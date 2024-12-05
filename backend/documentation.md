@@ -15,8 +15,8 @@ The `db_file` contains the creation of the tables of the db
 
 ## Workflow logic
 ### Retrieve Workflow
-Due to the various type of workflows we have, we store just the type and some metadata for the 
-workflow, and leave the 
+Due to the various types of workflows we have, we store just the type and some metadata for the 
+workflow, and leave the content as a json in the db. 
 ### Create Workflow
 each workflow should be attached with a type field. If the workflow doesn't have a
 parent id attached to it (meaning the frontend just create it instead of assigning them to the next assignee).
