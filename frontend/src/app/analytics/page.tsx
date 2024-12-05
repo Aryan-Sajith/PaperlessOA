@@ -51,9 +51,13 @@ export default function Analytics() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">Analytics</h1>
-      <AnalyticsToggle onToggle={view =>{
-        setCurrentView(view);
-      }}/>
+      {user?.is_manager && (
+        <AnalyticsToggle
+          onToggle={(view) => {
+            setCurrentView(view);
+          }}
+        />
+      )}
 
       <div style={cardStyle}>
         {/* Inline DropdownMenu and text */}

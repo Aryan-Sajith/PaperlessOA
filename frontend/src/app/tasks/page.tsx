@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import TaskList from "@/components/TaskList";
 import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
@@ -55,11 +55,12 @@ export default function TasksPage() {
     <div>
       <h1 className="text-2xl font-bold mb-6">Tasks</h1>
       {/* Tasks Toggle Slider: */}
-      <TasksToggle onToggle={view => {
-        fetchTasks(view);
-        setCurrentView(view);
-      }} />
-
+      {user?.is_manager && (
+        <TasksToggle onToggle={view => {
+          fetchTasks(view);
+          setCurrentView(view);
+        }} />
+      )}
       {/* Task List: */}
       {loading ? (
         <p>Loading tasks...</p>
