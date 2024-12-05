@@ -19,7 +19,7 @@ export default function PieChart({ completedTasks, pendingTasks }: PieChartProps
     datasets: [
       {
         data: [pendingTasks, completedTasks], // Values for each segment
-        backgroundColor: ['#ffeb3b', '#4caf50'], // Colors for each segment
+        backgroundColor: ['#eab308', '#22c55e'], // Colors for each segment
         borderColor: ['#ffffff', '#ffffff'], // Border colors for each segment
         borderWidth: 2,
       },
