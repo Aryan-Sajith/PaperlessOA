@@ -40,7 +40,6 @@ export default function hierarchy() {
                     console.error('Error fetching subordinates:', error);
                 });
         }
-
     }
 
 

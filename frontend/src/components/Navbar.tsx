@@ -35,9 +35,6 @@ export default function Navbar() {
         {(user) => (
             <Link href={'/profile'} className='hover:text-slate-600'>{user.name}</Link>
         )}
-
-        
-        
       </ProtectedRoute>
       <button 
   onClick={handleLogOut} 
