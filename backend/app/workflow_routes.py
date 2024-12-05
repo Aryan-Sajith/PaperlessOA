@@ -186,6 +186,17 @@ def handle_onboarding(details):
             level=details['level'],
             email=details['email'],
         )
+        if 'subordinates_id' in details:
+            # handle multiple subordinates ID
+            new_employee.is_manager = True
+            for subordinate_id in details['subordinates_id']:
+                NewSubordinateRelation = EmployeeManager(
+                    id=None,
+                    employee_id=subordinate_id,
+                    manager_id=new_employee.employee_id,
+                )
+                db.session.add(NewSubordinateRelation)
+                db.session.commit()
         db.session.add(new_employee)
         db.session.commit()
         if 'manager_id' in details:
@@ -196,17 +207,6 @@ def handle_onboarding(details):
             )
             db.session.add(NewManagerRelation)
             db.session.commit()
-
-        if 'subordinates_id' in details:
-            # handle multiple subordinates ID
-            for subordinate_id in details['subordinates_id']:
-                NewSubordinateRelation = EmployeeManager(
-                    id=None,
-                    employee_id=subordinate_id,
-                    manager_id=new_employee.employee_id,
-                )
-                db.session.add(NewSubordinateRelation)
-                db.session.commit()
         return jsonify({"message": "Employee onboarded successfully"}), 201
     except Exception as e:
         db.session.rollback()

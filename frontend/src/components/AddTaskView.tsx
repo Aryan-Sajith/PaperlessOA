@@ -190,7 +190,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
 
             {/* Task type dropdown wrapper with improved spacing */}
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <label className="block text-sm font-medium text-gray-700">Type</label>
               <TaskTypeDropdown
                 onTypeSelect={type =>
                   setTaskData((prev) => ({ ...prev, type }))

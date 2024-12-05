@@ -38,7 +38,7 @@ const OnboardingForm = () => {
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
       if (employee) {
-        setNextAssignee(employee); // This is underlined but its not an error, it is just react-select being weird...
+        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
       } else {
         setNextAssignee(null); // Handle case where no employee is selected
       }
@@ -46,7 +46,7 @@ const OnboardingForm = () => {
 
   const handleManager = (employee: SingleValue<Employee>) => {
       if (employee) {
-        setManager(employee); // This is underlined but its not an error, it is just react-select being weird...
+        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
       } else {
         setManager(null); // Handle case where no employee is selected
       }
