@@ -8,7 +8,7 @@ python package `psycopg2` require postgresql to be installed locally
 run `brew install postgresql` to install postgresql
 run `pip3 install psycopg2` to install psycopg2
 
-## connect to db
+## connect to db and run flask login
 create a `.env` file in the Backend directory with the following setting
 ````
 DB_USERNAME=your_username
@@ -16,6 +16,7 @@ DB_PASSWORD=your_password
 DB_HOST=your_host
 DB_PORT=5432
 DB_NAME=your_database_name
+SECRET_KEY=your_secret_key
 ````
 
 ## Run the app
