@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, jsonify, request, current_app
 from werkzeug.security import generate_password_hash
 from .employee_routes import employee_bp
@@ -190,6 +192,9 @@ def handle_onboarding(details):
             level=details['level'],
             email=details['email'],
         )
+        db.session.add(new_employee)
+        db.session.commit()
+
         if 'subordinates_id' in details:
             # handle multiple subordinates ID
             # if we assign subordinates to the onboarding person, make it a manager
@@ -202,8 +207,6 @@ def handle_onboarding(details):
                 )
                 db.session.add(NewSubordinateRelation)
                 db.session.commit()
-        db.session.add(new_employee)
-        db.session.commit()
         if 'manager_id' in details:
             # if there is a manager_id for the onboarding person, add it.
             NewManagerRelation = EmployeeManager(
