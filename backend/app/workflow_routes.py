@@ -7,9 +7,10 @@ from datetime import datetime
 workflow_bp = Blueprint('workflow_bp', __name__)
 
 
-# Route to get all workflows
+# Route to get all workflows of the current user
 @workflow_bp.route('/workflows', methods=['POST'])
 def get_workflows():
+    # We won't query archived workflow, but good to have them stored in db
     workflows = Workflow.query.filter(Workflow.status != "Archived")
     if "employee_id" in request.json:
         workflows = workflows.filter(Workflow.assignee_id == request.json["employee_id"])
@@ -42,8 +43,9 @@ def create_workflow():
                 id=None,
                 assignee_id=data['cur_id'] if "cur_id" in data else 1,
                 status="initialized",
-                content=str(data),
+                content=str(data), # stored the content so that it can be retrieved later
                 type=data['type'],
+                # When workflow_id is None, meaning it's the initial workflow
                 workflow_id=data['workflow_id'] if "workflow_id" in data else None,
                 timestamp=datetime.utcnow()
             )
@@ -58,6 +60,7 @@ def create_workflow():
             status=data['status'] if 'status' in data else "in progress",
             content=str(data),
             type=data['type'],
+            # point the workflow to its parent
             workflow_id=data['workflow_id'] if "workflow_id" in data else parent_id,
             timestamp=datetime.utcnow()
         )
@@ -148,7 +151,7 @@ def approve_workflow():
     if not workflow_type or not workflow_id:
         return jsonify({"error": "Missing required fields: 'type' or 'workflow_id'"}), 400
 
-    # Handle workflow types
+    # Handle workflow types using the content
     if workflow_type == "onboarding":
         return handle_onboarding(details)
     elif workflow_type == "resignation":
@@ -164,6 +167,7 @@ def mark_complete(workflow_id):
     """Mark the current and parent workflow as completed"""
     cur_id = workflow_id
     while cur_id is not None:
+        # recursively mark the parent workflow as complete,
         workflow = Workflow.query.get(cur_id)
         workflow.status = "Complete"
         cur_id = workflow.workflow_id
@@ -188,7 +192,8 @@ def handle_onboarding(details):
         )
         if 'subordinates_id' in details:
             # handle multiple subordinates ID
-            new_employee.is_manager = True
+            # if we assign subordinates to the onboarding person, make it a manager
+            new_employee.is_manager = True if len(details['subordinates_id']) > 0 else False
             for subordinate_id in details['subordinates_id']:
                 NewSubordinateRelation = EmployeeManager(
                     id=None,
@@ -200,6 +205,7 @@ def handle_onboarding(details):
         db.session.add(new_employee)
         db.session.commit()
         if 'manager_id' in details:
+            # if there is a manager_id for the onboarding person, add it.
             NewManagerRelation = EmployeeManager(
                 id=None,
                 employee_id=new_employee.employee_id,
@@ -215,7 +221,7 @@ def handle_onboarding(details):
 
 
 def handle_resignation(details):
-    """Handles the removal workflow."""
+    """Handles the resignation workflow."""
     try:
         employee_id = details['employee_id']
         employee = Employee.query.get(employee_id)
@@ -229,8 +235,9 @@ def handle_resignation(details):
         return jsonify({"error": f"Failed to remove employee: {str(e)}"}), 500
 
 def handle_absence(details):
-    """Handles the removal workflow."""
+    """Handles the absence workflow."""
     try:
+        # no change needed to the db. just keep a record of the absence
         return jsonify({"message": "Employee removed successfully"}), 200
     except Exception as e:
         db.session.rollback()

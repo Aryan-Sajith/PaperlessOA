@@ -23,11 +23,11 @@ CREATE TABLE Employee_Manager (
 -- Create the Workflow table
 CREATE TABLE Workflow (
     ID serial PRIMARY KEY,
-    assignee_id INT,
+    assignee_id INT, -- employee being assigned
     status VARCHAR(50),
-    content TEXT,
+    content TEXT,    -- json for specific workflow
     type VARCHAR(50),
-    workflow_id INT,
+    workflow_id INT, -- parent workflow id
     time_stamp TIMESTAMP,
     FOREIGN KEY (assignee_id) REFERENCES Employee(employee_id),
     FOREIGN KEY (Workflow_id) REFERENCES Workflow(ID)
@@ -36,7 +36,7 @@ CREATE TABLE Workflow (
 -- Create the Task table
 CREATE TABLE task (
     ID INT PRIMARY KEY,
-    assignee_id INT,
+    assignee_id INT, -- employee being assigned
     status VARCHAR(50),
     description TEXT,
     type VARCHAR(50),

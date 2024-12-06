@@ -27,6 +27,7 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
         .then(data => {
           const JSON5 = require('json5');
           const content = JSON5.parse(data.content)
+          // populate data from the workflow
           setFormData({
             reason: content.reason || "",
             type: "resignation",

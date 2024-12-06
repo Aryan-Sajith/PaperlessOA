@@ -38,6 +38,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
           const JSON5 = require('json5');
           const content = JSON5.parse(data.content)
           setFormData({
+            // populate the form
             name: content.name || "",
             email: content.email || "",
             salary: content.salary || "",

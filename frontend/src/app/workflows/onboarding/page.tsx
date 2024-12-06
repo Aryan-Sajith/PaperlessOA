@@ -29,7 +29,7 @@ const OnboardingForm = () => {
     manager_id: '',
     assignee_id: '',
     subordinates_id: [],
-    subordinates_name: [],
+    subordinates_name: [], // good to have to avoid fetching the backend again
     cur_id: ''
   });
   const [nextAssignee, setNextAssignee] = useState<Employee | null>(null)

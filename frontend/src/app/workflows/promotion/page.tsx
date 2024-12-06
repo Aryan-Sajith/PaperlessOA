@@ -49,6 +49,7 @@ const PromotionForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
+      // populate fields for creating workflow
       formData['assignee_id'] = nextAssignee.employee_id
       formData['cur_id'] = user?.employee_id
       formData['name'] = selectedEmployee.name

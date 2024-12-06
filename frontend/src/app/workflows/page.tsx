@@ -17,6 +17,7 @@ const WorkflowList = () => {
       fetch(`${API_BASE}/workflows` ,{
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
+          // we want to only fetch the current user's workflow
           body: JSON.stringify({"employee_id" : user?.employee_id})
           })
           .then(response => response.json())
@@ -63,7 +64,7 @@ const WorkflowList = () => {
                 <Button variant={"outlined"} color={"primary"} onClick={() => {
                   const workflowId = workflow.id;
                   fetch(`${API_BASE}/archive_workflow/${workflowId}`, {
-                    method: 'POST', // or 'GET' based on your API requirements
+                    method: 'POST',
                   })
                     .then(response => {
                       if (response.ok) {

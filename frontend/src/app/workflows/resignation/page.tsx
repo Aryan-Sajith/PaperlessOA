@@ -48,6 +48,7 @@ const ResignationForm = () => {
 
   const handleSubmitToNext = async () => {
     try {
+      // populate the field after selecting employees
       formData['type'] = 'resignation'
       formData['assignee_id'] = nextAssignee.employee_id
       formData['cur_id'] = user?.employee_id

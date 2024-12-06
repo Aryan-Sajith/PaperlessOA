@@ -40,6 +40,7 @@ const PromotionForm = ({params}:{params: Promise<{id: string}>}) => {
           const JSON5 = require('json5');
           const content = JSON5.parse(data.content)
           setFormData({
+            // fill the form
             name: content.name || "",
             salary: content.salary || "",
             level: content.level || "",
