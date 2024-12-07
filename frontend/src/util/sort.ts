@@ -8,20 +8,17 @@ export const sortTasks = (tasks: Task[]) => {
     */
 
     return tasks.sort((a: Task, b: Task) => {
-        // First order sort by completion status
-        if (a.status === "In Progress" && b.status == "Completed") {
-            return -1;
-        } else if (a.status === "Completed" && b.status === "In Progress") {
-            return 1;
-        } else {
-            // Second order sort by due date
-            if (a.due_date < b.due_date) {
-                return -1;
-            } else if (a.due_date > b.due_date) {
-                return 1;
-            } else {
-                return 0; // If due dates are equal, order arbitrarily
-            }
+        // First order sort by assignnee_id
+        if (a.assignee_id !== b.assignee_id) {
+            return a.assignee_id - b.assignee_id; // Groups tasks by assignee_id
         }
+
+        // Second order sort by status
+        if (a.status !== b.status) {
+            return a.status === "In Progress" ? -1 : 1;
+        }
+
+        // Third order sort by due date
+        return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
     });
 };
