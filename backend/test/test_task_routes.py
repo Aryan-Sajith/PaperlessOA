@@ -29,27 +29,6 @@ def test_get_tasks(client):
     data = response.json
     assert isinstance(data, list)
 
-def test_get_tasks_by_employee_id(client):
-    """Test retrieving tasks by employee ID."""
-    
-    # Send a GET request to retrieve tasks by employee ID
-    response = client.get('/tasks/employee/1', json={})
-    # Check that the response status code is 200 (OK)
-    assert response.status_code == 200
-    # Check that the response data is a list
-    data = response.json
-    assert isinstance(data, list)
-
-def test_get_tasks_by_employee_id_not_found(client):
-    """Test retrieving tasks by employee ID that does not exist."""
-    # Send a GET request to retrieve tasks by an employee ID that does not exist
-    response = client.get('/tasks/employee/1000', json={})
-    # Check that the response status code is 404 (Not Found)
-    assert response.status_code == 404
-    # Check that the response message indicates no tasks were found for the employee
-    data = response.get_json()
-    assert data['message'] == 'No tasks found for this employee'
-
 def test_create_task(client):
     """Test creating a new task."""
     # Define a mock task to create
@@ -86,6 +65,39 @@ def test_create_task_failed(client):
     # Check that the response message indicates missing required task fields
     data = response.get_json()
     assert data['error'] == 'Missing required task fields'
+
+def test_get_tasks_by_employee_id(client):
+    """Test retrieving tasks by employee ID."""
+    # Define a mock task to create
+    new_task = {
+        "assignee_id": 1,
+        "status": "In Progress",
+        "description": "Task for employee ID retrieval route testing",
+        "type": "Other",
+        "due_date": (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d') # Due date is 3 days ago
+    }
+    # Send a POST request to create the task
+    response = client.post('/create_task', json=new_task) # Create task route already tested
+    # Send a GET request to retrieve tasks by employee ID
+    response = client.get('/tasks/employee/1', json={})
+    # Check that the response status code is 200 (OK)
+    assert response.status_code == 200
+    # Check that the response data is a list
+    data = response.json
+    assert isinstance(data, list)
+    # Delete the task created for testing
+    task_id = next(task['id'] for task in response.json if task['description'] == "Task for employee ID retrieval route testing")
+    response = client.delete(f'/delete_task/{task_id}') # Delete task route already tested
+
+def test_get_tasks_by_employee_id_not_found(client):
+    """Test retrieving tasks by employee ID that does not exist."""
+    # Send a GET request to retrieve tasks by an employee ID that does not exist
+    response = client.get('/tasks/employee/1000', json={})
+    # Check that the response status code is 404 (Not Found)
+    assert response.status_code == 404
+    # Check that the response message indicates no tasks were found for the employee
+    data = response.get_json()
+    assert data['message'] == 'No tasks found for this employee'
 
 def test_delete_task(client):
     """Test deleting a task."""
@@ -180,6 +192,16 @@ def test_get_tasks_no_filtered_tasks_found_for_employee(client):
 
 def test_get_subordinate_tasks(client):
     """Test retrieving tasks associated with employees managed by a specific manager."""
+    # Define a mock task to create for a subordinate of manager 1(Employee 2)
+    new_task = {
+        "assignee_id": 2,
+        "status": "In Progress",
+        "description": "Task for managerial tasks retrieval route testing",
+        "type": "Other",
+        "due_date": (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d') # Due date is 3 days ago
+    }
+    # Send a POST request to create the task
+    response = client.post('/create_task', json=new_task) # Create task route already tested
     # Send a GET request to retrieve tasks associated with employees managed by a specific manager
     response = client.get('/tasks/manager/1', json={})
     # Check that the response status code is 200 (OK)
@@ -187,6 +209,11 @@ def test_get_subordinate_tasks(client):
     # Check that the response data is a list
     data = response.json
     assert isinstance(data, list)
+    # Check that the created task associated with subordinate 2 is in the response data
+    assert any(task['description'] == "Task for managerial tasks retrieval route testing" for task in data)
+    # Delete the task created for testing
+    task_id = next(task['id'] for task in response.json if task['description'] == "Task for managerial tasks retrieval route testing")
+    response = client.delete(f'/delete_task/{task_id}') # Delete task route already tested
 
 def test_get_subordinate_tasks_no_tasks_found(client):
     """Test retrieving tasks associated with employees managed by a specific manager where no tasks are found."""
