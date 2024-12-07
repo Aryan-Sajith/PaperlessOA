@@ -5,6 +5,7 @@ import AddTaskView from "@/components/AddTaskView";
 import { API_BASE } from "@/util/path";
 import { useAuth } from "@/hooks/useAuth";
 import TasksToggle, { taskViewType } from "@/components/TasksToggle";
+import { sortTasks } from "@/util/sort";
 
 export type Task = {
   id?: string;
@@ -32,7 +33,7 @@ export default function TasksPage() {
         // If no error occurs, fetch tasks and set tasks state
         const response = await fetch(url);
         const returnedTasks = await response.json();
-        setTasks(returnedTasks);
+        setTasks(returnedTasks['message'] ? [] : sortTasks(returnedTasks)); // Sort tasks by status and due date if any tasks are returned
       } catch (error) { // If an error occurs, log it and set error state
         console.error("Error fetching tasks:", error);
         if (error instanceof Error) {
