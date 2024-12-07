@@ -9,26 +9,7 @@ def client():
     app.config['TESTING'] = True
     return app.test_client()
 
-@pytest.fixture
-def mock_database(monkeypatch):
-    """Mock database interactions."""
-
-    def mock_get_tasks():
-        return mock_tasks
-
-    monkeypatch.setattr("app.workflow_routes.get_tasks", mock_get_tasks)
-
 # Tests for endpoints
-def test_get_tasks(client):
-    """Test retrieving all tasks."""
-    # Send a GET request to retrieve all tasks
-    response = client.get('/tasks', json={})
-    # Check that the response status code is 200 (OK)
-    assert response.status_code == 200
-    # Check that the response data is a list
-    data = response.json
-    assert isinstance(data, list)
-
 def test_create_task(client):
     """Test creating a new task."""
     # Define a mock task to create
@@ -65,6 +46,31 @@ def test_create_task_failed(client):
     # Check that the response message indicates missing required task fields
     data = response.get_json()
     assert data['error'] == 'Missing required task fields'
+
+def test_get_tasks(client):
+    """Test retrieving all tasks."""
+    # Define a mock task to validate that all tasks are retrieved
+    new_task = {
+        "assignee_id": 1,
+        "status": "In Progress",
+        "description": "Task for all tasks retrieval route testing",
+        "type": "Other",
+        "due_date": (datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d') # Due date is 3 days ago
+    }
+    # Send a POST request to create the task
+    response = client.post('/create_task', json=new_task) # Create task route already tested
+    # Send a GET request to retrieve all tasks
+    response = client.get('/tasks', json={})
+    # Check that the response status code is 200 (OK)
+    assert response.status_code == 200
+    # Check that the response data is a list
+    data = response.json
+    assert isinstance(data, list)
+    # Check that the created task is in the response data
+    assert any(task['description'] == "Task for all tasks retrieval route testing" for task in data)
+    # Delete the task created for testing
+    task_id = next(task['id'] for task in response.json if task['description'] == "Task for all tasks retrieval route testing")
+    response = client.delete(f'/delete_task/{task_id}') # Delete task route already tested
 
 def test_get_tasks_by_employee_id(client):
     """Test retrieving tasks by employee ID."""
