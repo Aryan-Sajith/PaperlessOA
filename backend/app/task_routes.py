@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request
 from .models import Employee, EmployeeManager, Task, db
 from datetime import datetime
 
-
 task_bp = Blueprint('task_bp', __name__)
 
 # Route to get all tasks
@@ -13,6 +12,7 @@ def get_tasks():
     tasks_list = [task.to_dict() for task in tasks]
     return jsonify(tasks_list)
 
+# Route to get tasks associated with a specific employee id
 @task_bp.route('/tasks/employee/<int:employee_id>', methods=['GET'])
 def get_tasks_by_id(employee_id):
     # Query Task table for tasks assigned to the given employee_id
@@ -24,7 +24,8 @@ def get_tasks_by_id(employee_id):
         return jsonify(tasks_list)
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
-    
+
+# Route to get tasks associated with a specific employee id, task type, and time frame
 @task_bp.route('/tasks/employee/<int:employee_id>/<string:task_type>/<string:time_frame>', methods=['GET'])
 def get_tasks_by_id_from_type_and_time_frame(employee_id, task_type, time_frame):
     """
@@ -69,7 +70,7 @@ def get_tasks_by_id_from_type_and_time_frame(employee_id, task_type, time_frame)
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
     
-
+# Route to get tasks associated with a specific manager id
 @task_bp.route('/tasks/manager/<int:manager_id>', methods=['GET'])
 def get_subordinate_tasks(manager_id):
     # Query Task table for tasks assigned to employees managed by the given manager_id
@@ -85,7 +86,8 @@ def get_subordinate_tasks(manager_id):
         return jsonify(tasks_list)
     else:
         return jsonify({"message": "No tasks found for employees managed by this manager"}), 404
-    
+
+# Route to get tasks associated with a specific manager id, task type, and time frame
 @task_bp.route('/tasks/manager/<int:manager_id>/<string:task_type>/<string:time_frame>', methods=['GET'])
 def get_subordinate_tasks_by_id_from_type_and_time_frame(manager_id, task_type, time_frame):
     today = datetime.now().date()
@@ -130,6 +132,7 @@ def get_subordinate_tasks_by_id_from_type_and_time_frame(manager_id, task_type, 
     else:
         return jsonify({"message": "No tasks found for this employee"}), 404
 
+# Route to create a new task
 @task_bp.route('/create_task', methods=['POST'])
 def create_task():
     data = request.get_json()
@@ -157,7 +160,8 @@ def create_task():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to create task", "details": str(e)}), 500
-        
+
+# Route to update an existing task        
 @task_bp.route('/update_task/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
     data = request.get_json()
@@ -188,6 +192,7 @@ def update_task(task_id):
         db.session.rollback()
         return jsonify({"error": "Failed to update task", "details": str(e)}), 500
     
+# Route to delete an existing task    
 @task_bp.route('/delete_task/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     task = Task.query.get(task_id)
