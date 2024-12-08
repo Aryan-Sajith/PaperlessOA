@@ -1,16 +1,16 @@
 "use client";
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {useParams} from "react-router-dom";
-import {useRouter} from "next/router";
-import {Employee} from "@/util/ZodTypes";
-import {MultiValue, SingleValue} from "react-select";
-import MultiEmployeeDropdown from "@/components/MultiEmployeeDropDown";
-import {any} from "prop-types";
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { useParams } from "react-router-dom";
+import { useRouter } from "next/router";
+import { Employee } from "@/util/ZodTypes";
+import { MultiValue, SingleValue } from "react-select";
+import MultiEmployeeDropdown from "@/components/general/MultiEmployeeDropDown";
+import { any } from "prop-types";
 import JSON5 from "json5";
-import {useAuth} from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 const OnboardingForm = () => {
   const [subordinates, setSubordinates] = useState<Employee[] | null>(null)
@@ -37,19 +37,19 @@ const OnboardingForm = () => {
   const { user, loading } = useAuth();
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setNextAssignee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
   }
 
   const handleManager = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setManager(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setManager(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setManager(null); // Handle case where no employee is selected
+    }
   }
 
 
@@ -73,13 +73,13 @@ const OnboardingForm = () => {
         assignee_id: nextAssignee?.employee_id || '',
         cur_id: user?.employee_id || '',
       };
-  
+
       const response = await fetch(API_BASE + '/create_workflow', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedFormData),
       });
-  
+
       if (response.ok) {
         alert('Workflow submitted to the next assignee successfully!');
       } else {
@@ -89,7 +89,7 @@ const OnboardingForm = () => {
       console.error('Error submitting workflow:', error);
     }
   };
-  
+
 
   const handleApprove = async () => {
     try {
@@ -215,9 +215,9 @@ const OnboardingForm = () => {
           <Typography>select the the subordinates (if any) for this employee</Typography>
           <MultiEmployeeDropdown onEmployeeSelect={setSubordinates} />
           <Typography>select the the manager for this employee</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleManager}/>
+          <EmployeeDropdown onEmployeeSelect={handleManager} />
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee} />
         </Box>
       </Box>
 

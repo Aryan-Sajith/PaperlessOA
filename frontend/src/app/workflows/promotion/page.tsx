@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
-import {useAuth} from "@/hooks/useAuth";
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { Employee } from "@/util/ZodTypes";
+import { SingleValue } from "react-select";
+import { useAuth } from "@/hooks/useAuth";
 
 const PromotionForm = () => {
   const [formData, setFormData] = useState({
@@ -25,11 +25,11 @@ const PromotionForm = () => {
   const { user, loading } = useAuth();
 
   const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setSelectedEmployee(null); // Handle case where no employee is selected
+    }
   }
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
     if (employee) {
@@ -99,7 +99,7 @@ const PromotionForm = () => {
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
           <Typography>Who is being promoted</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
+          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee} />
           <TextField
             fullWidth
             margin="normal"
@@ -143,7 +143,7 @@ const PromotionForm = () => {
         {/* Right Workflow Steps */}
         <Box flex={1}>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee} />
         </Box>
       </Box>
 

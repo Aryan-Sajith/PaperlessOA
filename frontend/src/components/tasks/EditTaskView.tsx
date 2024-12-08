@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
+import AddNEditTaskEmployeeDropDown from '@/components/tasks/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee, TaskStatus, TaskType } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
 import { CalendarDays, FileText, Save, Type } from "lucide-react";
 import TaskTypeDropdown from "./TaskTypeDropdown";

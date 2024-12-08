@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import DropdownMenu from "@/components/Analytics_Dropdown";
-import TaskBar from "@/components/Analytics_TaskBar";
-import PieChart from "@/components/PieChart";
-import AnalyticsToggle, { analyticsViewType } from "@/components/AnalyticsToggle";
+import DropdownMenu from "@/components/analytics/Analytics_Dropdown";
+import TaskBar from "@/components/analytics/Analytics_TaskBar";
+import PieChart from "@/components/general/PieChart";
+import AnalyticsToggle, { analyticsViewType } from "@/components/analytics/AnalyticsToggle";
 import { useAuth } from "@/hooks/useAuth";
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 
 export default function Analytics() {
   const [completedCount, setCompletedCount] = useState(0);
@@ -18,30 +18,30 @@ export default function Analytics() {
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
-      fetchTasks(taskType, timeFrame, currentView);
+    fetchTasks(taskType, timeFrame, currentView);
   }, [user, loading, taskType, timeFrame, currentView]);
 
-  const fetchTasks = (selectedTaskType:string, selectedTimeFrame: string, view: string) => {
-    if (!loading && user){
-        const url = view == "My"
+  const fetchTasks = (selectedTaskType: string, selectedTimeFrame: string, view: string) => {
+    if (!loading && user) {
+      const url = view == "My"
         ? `${API_BASE}/tasks/employee/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Personal analytics
         : `${API_BASE}/tasks/manager/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Subordinate analytics
-        fetch(url)
+      fetch(url)
         .then((response) => {
-            if (response.status === 404) {
+          if (response.status === 404) {
             setNoTasksFound(true);
             return [];
-            } else if (!response.ok) {
+          } else if (!response.ok) {
             throw new Error("Network response was not ok " + response.statusText);
-            }
-            setNoTasksFound(false);
-            return response.json();
+          }
+          setNoTasksFound(false);
+          return response.json();
         })
         .then((data) => {
-            const completed = data.filter((task: any) => task.status === "Completed").length;
-            const inProgress = data.filter((task: any) => task.status === "In Progress").length;
-            setCompletedCount(completed);
-            setInProgressCount(inProgress);
+          const completed = data.filter((task: any) => task.status === "Completed").length;
+          const inProgress = data.filter((task: any) => task.status === "In Progress").length;
+          setCompletedCount(completed);
+          setInProgressCount(inProgress);
         })
         .catch((error) => console.error("Fetch error:", error));
     }
@@ -62,9 +62,9 @@ export default function Analytics() {
       <div style={cardStyle}>
         {/* Inline DropdownMenu and text */}
         <div style={inlineContainerStyle}>
-          <DropdownMenu 
-          type="task"
-          onChange={setTaskType}
+          <DropdownMenu
+            type="task"
+            onChange={setTaskType}
           />
           <span style={textStyle}>Tasks due in the </span>
           <DropdownMenu

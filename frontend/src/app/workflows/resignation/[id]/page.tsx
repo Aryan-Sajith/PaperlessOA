@@ -1,13 +1,13 @@
 "use client";
-import React, {use, useEffect, useState} from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
+import React, { use, useEffect, useState } from 'react';
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { Employee } from "@/util/ZodTypes";
+import { SingleValue } from "react-select";
 import JSON5 from "json5";
 
-const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
+const ResignationForm = ({ params }: { params: Promise<{ id: string }> }) => {
   const id = use(params).id
   const [formData, setFormData] = useState({
     reason: '',
@@ -21,29 +21,29 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
 
   useEffect(() => {
     fetch(`${API_BASE}/workflow/${id}`)
-        .then(response =>{
-          return response.json()
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        const JSON5 = require('json5');
+        const content = JSON5.parse(data.content)
+        // populate data from the workflow
+        setFormData({
+          reason: content.reason || "",
+          type: "resignation",
+          workflow_id: id,
+          name: content.name || "",
+          employee_id: content.employee_id || ""
         })
-        .then(data => {
-          const JSON5 = require('json5');
-          const content = JSON5.parse(data.content)
-          // populate data from the workflow
-          setFormData({
-            reason: content.reason || "",
-            type: "resignation",
-            workflow_id: id,
-            name: content.name || "",
-            employee_id: content.employee_id || ""
-          })
-        })
+      })
   }, []);
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setNextAssignee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
   }
 
   const handleInputChange = (event) => {
@@ -116,7 +116,7 @@ const ResignationForm = ({params}:{params: Promise<{id: string}>}) => {
         {/* Right Workflow Steps */}
         <Box flex={1}>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee} />
         </Box>
       </Box>
 

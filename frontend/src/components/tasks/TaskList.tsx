@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Task } from "@/app/tasks/page";
 import TaskCard from "./TaskCard";
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 
 type TaskListProps = {
     tasks: Task[]; // List of tasks to display
