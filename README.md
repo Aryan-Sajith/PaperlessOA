@@ -35,14 +35,14 @@ Workflow files located in `frontend/src/app/workflows/absence`
 Task API routes here: `backend/app/task_routes.py`
 
 #### Frontend:
-Main tasks page in `frontend/src/app/tasks` and primary components utilized in `frontend/src/app/components/tasks`
+Main tasks page in `frontend/src/app/tasks` and primary components utilized in `frontend/src/components/tasks`
 
 ### Analytics 
 #### Backend:
 Analytics utilizes the Task API routes here: `backend/app/task_routes.py` 
 
 #### Frontend:
-Main analytics page in `frontend/src/app/analytics` and primary components utilized in `frontend/src/app/components/analytics`
+Main analytics page in `frontend/src/app/analytics` and primary components utilized in `frontend/src/components/analytics`
 
 ### Hierarchy 
 #### Backend:
