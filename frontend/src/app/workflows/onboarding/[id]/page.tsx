@@ -1,14 +1,14 @@
 "use client";
-import React, {useState, use, useEffect} from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {type} from "node:os";
-import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
-import {useAuth} from "@/hooks/useAuth";
+import React, { useState, use, useEffect } from 'react';
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { type } from "node:os";
+import { Employee } from "@/util/ZodTypes";
+import { SingleValue } from "react-select";
+import { useAuth } from "@/hooks/useAuth";
 
-const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
+const OnboardingForm = ({ params }: { params: Promise<{ id: string }> }) => {
   const id = use(params).id
   const [formData, setFormData] = useState({
     name: '',
@@ -31,31 +31,32 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
 
   useEffect(() => {
     fetch(`${API_BASE}/workflow/${id}`)
-        .then(response =>{
-          return response.json()
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        const JSON5 = require('json5');
+        const content = JSON5.parse(data.content)
+        setFormData({
+          // populate the form
+          name: content.name || "",
+          email: content.email || "",
+          salary: content.salary || "",
+          level: content.level || "",
+          start_date: content.start_date || "",
+          birth_date: content.birth_date || "",
+          position: content.position || "",
+          comments: content.comments || "",
+          type: "onboarding",
+          workflow_id: id,
+          assignee_id: content.assignee_id || "",
+          manager_name: content.manager_name || "",
+          manager_id: content.manager_id || "",
+          subordinates_id: content.subordinates_id || [],
+          subordinates_name: content.subordinates_name || [],
+          password: content.password || "",
         })
-        .then(data => {
-          const JSON5 = require('json5');
-          const content = JSON5.parse(data.content)
-          setFormData({
-            name: content.name || "",
-            email: content.email || "",
-            salary: content.salary || "",
-            level: content.level || "",
-            start_date: content.start_date || "",
-            birth_date: content.birth_date || "",
-            position: content.position || "",
-            comments: content.comments || "",
-            type: "onboarding",
-            workflow_id: id,
-            assignee_id: content.assignee_id || "",
-            manager_name: content.manager_name || "",
-            manager_id: content.manager_id || "",
-            subordinates_id: content.subordinates_id || [],
-            subordinates_name: content.subordinates_name || [],
-            password: content.password || "",
-          })
-        })
+      })
   }, []);
 
   const handleInputChange = (event) => {
@@ -211,7 +212,7 @@ const OnboardingForm = ({params}:{params: Promise<{id: string}>}) => {
           <Typography>{JSON.stringify(formData['subordinates_name'])} will be the subordinates of {formData['name']}</Typography>
           <Typography>{formData['manager_name']} will be the manager of {formData['name']}</Typography>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee} />
         </Box>
       </Box>
 

@@ -1,13 +1,13 @@
 "use client";
-import React, {use, useEffect, useState} from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
+import React, { use, useEffect, useState } from 'react';
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { Employee } from "@/util/ZodTypes";
+import { SingleValue } from "react-select";
 import JSON5 from "json5";
 
-const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
+const AbsenceForm = ({ params }: { params: Promise<{ id: string }> }) => {
   const id = use(params).id
   const [formData, setFormData] = useState({
     start_date: '',
@@ -20,31 +20,31 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
   });
   useEffect(() => {
     fetch(`${API_BASE}/workflow/${id}`)
-        .then(response =>{
-          return response.json()
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        const JSON5 = require('json5');
+        const content = JSON5.parse(data.content)
+        setFormData({
+          start_date: content.start_date || "",
+          end_date: content.end_date || "",
+          reason: content.reason || "",
+          type: "absence",
+          assignee_id: data.assignee_id || "",
+          name: content.name || "",
+          workflow_id: id
         })
-        .then(data => {
-          const JSON5 = require('json5');
-          const content = JSON5.parse(data.content)
-          setFormData({
-            start_date: content.start_date || "",
-            end_date: content.end_date || "",
-            reason: content.reason || "",
-            type: "absence",
-            assignee_id: data.assignee_id || "",
-            name: content.name || "",
-            workflow_id: id
-          })
-        })
+      })
   }, []);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
 
   const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setSelectedEmployee(null); // Handle case where no employee is selected
+    }
   }
 
   const handleInputChange = (event) => {
@@ -144,7 +144,7 @@ const AbsenceForm = ({params}:{params: Promise<{id: string}>}) => {
         {/* Right Workflow Steps */}
         <Box flex={1}>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
+          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee} />
         </Box>
       </Box>
 

@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_BASE } from '@/util/path';
+import { API_BASE } from '@/util/api-path';
 
 export default function HomePage() {
   const router = useRouter(); // Router instance to redirect user based on authentication status
@@ -41,5 +41,5 @@ export default function HomePage() {
   }
 
   // Since user is authenticated and loading is complete, render the home page
-  
+
 }

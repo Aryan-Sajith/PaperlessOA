@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Paper} from '@mui/material';
-import EmployeeDropdown from "@/components/EmployeeDropDown";
-import {API_BASE} from "@/util/path";
-import {Employee} from "@/util/ZodTypes";
-import {SingleValue} from "react-select";
-import {useAuth} from "@/hooks/useAuth";
+import { Box, Typography, TextField, Button, Paper } from '@mui/material';
+import EmployeeDropdown from "@/components/general/EmployeeDropDown";
+import { API_BASE } from "@/util/api-path";
+import { Employee } from "@/util/ZodTypes";
+import { SingleValue } from "react-select";
+import { useAuth } from "@/hooks/useAuth";
 
 const AbsenceForm = () => {
   const [formData, setFormData] = useState({
@@ -22,19 +22,19 @@ const AbsenceForm = () => {
   const { user, loading } = useAuth();
 
   const handleSelectEmployee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setSelectedEmployee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setSelectedEmployee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setSelectedEmployee(null); // Handle case where no employee is selected
+    }
   }
 
   const handleNextAssignee = (employee: SingleValue<Employee>) => {
-      if (employee) {
-        setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
-      } else {
-        setNextAssignee(null); // Handle case where no employee is selected
-      }
+    if (employee) {
+      setNextAssignee(employee.value); // This is underlined but its not an error, it is just react-select being weird...
+    } else {
+      setNextAssignee(null); // Handle case where no employee is selected
+    }
   }
 
 
@@ -95,7 +95,7 @@ const AbsenceForm = () => {
       <Box display="flex" justifyContent="space-between">
         {/* Left Form Section */}
         <Box flex={1} mr={4}>
-          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee}/>
+          <EmployeeDropdown onEmployeeSelect={handleSelectEmployee} />
           <TextField
             fullWidth
             margin="normal"
@@ -138,7 +138,7 @@ const AbsenceForm = () => {
         {/* Right Workflow Steps */}
         <Box flex={1}>
           <Typography>select the next assignee if neccessary</Typography>
-          <EmployeeDropdown onEmployeeSelect={handleNextAssignee}/>
+          <EmployeeDropdown onEmployeeSelect={handleNextAssignee} />
         </Box>
       </Box>
 

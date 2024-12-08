@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react"
 import { Employee } from "@/util/ZodTypes"
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 
 
 /**
  * Table: Displays information of all employees.
  */
-export default function EmployeeTable () {
+export default function EmployeeTable() {
 
     // Store employees from api
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -24,8 +24,8 @@ export default function EmployeeTable () {
             .catch(error => {
                 console.error('Error fetching employees:', error);
             });
-    }, []); 
-        
+    }, []);
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-bold mb-6">Table</h1>

@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Button, List, ListItem, IconButton } from '@mui/material';
 import Link from "next/link";
-import {Simulate} from "react-dom/test-utils";
-import {API_BASE} from "@/util/path";
-import {Employee} from "@/util/ZodTypes";
-import {useAuth} from "@/hooks/useAuth";
+import { Simulate } from "react-dom/test-utils";
+import { API_BASE } from "@/util/api-path";
+import { Employee } from "@/util/ZodTypes";
+import { useAuth } from "@/hooks/useAuth";
 
 // Workflow list page
 const WorkflowList = () => {
@@ -14,14 +14,15 @@ const WorkflowList = () => {
 
   // UseEffect to fetch workflows
   useEffect(() => {
-      fetch(`${API_BASE}/workflows` ,{
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({"employee_id" : user?.employee_id})
-          })
-          .then(response => response.json())
-          .then(data => setWorkflows(data))
-    }, [user, loading]);
+    fetch(`${API_BASE}/workflows`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // we want to only fetch the current user's workflow
+      body: JSON.stringify({ "employee_id": user?.employee_id })
+    })
+      .then(response => response.json())
+      .then(data => setWorkflows(data))
+  }, [user, loading]);
 
 
   return (<div>
@@ -60,32 +61,32 @@ const WorkflowList = () => {
               </Link>
             </Box>
             <Box sx={{ flex: 0.5, textAlign: 'left' }}>
-                <Button variant={"outlined"} color={"primary"} onClick={() => {
-                  const workflowId = workflow.id;
-                  fetch(`${API_BASE}/archive_workflow/${workflowId}`, {
-                    method: 'POST', // or 'GET' based on your API requirements
+              <Button variant={"outlined"} color={"primary"} onClick={() => {
+                const workflowId = workflow.id;
+                fetch(`${API_BASE}/archive_workflow/${workflowId}`, {
+                  method: 'POST',
+                })
+                  .then(response => {
+                    if (response.ok) {
+                      alert('Workflow archived successfully!');
+                      window.location.reload(); // Reload the page
+                    } else {
+                      alert('Failed to archive workflow.');
+                    }
                   })
-                    .then(response => {
-                      if (response.ok) {
-                        alert('Workflow archived successfully!');
-                        window.location.reload(); // Reload the page
-                      } else {
-                        alert('Failed to archive workflow.');
-                      }
-                    })
-                    .catch(error => {
-                      console.error('Error:', error);
-                      alert('Error while archiving workflow.');
-                    });
-                }}>
-                  Archive
-                </Button>
+                  .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error while archiving workflow.');
+                  });
+              }}>
+                Archive
+              </Button>
             </Box>
           </Paper>
         ))}
       </Box>
     </Box>
-    </div>);
+  </div>);
 };
 
 export default WorkflowList;

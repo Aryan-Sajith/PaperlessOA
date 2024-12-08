@@ -1,8 +1,7 @@
 import pytest
-from flask import Flask
 from ..app import create_app  # Import the Flask app from workflow_routes
 
-pytest.workflow_id = 0
+pytest.workflow_id = 0 # store the workflow id being created, and make CRUD on it
 
 @pytest.fixture
 def client():

@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import TaskList from "@/components/TaskList";
-import AddTaskView from "@/components/AddTaskView";
-import { API_BASE } from "@/util/path";
+import React, { useState, useEffect, use } from "react";
+import TaskList from "@/components/tasks/TaskList";
+import AddTaskView from "@/components/tasks/AddTaskView";
+import { API_BASE } from "@/util/api-path";
 import { useAuth } from "@/hooks/useAuth";
-import TasksToggle, { taskViewType } from "@/components/TasksToggle";
+import TasksToggle, { taskViewType } from "@/components/tasks/TasksToggle";
+import { sortTasks } from "@/util/tasks-sort";
 
 export type Task = {
   id?: string;
@@ -32,7 +33,7 @@ export default function TasksPage() {
         // If no error occurs, fetch tasks and set tasks state
         const response = await fetch(url);
         const returnedTasks = await response.json();
-        setTasks(returnedTasks);
+        setTasks(returnedTasks['message'] ? [] : sortTasks(returnedTasks)); // Sort tasks by status and due date if any tasks are returned
       } catch (error) { // If an error occurs, log it and set error state
         console.error("Error fetching tasks:", error);
         if (error instanceof Error) {
@@ -55,11 +56,12 @@ export default function TasksPage() {
     <div>
       <h1 className="text-2xl font-bold mb-6">Tasks</h1>
       {/* Tasks Toggle Slider: */}
-      <TasksToggle onToggle={view => {
-        fetchTasks(view);
-        setCurrentView(view);
-      }} />
-
+      {user?.is_manager && (
+        <TasksToggle onToggle={view => {
+          fetchTasks(view);
+          setCurrentView(view);
+        }} />
+      )}
       {/* Task List: */}
       {loading ? (
         <p>Loading tasks...</p>

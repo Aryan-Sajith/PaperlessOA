@@ -13,7 +13,7 @@ export default function DropdownMenu({type, onChange}: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const options: Option[] = type === "task" ? ["All", "Administrative", "Finance", "HR", "IT", "Communication", "Facitilies", "Projects", "Legal", "Other"] 
-  : ["Past Day", "Past Week", "Past Month", "Next Day", "Next Week", "Next Month"];
+  : ["Past Month", "Past Week", "Past Day", "Next Month", "Next Week", "Next Day"];
 
   const [selectedOption, setSelectedOption] = useState<Option>(options[0]);
 

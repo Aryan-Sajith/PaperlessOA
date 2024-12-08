@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import AddNEditTaskEmployeeDropDown from '@/components/AddNEditTaskEmployeeDropDown';
+import AddNEditTaskEmployeeDropDown from '@/components/tasks/AddNEditTaskEmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee, TaskStatus, TaskType } from '@/util/ZodTypes';
 import { Task } from "@/app/tasks/page";
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 import TaskStatusDropdown from "./TaskStatusDropdown";
 import { CalendarDays, FileText, Save, Type } from "lucide-react";
 import TaskTypeDropdown from "./TaskTypeDropdown";
@@ -79,84 +79,63 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing, r
     };
 
     return (
-        // Modern card container with consistent shadow and rounded corners
-        <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-            {/* Status dropdown wrapper with improved spacing */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Status</label>
+        // Edit task view UI container
+        <div className="bg-gray-100 mt-2">
+            {/* Task form UI container */}
+            <div className="space-y-3">
+                {/* Task status dropdown */}
                 <TaskStatusDropdown
-                    onStatusSelect={(status) =>
-                        setTaskData((prev) => ({ ...prev, status }))
-                    }
+                    onStatusSelect={status => setTaskData(prev => ({ ...prev, status }))}
                     currentStatus={taskData.status as TaskStatus}
                 />
-            </div>
 
-            {/* Date input group with icon */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Due Date</label>
+                {/* Task due date input */}
                 <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <CalendarDays className="h-5 w-5 text-gray-400" />
-                    </div>
+                    <CalendarDays className="absolute top-2 left-3 text-gray-600" />
                     <input
                         type="date"
                         name="due_date"
                         value={taskData.due_date}
                         onChange={handleInputChange}
-                        className="py-2 pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
+                        className="w-full pl-10 h-10 border border-gray-300 rounded-md"
                     />
                 </div>
-            </div>
 
-            {/* Description input group with icon */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Description</label>
+                {/* Task description input */}
                 <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FileText className="h-5 w-5 text-gray-400" />
-                    </div>
+                    <FileText className="absolute top-2 left-3 text-gray-600" />
                     <input
                         type="text"
                         name="description"
                         value={taskData.description}
                         onChange={handleInputChange}
-                        className="pl-10 block w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm h-10"
                         placeholder="Enter task description"
+                        className="w-full pl-10 h-10 border border-gray-300 rounded-md"
                     />
                 </div>
-            </div>
 
-            {/* Type input group with icon */}
-            {/* Task type dropdown wrapper with improved spacing */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Type</label>
+                {/* Task type dropdown */}
                 <TaskTypeDropdown
-                    onTypeSelect={type =>
-                        setTaskData((prev) => ({ ...prev, type }))
-                    }
+                    onTypeSelect={type => setTaskData(prev => ({ ...prev, type }))}
                     currentType={taskData.type as TaskType}
                 />
-            </div>
 
-            {/* Employee dropdown wrapper */}
-            <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Assignee</label>
+                {/* Task assignee dropdown */}
                 <AddNEditTaskEmployeeDropDown
                     onEmployeeSelect={handleSelectAssignee}
                     assignee_id={task_to_update.assignee_id}
                     showSubordinatesAndUser={true}
                 />
-            </div>
 
-            {/* Update button with icon and hover effect */}
-            <button
-                onClick={handleEditTask}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200"
-            >
-                <Save className="h-5 w-5" />
-                Update Task
-            </button>
+                {/* Update task button */}
+                <button
+                    onClick={handleEditTask}
+                    className="w-full flex items-center justify-center rounded-md p-2 bg-green-400 hover:bg-green-500"
+                >
+                    <Save className="h-4.5 w-5 mr-1" />
+                    Update Task
+                </button>
+            </div>
         </div>
     );
 }

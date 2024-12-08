@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 import Select, { SingleValue } from "react-select";
 import { Employee } from '@/util/ZodTypes';
 import { useAuth } from '@/hooks/useAuth';
