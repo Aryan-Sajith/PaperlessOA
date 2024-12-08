@@ -16,6 +16,37 @@ Backend test is in backend/test follow instruction to run the test.
 Frontend: React + Next.js, Backend: Python Flask, DB: AWS RDS postgresql
 
 ## Features
-### Workflow -- done
-Related files located in `frontend/src/app/workflows`, and `backend/app/workflow_routes.py`
+### Workflow 
+#### Backend:
+Workflow API routes here: `backend/app/workflow_routes.py`
 
+#### Frontend:
+Workflow files located in `frontend/src/app/workflows`
+
+### Absence Management
+#### Backend:
+Absence management primarily utilizes the Employee API routes here: `backend/app/employee_routes.py` 
+
+#### Frontend:
+Workflow files located in `frontend/src/app/workflows/absence`
+
+### Tasks 
+#### Backend:
+Task API routes here: `backend/app/task_routes.py`
+
+#### Frontend:
+Main tasks page in `frontend/src/app/tasks` and primary components utilized in `frontend/src/app/components/tasks`
+
+### Analytics 
+#### Backend:
+Analytics utilizes the Task API routes here: `backend/app/task_routes.py` 
+
+#### Frontend:
+Main analytics page in `frontend/src/app/analytics` and primary components utilized in `frontend/src/app/components/analytics`
+
+### Hierarchy 
+#### Backend:
+Hierarchy primarily utilizes the Employee API routes here: `backend/app/employee_routes.py` 
+
+#### Frontend:
+Main hierarchy page in `frontend/src/app/hierarchy`
