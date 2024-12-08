@@ -32,11 +32,18 @@ Office Automation software for CS520
    npm run dev
    ```
 ## File Structure
-`/src` contains most of the source code. \
-`/app` include the pages and each folder under it represents the separate pages, for example. 
-`/workflow` corresponding to all the pages for workflow and can be
-access using `localhost:3000/workflows`, and subpage like `/onboarding`\
-`/components` include commonly used react component through the frontend, such as emoloyee drop down\
+- `/src` contains most of the source code. 
+   - `/app` include the pages and each folder under it represents the separate pages. 
+      - `/page.tsx` corresponds to the main page of the app when logged in.
+      - Subfolders indicate the primary page associated with features:
+         - `/workflow`, for example, corresponding to all the pages for workflow and can be
+access using `localhost:3000/workflows`, and subpage like `/onboarding`
+      - Other auxillary folders utilized for styling(`/globals.css`), specifying website layout(`/layout`), and more.
+   - `/components` include commonly used react component throughout the frontend. Subfolders within the `/components` indicate feature-based organization of components(`/tasks` for example) or `/general` corresponding to components not just designed with one feature in mind.
+   - `/hooks` corresponding to commonly utilized frontend React functions across the Next.js app. In this case, `/useAuth.tsx` to access the logged in user.
+   - `/util` corresponding to useful general utilies like universal types(`/ZodTypes.ts`), the api-path(`/api-path.ts`), and more.
+- `/public/icons` contains icons utilized throughout the app like `/task-edit.svg` which is the icon shown for editing a task
+- Auxillary configuration files like `/package.json` for app dependencies, `/tailwind.config.ts` for TailwindCSS, and more.
 
 ## Workflow
 user can create a workflow by clicking `Create Workflow` button and inputing corresponding field, then assign to next assignee,
