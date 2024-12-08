@@ -46,12 +46,21 @@ access using `localhost:3000/workflows`, and subpage like `/onboarding`
 - Auxillary configuration files like `/package.json` for app dependencies, `/tailwind.config.ts` for TailwindCSS, and more.
 
 ## Workflow
-user can create a workflow by clicking `Create Workflow` button and inputing corresponding field, then assign to next assignee,
+User can create a workflow by clicking `Create Workflow` button and inputing corresponding field, then assign to next assignee,
 then the next assignee will have the workflow displayed at their end, with all the fields being
 filled properly from the previous person. user can view the workflow being assigned to them by inputing url like
 `localhost:3000/workflows/onboarding/100` or click the detail button. After reviewing the workflow, user can also approve it, which 
 will mark related workflow as completed, and take changes on the db.\
 User can also archive the workflow to make a clean view by clicking the archive button.
 
+## Absence Management
+User can utilize absence management functionality via a workflow similar to the one mentioned before. They can specify who is taking the absence, the duration and the reason why. Then the person who it was assigned to can approve it and the workflow will indicate the absent status of the employee.
+
 ## Tasks
 User can toggle between personal tasks and employee tasks(if they are a manager). Then they can assign tasks to themselves(or employees) via the plus button on the bottom right. They can delete a task by clicking the trash can icon on the right end of a task card. Tasks can also be edited by clicking the pencil icon on the right end of a task card. Task information synchronizes seamlessly across managers and subordinates.
+
+## Hierarchy
+User can view employees via the hierarchy dropdown menu. If they click on a specific employee name in the dropdown their details like role, salary and login status is shown. If they further click on the employee card then their subordinates will be shown as well.
+
+## Analytics
+User can view the task completion analytics for themselves and their subordinates on this page. Additionally, task analytics can be filtered by completion status and the types of tasks(finanace, legal, etc.)
