@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Employee } from "@/util/ZodTypes";
-import { API_BASE } from '@/util/path';
 
 interface EmployeeBoxProps {
     employee: Employee,

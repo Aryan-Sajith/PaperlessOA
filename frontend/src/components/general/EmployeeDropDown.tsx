@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { API_BASE } from "@/util/path";
-import Select, { MultiValue } from "react-select";
+import { API_BASE } from "@/util/api-path";
+import Select, { SingleValue } from "react-select";
 import { Employee } from '@/util/ZodTypes';
 
 const customStyles = {
@@ -12,12 +12,12 @@ const customStyles = {
     }),
 };
 
-interface MultiEmployeeDropdownProps {
-    onEmployeeSelect: (employee: MultiValue<Employee>) => void;
+interface EmployeeDropdownProps {
+    onEmployeeSelect: (employee: SingleValue<Employee>) => void;
 }
 
 // DropDown takes an employee property so that the selected employee json can be accessed where the component is used
-const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmployeeSelect }) => {
+const EmployeeDropdown: React.FC<EmployeeDropdownProps> = ({ onEmployeeSelect }) => {
     const [employees, setEmployees] = useState([]);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [isClient, setIsClient] = useState(false);
@@ -46,7 +46,6 @@ const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmploye
 
     return (
         <Select
-            isMulti
             options={employees}
             value={selectedEmployee}
             onChange={(selectedOption) => {
@@ -60,4 +59,4 @@ const MultiEmployeeDropdown: React.FC<MultiEmployeeDropdownProps> = ({ onEmploye
     );
 };
 
-export default MultiEmployeeDropdown;
+export default EmployeeDropdown;

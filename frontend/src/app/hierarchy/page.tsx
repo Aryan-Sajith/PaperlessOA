@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState } from 'react'
-import EmployeeBox from "../../components/EmployeeBox";
-import EmployeeDropdown from '@/components/EmployeeDropDown';
+import EmployeeBox from "../../components/general/EmployeeBox";
+import EmployeeDropdown from '@/components/general/EmployeeDropDown';
 import { SingleValue } from 'react-select';
 import { Employee } from '@/util/ZodTypes';
-import { API_BASE } from "@/util/path";
-import { set } from 'zod';
-
+import { API_BASE } from "@/util/api-path";
 
 /**
  * Hierarchy page: 

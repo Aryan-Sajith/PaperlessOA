@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import EditTaskView from "./EditTaskView";
 import { Task } from "@/app/tasks/page";
-import { API_BASE } from "@/util/path";
+import { API_BASE } from "@/util/api-path";
 import { CalendarDays, Edit3, Trash2, User } from "lucide-react";
 
 type TaskCardProps = {
@@ -98,7 +98,7 @@ export default function TaskCard({
                     </button>
                 </div>
             </div>
-            
+
             {/* Edit task view */}
             {isEditing && (
                 <EditTaskView

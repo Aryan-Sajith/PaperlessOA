@@ -50,9 +50,22 @@ a manager and its subordinates.\
 Task stores task and has assignee_id to refer to
 the employee being assigned. \
 Workflow stores four different types of workflow, and its content as json. 
+
 ### test
 `test_*_routes.py` uses pytest to mock API and test the business logic 
 as well as the reliability of the API.
+
+## Login logic
+### Library
+[Flask-login](https://flask-login.readthedocs.io/en/latest/) is utilized for managing user login/authentication via a cookie-based system. User passwords are stored in the AWS RDS database utilizing the (Werkzeug security)[https://pydoc.dev/werkzeug/latest/werkzeug.security.html] module in python to encrypt the stored passwords. 
+
+### Authenticate User
+Validates user credentials against stored employee records in the database.
+Session management handled through Flask session cookies.
+
+### Current User
+Returns the logged-in user's details including role and permissions.
+Protected routes require valid session authentication.
 
 ## Workflow logic
 ### Retrieve Workflow
@@ -68,3 +81,36 @@ and handle the workflow according to its type. For onboarding, It will create em
 employee. Promotion, it will change the salary and level of the employee. And absence will keep the record in the db.
 ### Delete and update Workflow
 They are supported, and can be called by giving `workflow_id` and body of the updated workflow
+
+## Tasks logic
+### Create Task
+Tasks require an assignee_id and content. Managers can assign to subordinates.
+Task metadata includes status, due date, and type.
+
+### Retrieve Tasks
+Returns tasks filtered by:
+- Personal tasks assigned to user
+- Team tasks (for managers)
+- Status (complete/incomplete)
+- Due date ranges
+
+### Update Task
+Supports modifying task content, status, and assignee.
+Task completion automatically tracked for analytics.
+
+### Delete Task
+Tasks can be deleted assuming they exist in the database. This is determined based on the 
+task id which is implicitly returned to the backend via the frontend UI.
+
+## Employee logic 
+### Employee Management
+CRUD operations for employee records including:
+- Personal details
+- Role/position
+- Salary information
+- Reporting structure
+
+## Hierarchy & Analytics
+Utilizes primarily employee and tasks logic to retrieve, filter and display useful company information like:
+- Hierarchical employee relationships(manager/subordinate, role, etc.)
+- Tasks analytics for oneself and subordinates(filtered by completion status, time frame, etc.)

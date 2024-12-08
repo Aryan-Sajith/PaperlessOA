@@ -1,11 +1,11 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
-import TaskList from "@/components/TaskList";
-import AddTaskView from "@/components/AddTaskView";
-import { API_BASE } from "@/util/path";
+import TaskList from "@/components/tasks/TaskList";
+import AddTaskView from "@/components/tasks/AddTaskView";
+import { API_BASE } from "@/util/api-path";
 import { useAuth } from "@/hooks/useAuth";
-import TasksToggle, { taskViewType } from "@/components/TasksToggle";
-import { sortTasks } from "@/util/sort";
+import TasksToggle, { taskViewType } from "@/components/tasks/TasksToggle";
+import { sortTasks } from "@/util/tasks-sort";
 
 export type Task = {
   id?: string;

@@ -1,7 +1,7 @@
 // Custom hook to handle user authentication state and protected route access
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { API_BASE } from '@/util/path';
+import { API_BASE } from '@/util/api-path';
 import { Employee } from '@/util/ZodTypes';
 
 // Interface defining the authentication state returned by useAuth
