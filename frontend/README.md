@@ -52,3 +52,6 @@ filled properly from the previous person. user can view the workflow being assig
 `localhost:3000/workflows/onboarding/100` or click the detail button. After reviewing the workflow, user can also approve it, which 
 will mark related workflow as completed, and take changes on the db.\
 User can also archive the workflow to make a clean view by clicking the archive button.
+
+## Tasks
+User can toggle between personal tasks and employee tasks(if they are a manager). Then they can assign tasks to themselves(or employees) via the plus button on the bottom right. They can delete a task by clicking the trash can icon on the right end of a task card. Tasks can also be edited by clicking the pencil icon on the right end of a task card. Task information synchronizes seamlessly across managers and subordinates.
