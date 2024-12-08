@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import DropdownMenu from "@/components/analytics/Analytics_Dropdown";
 import TaskBar from "@/components/analytics/Analytics_TaskBar";
-import PieChart from "@/components/general/PieChart";
+import PieChart from "@/components/analytics/AnalyticsPieChart";
 import AnalyticsToggle, { analyticsViewType } from "@/components/analytics/AnalyticsToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { API_BASE } from "@/util/api-path";
