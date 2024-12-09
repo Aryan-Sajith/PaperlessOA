@@ -32,6 +32,10 @@ class MockUser:
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_id(self):
+        """Required Flask-Login method of user class to return a unique identifier."""
+        return self.employee_id
+
 
 mock_user = MockUser(
     employee_id=1, 
@@ -108,20 +112,27 @@ def test_login_incorrect_password(client):
 
 def test_logout(client):
     """Test logout functionality."""
-    with patch("flask_login.current_user", mock_user), \
-         patch("flask_login.login_required", lambda f: f), \
-         patch("flask_login.logout_user") as mock_logout_user:
-        
-        response = client.post('/logout')
-        assert response.status_code == 200
-        assert response.json["success"] is True
+    with client.application.app_context(): # Required for session handling
+        with patch("flask_login.current_user", mock_user): # Mock current_user
+            with client.session_transaction() as sess: # Obtain session for modification
+                # Set user ID in session to simulate logged in user
+                sess['_user_id'] = str(mock_user.get_id()) 
+            
+            # Hit the protected logout route
+            response = client.post('/logout')
+            assert response.status_code == 200
+            assert response.json["success"] is True
 
 def test_get_current_user(client):
     """Test retrieving current user information."""
-    with patch("flask_login.current_user", mock_user), \
-         patch("flask_login.login_required", lambda f: f):
-        mock_user.is_autheticated =True
-        response = client.get('/current_user')
-        assert response.status_code == 200
-        assert "user" in response.json
-        assert response.json["user"]["name"] == "Test User"
+    with client.application.app_context(): # Required for session handling
+        with patch("flask_login.current_user", mock_user): # Mock current_user
+            with client.session_transaction() as sess: # Obtain session for modification
+                # Set user ID in session to simulate logged in user
+                sess['_user_id'] = str(mock_user.get_id()) 
+
+            # Hit the protected current_user route
+            response = client.get('/current_user')
+            assert response.status_code == 200
+            assert "user" in response.json
+            assert response.json["user"]["name"] == "Test User"
