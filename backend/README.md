@@ -57,7 +57,7 @@ as well as the reliability of the API.
 
 ## Login logic
 ### Library
-[Flask-login](https://flask-login.readthedocs.io/en/latest/) is utilized for managing user login/authentication via a cookie-based system. User passwords are stored in the AWS RDS database utilizing the (Werkzeug security)[https://pydoc.dev/werkzeug/latest/werkzeug.security.html] module in python to encrypt the stored passwords. 
+[Flask-login](https://flask-login.readthedocs.io/en/latest/) is utilized for managing user login/authentication via a cookie-based system. User passwords are stored in the AWS RDS database utilizing the [Werkzeug security](https://pydoc.dev/werkzeug/latest/werkzeug.security.html) module in python to encrypt the stored passwords. 
 
 ### Authenticate User
 Validates user credentials against stored employee records in the database.
