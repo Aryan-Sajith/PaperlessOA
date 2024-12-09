@@ -16,11 +16,11 @@ export default function Profile() {
 
         <div className="mt-4">
             <h1 className="text-2xl font-bold pb-2">Employee Details</h1>
-            <p><span className="font-bold">Salary:</span> ${user.salary}</p>
-            <p><span className="font-bold">Manager:</span> {user.is_manager ? 'true' : 'false'}</p>
-            <p><span className="font-bold">Start Date:</span> {new Date(user.start_date).toLocaleDateString()}</p>
-            <p><span className="font-bold">Birth Date:</span> {new Date(user.birth_date).toLocaleDateString()}</p>
-            <p><span className="font-bold">Level:</span> {user.level}</p>
+            <p data-testid="profile-salary"><span className="font-bold" >Salary:</span> ${user.salary}</p>
+            <p data-testid="profile-manager"><span className="font-bold" >Manager:</span> {user.is_manager ? 'true' : 'false'}</p>
+            <p data-testid="profile-start"><span className="font-bold" >Start Date:</span> {new Date(user.start_date).toLocaleDateString()}</p>
+            <p data-testid="profile-DOB"><span className="font-bold" >Birth Date:</span> {new Date(user.birth_date).toLocaleDateString()}</p>
+            <p data-testid="profile-level"><span className="font-bold" >Level:</span> {user.level}</p>
         </div>
 
     </div>)}</ProtectedRoute>)

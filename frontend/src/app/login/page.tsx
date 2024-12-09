@@ -49,6 +49,7 @@ export default function Login() {
                         </label>
                         <input
                             type="email"
+                            data-testid="login-email"
                             className="w-full p-2 border rounded-md"
                             value={credentials.email}
                             onChange={e => setCredentials({ ...credentials, email: e.target.value })}
@@ -62,6 +63,7 @@ export default function Login() {
                         </label>
                         <input
                             type="password"
+                            data-testid="login-password"
                             className="w-full p-2 border rounded-md"
                             value={credentials.password}
                             onChange={e => setCredentials({ ...credentials, password: e.target.value })}
@@ -70,6 +72,7 @@ export default function Login() {
                     </div>
                     {/* Submit Button Element: */}
                     <button
+                        data-testid="login-button"
                         type="submit"
                         className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
                     >
