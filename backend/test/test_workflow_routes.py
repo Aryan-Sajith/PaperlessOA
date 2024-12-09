@@ -41,7 +41,7 @@ def test_get_workflows(client, mock_database):
 def test_create_workflow(client):
     """Test creating a new workflow."""
     new_workflow = {
-        "type": "Resignation",
+        "type": "absence",
         "status": "Initialized",
         "start_date": "2024-12-01"
     }
@@ -76,12 +76,27 @@ def test_create_workflow_missing_field(client):
 
 def test_update_workflow(client, mock_database):
     """Test updating a workflow."""
-    updated_data = {"status": "Completed"}
+    updated_data = {"status": "In progress"}
     print(pytest.workflow_id)
     response = client.put(f'/workflow/{pytest.workflow_id}', json=updated_data)
     assert response.status_code == 200
     data = response.json
-    assert data['status'] == "Completed"
+    assert data['status'] == "In progress"
+
+def test_approve_workflow(client, mock_database):
+    """Test approving a workflow."""
+    workflow_need_approved = client.get(f'/workflow/{pytest.workflow_id}').json
+    workflow_need_approved['workflow_id'] = workflow_need_approved['id']
+    response = client.post('/approve_workflow', json=workflow_need_approved)
+    assert response.status_code == 200
+    data =  client.get(f'/workflow/{pytest.workflow_id}').json
+    assert data['status'] == "Complete"
+
+def test_archive_workflow(client, mock_database):
+    """Test archiving a workflow."""
+    response = client.post(f'/archive_workflow/{pytest.workflow_id}', json={})
+    assert response.status_code == 200
+    assert response.json['status'] == "Archived"
 
 def test_delete_workflow(client, mock_database):
     """Test deleting a workflow."""
