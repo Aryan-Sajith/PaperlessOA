@@ -19,7 +19,7 @@ const EmployeeBox: React.FC<EmployeeBoxProps> = ({ employee, subordinates }) => 
 
     return (
         <div className="block p-3 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 my-4">
-            <div className="flex flex-row justify-center items-center space-x-5" onClick={toggleExpand}>
+            <div data-testid="box-container" className="flex flex-row justify-center items-center space-x-5" onClick={toggleExpand}>
                     
                 {/* Circular Photo */}
                 <div className="flex-1 flex justify-end"> 
@@ -32,14 +32,14 @@ const EmployeeBox: React.FC<EmployeeBoxProps> = ({ employee, subordinates }) => 
                 
                 <div className="flex-1">
                     {/* Name */}
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
+                    <h2 data-testid="box-name" className="text-lg font-semibold text-gray-800 dark:text-white">
                         {employee.name}
                     </h2>
                     {/* Attributes */}
                     <div className="text-sm text-gray-600 dark:text-gray-300">
-                        <p className="font-bold">{employee.position}</p>
-                        <p>Salary: {employee.salary}</p>
-                        <p>Status: {employee.status}</p>
+                        <p data-testid="box-position" className="font-bold">{employee.position}</p>
+                        <p data-testid="box-salary">Salary: {employee.salary}</p>
+                        <p data-testid>Status: {employee.status}</p>
                     </div>
                 </div>
                 
