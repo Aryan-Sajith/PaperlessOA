@@ -36,7 +36,6 @@ class MockUser:
         """Required Flask-Login method of user class to return a unique identifier."""
         return self.employee_id
 
-
 mock_user = MockUser(
     employee_id=1, 
     name="Test User", 
@@ -113,7 +112,9 @@ def test_login_incorrect_password(client):
 def test_logout(client):
     """Test logout functionality."""
     with client.application.app_context(): # Required for session handling
-        with patch("flask_login.current_user", mock_user): # Mock current_user
+        # Mock current_user to return the mock user
+        with patch("flask_login.current_user", mock_user), \
+             patch("flask_login.login_required", lambda x: x):  # Mock login_required decorator check
             with client.session_transaction() as sess: # Obtain session for modification
                 # Set user ID in session to simulate logged in user
                 sess['_user_id'] = str(mock_user.get_id()) 
@@ -126,7 +127,11 @@ def test_logout(client):
 def test_get_current_user(client):
     """Test retrieving current user information."""
     with client.application.app_context(): # Required for session handling
-        with patch("flask_login.current_user", mock_user): # Mock current_user
+        with patch("app.models.Employee.query") as mock_query, \
+             patch("flask_login.login_required", lambda x: x):   # Mock login_required decorator check
+            mock_query.get.return_value = mock_user # Mock query to return the user
+            mock_user.is_authenticated = True # Sets the mock user as authenticated
+
             with client.session_transaction() as sess: # Obtain session for modification
                 # Set user ID in session to simulate logged in user
                 sess['_user_id'] = str(mock_user.get_id()) 
@@ -134,5 +139,8 @@ def test_get_current_user(client):
             # Hit the protected current_user route
             response = client.get('/current_user')
             assert response.status_code == 200
+            print(f'Response user: {response.json["user"]}')
             assert "user" in response.json
             assert response.json["user"]["name"] == "Test User"
+            assert response.json["user"]["email"] == "test@example.com"
+            assert response.json["user"]["employee_id"] == 1
