@@ -5,6 +5,13 @@
    and backend, and create a frontend component
 3. Add the workflow test for backend
 
+### Aryan Sajith
+1. Set up the task management functionality(adding, deleting, updating, auto-sorting), UI and backend routes(non-filtered)
+2. Set up the user login/authentication on the backend via Flask-Login and useAuth React hook for easy access to logged in user on the frontend
+3. Set up all testing for task management and helped fix user authentication tests on the backend
+4. Fleshed out documentation for the entire project(readme's, frontend comments, etc.)
+5. Organized the frontend components into modularized and efficiently manageable subsections
+
 ### Jacob Cohen
 
 1. Help Set up DB schema with Yiming Huang
