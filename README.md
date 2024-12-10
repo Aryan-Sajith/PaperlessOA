@@ -8,6 +8,9 @@ The goal of this project is to make it easy for companies to perform daily routi
 PaperlessOA will efficiently automate and systematically handle employee management, absence management, and task management.
 There are not many free and open source(FOSS) OA systems which startups can affordably rely on, so we hope to provide a solution for this space of users.
 
+## Demo Video
+https://drive.google.com/file/d/1SfKQhxpnAxQdZkfd5bScsZ5pdQ48jJaU/view?usp=sharing
+
 ## Installation
 
 Follow README.md instructions in frontend and backend.
