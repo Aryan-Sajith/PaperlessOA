@@ -8,7 +8,7 @@
 ### Jacob Cohen
 
 1. Help Set up DB schema with Yiming Huang
-2. Created components for hiarchy page and profile page
+2. Created components for hierarchy page and profile page
 3. debugging support
 4. Backend tests for auth and employee routes
 5. Frontend testing for whole project
@@ -20,3 +20,10 @@
    on the backend
 3. Implemented frontend for Analytics page, allowing for dynamic
    updating through calls to the backend
+
+### William Saulnier
+
+1. Designed and implemented frontend basic layout
+3. Worked on hierarchy page and related components
+4. Worked on profile page
+5. Created table page
