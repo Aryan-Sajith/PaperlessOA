@@ -1,9 +1,9 @@
 ### Yiming Huang
 
-1. Set up the remote DB, and backend code, mainly the workflow_route.py
-2. Finish the workflow feature, both frontend
-   and backend, and create a frontend component
+1. Set up the remote DB (using AWS RDS), and backend code using Flask, mainly the workflow_route.py
+2. Finish the workflow feature, both frontend and backend, and create a frontend component
 3. Add the workflow test for backend
+4. Add documentation for backend, and workflow related functionality
 
 ### Aryan Sajith
 1. Set up the task management functionality(adding, deleting, updating, auto-sorting), UI and backend routes(non-filtered)
