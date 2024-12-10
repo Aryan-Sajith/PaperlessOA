@@ -104,3 +104,13 @@ describe('Tasks and Analytics',()=>{
 
   
 })
+
+describe("logout",()=>{
+
+  it("should log me out",()=>{
+    cy.visit("http://localhost:3000/profile")
+    cy.get(`[data-testid="logout"]`).click()
+    cy.url().should('eq','http://localhost:3000/login')
+  })
+
+})
