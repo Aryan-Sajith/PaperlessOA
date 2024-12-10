@@ -68,7 +68,7 @@ export default function TaskCard({
                         {`Type: ${type}`}
                     </span>
                     {/* Task description */}
-                    <p className="font-medium mt-2 ml-1">{description}</p>
+                    <p data-testid="task-name" className="font-medium mt-2 ml-1">{description}</p>
                     {/* Task metadata UI container */}
                     <div className="flex gap-4 mt-3 text-sm text-gray-500">
                         {/* Task due date */}

@@ -129,6 +129,7 @@ export default function EditTaskView({ task_to_update, setTasks, setIsEditing, r
 
                 {/* Update task button */}
                 <button
+                data-testid="task-edit-btn"
                     onClick={handleEditTask}
                     className="w-full flex items-center justify-center rounded-md p-2 bg-green-400 hover:bg-green-500"
                 >

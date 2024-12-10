@@ -185,6 +185,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
 
             {/* Task add button */}
             <button
+            data-testid="add-task"
               onClick={handleAddTask}
               className="w-full p-2 bg-blue-500 hover:bg-blue-600 flex justify-center items-center rounded-md text-white"
             >

@@ -43,6 +43,10 @@ describe('Tasks and Analytics',()=>{
     it("creates deletes and updates tasks and this is reflected in analytics",()=>{
 
     cy.visit('http://localhost:3000/analytics')
+    cy.wait(1000)
+    /*cy.get(`[data-testid="analytics-toggle"]`).eq(1).click()
+    cy.get(`[data-testid="analytics-select"]`).contains("Next Month").click()
+    cy.wait(1000)*/
     cy.get(`[data-testid="analytics-pending"]`).then(($elem)=>{
       //store analytics value for pending tasks
       const pending = parseInt($elem.text())
@@ -51,8 +55,52 @@ describe('Tasks and Analytics',()=>{
         cy.visit('http://localhost:3000/tasks')
         cy.get(`[data-testid=make-task]`).click()
         cy.get(`[id="react-select-3-input"]`).type("In Progress").type(`{enter}`)
+        cy.get(`[placeholder="Enter task description"]`).type("Cypress test").type(`{enter}`)
+        cy.get(`[id="react-select-5-input"]`).type("HR").type(`{enter}`)
+        cy.get(`[data-testid="add-task"]`).click()
+        cy.get(`[data-testid="task-container"]`).filter((_,el) =>{
+            return Cypress.$(el).find(`[data-testid="task-name"]`).text() === "Cypress test"
+        }).should('exist')
+
+      //should be reflected in analytics
+      cy.visit('http://localhost:3000/analytics')
+      /*cy.get(`[data-testid="analytics-toggle"]`).eq(1).click()
+      cy.get(`[data-testid="analytics-select"]`).contains("Next Month").click()*/
+      cy.wait(1000)
+      cy.get(`[data-testid="analytics-pending"]`).should("have.text",String(pending + 1))
       
+      //should be properly edited 
+      cy.visit('http://localhost:3000/tasks')
+      cy.get(`[data-testid="task-container"]`).filter((_,el) =>{
+        return Cypress.$(el).find(`[data-testid="task-name"]`).text() === "Cypress test"
+    }).within(()=>{
+      cy.get(`[data-testid="task-edit"]`).click()
+      cy.get(`[placeholder="Enter task description"]`).clear().type("Edited Test")
+      cy.get(`[data-testid=task-edit-btn]`).click()
     })
+
+    cy.get(`[data-testid="task-container"]`).filter((_,el) =>{
+      return Cypress.$(el).find(`[data-testid="task-name"]`).text() === "Cypress test"
+    }).should('not.exist')
+
+    //task can properly be deleted
+    cy.get(`[data-testid="task-container"]`).filter((_,el) =>{
+      return Cypress.$(el).find(`[data-testid="task-name"]`).text() === "Edited Test"
+    }).should('exist').within(()=>{
+      cy.get(`[data-testid=task-delete]`).click()
+    })
+
+    
+    cy.get(`[data-testid="task-container"]`).filter((_,el) =>{
+      return Cypress.$(el).find(`[data-testid="task-name"]`).text() === "Edited Test"
+    }).should('not.exist')
+
+    //deletion is reflected in anayltics
+    cy.visit('http://localhost:3000/analytics')
+    cy.wait(1000)
+    cy.get(`[data-testid="analytics-pending"]`).should("have.text",String(pending))
   })
+})
+
   
 })

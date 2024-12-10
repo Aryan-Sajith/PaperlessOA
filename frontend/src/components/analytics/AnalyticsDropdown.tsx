@@ -31,6 +31,7 @@ export default function DropdownMenu({type, onChange}: DropdownMenuProps) {
     <div className="relative inline-block text-left">
       {/* Dropdown Button */}
       <button
+        data-testid="analytics-toggle"
         onClick={toggleDropdown}
         className="bg-gray-200 px-4 py-2 rounded-md text-gray-700 hover:bg-gray-300 flex items-center"
       >
@@ -48,7 +49,7 @@ export default function DropdownMenu({type, onChange}: DropdownMenuProps) {
       {/* Dropdown Options */}
       {isOpen && (
         <div className="absolute mt-2 w-40 bg-white rounded-md shadow-lg">
-          <ul className="py-1">
+          <ul data-testid="analytics-select" className="py-1">
             {options.map((option) => (
               <li
                 key={option}
