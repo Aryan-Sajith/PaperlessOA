@@ -10,7 +10,7 @@ run `pip3 install psycopg2` to install psycopg2
 
 ## connect to db and run flask login
 create a `.env` file in the Backend directory with the following setting.
-The DB is hosted on AWS RDS.
+The DB is hosted on AWS RDS. The env variables are emailed on request. 
 ````
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
