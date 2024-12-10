@@ -179,7 +179,8 @@ def test_get_tasks_invalid_time_frame(client):
 def test_get_tasks_no_tasks_found_within_time_frame(client):
     """Test retrieving tasks within a specified time frame where no tasks are found."""
     # Send a GET request to retrieve tasks within a specified time frame where no tasks are found
-    response = client.get('/tasks/employee/1/All/Next%20Month', json={})
+    response = client.get('/tasks/employee/15/All/Next%20Month', json={})
+    print(f'Response: {response}')
     # Check that the response status code is 404 (Not Found)
     assert response.status_code == 404
     # Check that the response message indicates no tasks were found within the specified time frame
@@ -273,7 +274,7 @@ def test_get_subordinate_tasks_invalid_time_frame(client):
 def test_get_subordinate_tasks_no_tasks_found_within_time_frame(client):
     """Test retrieving tasks associated with employees managed by a specific manager within a specified time frame where no tasks are found."""
     # Send a GET request to retrieve tasks associated with employees managed by a specific manager within a specified time frame where no tasks are found
-    response = client.get('/tasks/manager/1/All/Next%20Month', json={})
+    response = client.get('/tasks/manager/15/All/Next%20Month', json={})
     # Check that the response status code is 404 (Not Found)
     assert response.status_code == 404
     # Check that the response message indicates no tasks were found within the specified time frame
