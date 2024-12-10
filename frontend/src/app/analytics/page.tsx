@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import DropdownMenu from "@/components/analytics/Analytics_Dropdown";
-import TaskBar from "@/components/analytics/Analytics_TaskBar";
-import PieChart from "@/components/analytics/AnalyticsPieChart";
 import AnalyticsToggle, { analyticsViewType } from "@/components/analytics/AnalyticsToggle";
+import DropdownMenu from "@/components/analytics/AnalyticsDropdown";
+import PieChart from "@/components/analytics/AnalyticsPieChart";
+import SubordinateDropdown from "@/components/analytics/AnalyticsSubordinateDropdown";
+import TaskBar from "@/components/analytics/AnalyticsTaskBar";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { API_BASE } from "@/util/api-path";
 
@@ -13,19 +14,22 @@ export default function Analytics() {
   const [inProgressCount, setInProgressCount] = useState(0);
   const [timeFrame, setTimeFrame] = useState("Past Month");
   const [taskType, setTaskType] = useState("All");
+  const [selectedSubordinate, setSelectedSubordinate] = useState<string | number>("All Subordinates");
   const [currentView, setCurrentView] = useState<analyticsViewType>("My");
   const [noTasksFound, setNoTasksFound] = useState(false); // Tracks whether no tasks are found
   const { user, loading } = useAuth(); // Add loading from useAuth
 
   useEffect(() => {
-    fetchTasks(taskType, timeFrame, currentView);
-  }, [user, loading, taskType, timeFrame, currentView]);
+    fetchTasks(taskType, timeFrame, selectedSubordinate, currentView);
+  }, [user, loading, taskType, timeFrame, selectedSubordinate, currentView]);
 
-  const fetchTasks = (selectedTaskType: string, selectedTimeFrame: string, view: string) => {
+  const fetchTasks = (selectedTaskType: string, selectedTimeFrame: string, selectedSubordinate: string | number, view: string) => {
     if (!loading && user) {
       const url = view == "My"
         ? `${API_BASE}/tasks/employee/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Personal analytics
-        : `${API_BASE}/tasks/manager/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Subordinate analytics
+        : selectedSubordinate == "All Subordinates" 
+        ? `${API_BASE}/tasks/manager/${user.employee_id}/${selectedTaskType}/${selectedTimeFrame}` // Subordinate analytics
+        : `${API_BASE}/tasks/employee/${selectedSubordinate}/${selectedTaskType}/${selectedTimeFrame}`
       fetch(url)
         .then((response) => {
           if (response.status === 404) {
@@ -71,6 +75,16 @@ export default function Analytics() {
             type="time"
             onChange={setTimeFrame} // Handle dropdown change
           />
+
+          {currentView != "My" && user && (
+            <span style={textStyle}>for </span>
+          )}
+          {currentView != "My" && user && (
+              <SubordinateDropdown
+                managerId={user.employee_id}
+                onChange={(subordinate) => setSelectedSubordinate(subordinate?.employee_id || "All Subordinates")}
+              />
+          )}
         </div>
 
         {/* Conditional Rendering */}
