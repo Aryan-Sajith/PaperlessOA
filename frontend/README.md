@@ -63,4 +63,4 @@ User can toggle between personal tasks and employee tasks(if they are a manager)
 User can view employees via the hierarchy dropdown menu. If they click on a specific employee name in the dropdown their details like role, salary and login status is shown. If they further click on the employee card then their subordinates will be shown as well.
 
 ## Analytics
-User can view the task completion analytics for themselves and their subordinates on this page. Additionally, task analytics can be filtered by completion status, completion time frame(last week, last month, etc.) and the types of tasks(finance, legal, etc.)
+User can view the task completion analytics for themselves and their subordinates on this page. Additionally, task analytics can be filtered by completion status, completion time frame(last week, last month, etc.) and the types of tasks(finance, legal, etc.). Managers can filter to see tasks of their individual subordinates or as a group.
