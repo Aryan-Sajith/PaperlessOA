@@ -27,7 +27,7 @@ export default function TaskBar({ completedTasks, pendingTasks }: TaskBarProps) 
           style={{ width: `${completedPercentage}%` }}
           className="bg-green-500 flex items-center justify-center"
         >
-          <p className="text-sm font-semibold text-white">{completedTasks}</p>
+          <p data-testid="analytics-completed" className="text-sm font-semibold text-white">{completedTasks}</p>
         </div>
 
         {/* Pending Tasks Section */}
@@ -35,7 +35,7 @@ export default function TaskBar({ completedTasks, pendingTasks }: TaskBarProps) 
           style={{ width: `${pendingPercentage}%` }}
           className="bg-yellow-500 flex items-center justify-center"
         >
-          <p className="text-sm font-semibold text-white">{pendingTasks}</p>
+          <p data-testid="analytics-pending" className="text-sm font-semibold text-white">{pendingTasks}</p>
         </div>
       </div>
     </div>

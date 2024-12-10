@@ -38,3 +38,21 @@ describe('hiearchy',()=>{
     })
   })
 })
+
+describe('Tasks and Analytics',()=>{
+    it("creates deletes and updates tasks and this is reflected in analytics",()=>{
+
+    cy.visit('http://localhost:3000/analytics')
+    cy.get(`[data-testid="analytics-pending"]`).then(($elem)=>{
+      //store analytics value for pending tasks
+      const pending = parseInt($elem.text())
+
+      // should properly create a task
+        cy.visit('http://localhost:3000/tasks')
+        cy.get(`[data-testid=make-task]`).click()
+        cy.get(`[id="react-select-3-input"]`).type("In Progress").type(`{enter}`)
+      
+    })
+  })
+  
+})

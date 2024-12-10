@@ -55,7 +55,7 @@ export default function TaskCard({
 
     return (
         // Task card UI container
-        <div className="p-4 mb-4 border rounded bg-gray-100 shadow-lg shadow-black-300">
+        <div data-testid="task-container" className="p-4 mb-4 border rounded bg-gray-100 shadow-lg shadow-black-300">
             {/* Task preview UI container */}
             <div className="flex justify-between">
                 <div>
@@ -86,14 +86,14 @@ export default function TaskCard({
                 {/* Task modification buttons container*/}
                 <div className="flex items-center gap-6">
                     {/* Edit task button */}
-                    <button onClick={(e) => {
+                    <button data-testid="task-edit" onClick={(e) => {
                         e.stopPropagation(); // Prevent card expansion on edit
                         setIsEditing(!isEditing); // Toggle edit view
                     }} className="hover:p-2 hover:bg-gray-300 rounded">
                         <Edit3 className="w-4 h-4 text-black-500" />
                     </button>
                     {/* Delete task button */}
-                    <button onClick={handleDelete} className="hover:p-2 hover:bg-red-200 rounded">
+                    <button data-testid="task-delete" onClick={handleDelete} className="hover:p-2 hover:bg-red-200 rounded">
                         <Trash2 className="w-4 h-4 text-red-500" />
                     </button>
                 </div>

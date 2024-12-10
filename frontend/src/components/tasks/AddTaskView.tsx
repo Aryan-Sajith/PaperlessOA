@@ -98,7 +98,7 @@ export default function AddTaskView({ setTasks, refetchTasks }: AddTaskViewProps
     // Add Task view UI container
     <div className="fixed bottom-5 right-5">
       {/* Add task button */}
-      <button
+      <button data-testid="make-task"
         onClick={() => setIsViewOpen(!isViewOpen)}
         className={`w-14 h-14 rounded-full flex items-center justify-center duration-200 
           ${isViewOpen ?

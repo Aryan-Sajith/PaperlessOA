@@ -30,7 +30,7 @@ const TasksToggle: React.FC<TasksToggleProps> = ({ onToggle }) => {
                 margin: '10px 0'
             }}
         >
-            <button
+            <button data-testid="tasks-my"
                 onClick={() => handleTabChange('My')}
                 style={{
                     padding: '8px 16px',
@@ -45,7 +45,7 @@ const TasksToggle: React.FC<TasksToggleProps> = ({ onToggle }) => {
             >
                 My Tasks
             </button>
-            <button
+            <button data-testid="tasks-employees"
                 onClick={() => handleTabChange('Employees')}
                 style={{
                     padding: '8px 16px',
