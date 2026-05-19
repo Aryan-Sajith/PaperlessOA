@@ -1,7 +1,5 @@
 # PaperlessOA
 
-Fall 2024 - CS520
-
 ## Introduction
 
 The goal of this project is to make it easy for companies to perform daily routines with an Office Automation(OA) system.
